@@ -1,7 +1,7 @@
 package me.proxer.app.util.rx
 
 import com.github.rubensousa.previewseekbar.PreviewLoader
-import com.github.rubensousa.previewseekbar.exoplayer.PreviewTimeBar
+import com.github.rubensousa.previewseekbar.media3.PreviewTimeBar
 import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.android.MainThreadDisposable

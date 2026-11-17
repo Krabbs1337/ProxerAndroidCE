@@ -20,7 +20,7 @@ Ziel: Das Projekt auf einen aktuellen, build- und Play-Store-fähigen Stand brin
 | 4 | AndroidX + Kernbibliotheken — **erledigt 17.11.2026** | Stabile Majors, Room 2.8 + KSP, lifecycle-extensions entfernen |
 | 5 | Sicherheit — **erledigt 17.11.2026** | Token-Speicherung, Cleartext, CVE-behaftete Libs |
 | 6 | DI + View-Layer — **erledigt 17.11.2026** | Koin 2→4, Kotterknife→Shim, AutoDispose 1.4.1 |
-| 7 | Media | ExoPlayer 2.11 → Media3 |
+| 7 | Media — **erledigt 17.11.2026** | ExoPlayer 2.13.3 → Media3 1.11.1 |
 | 8 | Performance + Polish | Glide, Baseline Profiles, AAB-Splits, Desugaring |
 | 9 | Qualitätssicherung + optionale Coroutines-Migration | detekt/ktlint/CI aktuell, schrittweise RxJava-Ablösung |
 
@@ -165,7 +165,19 @@ Checkliste (alle bekannten Berührungspunkte):
 - Cast-Extension auf media3-cast, IMA-Werbung auf media3-ima, PreviewSeekBar-ExoPlayer-Anbindung anpassen.
 - `NEARBY_WIFI_DEVICES` aus Phase 3 wird hier wirksam.
 
-**Abnahme:** Stream-Wiedergabe (lokal + Cast) auf Android 16 getestet, HLS + Werbung laufen.
+**Umgesetzt am 17.11.2026 (konkrete Versionen & Abweichungen):**
+
+- **Media3 1.11.1** (letztes Stable; 1.12.0 nur Beta): `media3-exoplayer`, `-hls`, `-dash`, `-smoothstreaming`, `ui`, `cast`, `exoplayer-ima`, `datasource-okhttp`. ExoPlayer-2-Artefakte (`exoplayer`, `extension-cast/okhttp/ima`) entfernt.
+- Zugehörige Bumps: cast-framework **19.0.0 → 22.3.1** (von media3-cast 1.11.1 vorgegeben), interactivemedia **3.14.0 → 3.39.0** (von media3-exoplayer-ima vorgegeben), ads-identifier **17.0.0 → 18.3.0**.
+- **Core Library Desugaring aktiviert** (`desugar_jdk_libs` 2.1.5) – media3-exoplayer-ima und interactivemedia verlangen es per AAR-Metadata (zieht Phase-8-Punkt vor).
+- `StreamPlayerManager`: `SimpleExoPlayer` → `ExoPlayer`, `Player.EventListener` → `Player.Listener` (`onPlayerStateChanged` aufgeteilt in `onPlaybackStateChanged` + `onPlayWhenReadyChanged`), `prepare(source)` → `setMediaSource(source); prepare()`, Cast: `CastPlayer.loadItem(MediaQueueItem)` existiert in media3 nicht mehr → `setMediaItem(MediaItem, position); prepare()` mit `MediaMetadata` (Titel, Artwork, Episode-Nr. via Extras-Bundle mit Cast-Key `KEY_EPISODE_NUMBER`); IMA: `OkHttpDataSourceFactory` → `OkHttpDataSource.Factory(client).setUserAgent(...)`, `AdsMediaSource(..., AdViewProvider)` (PlayerView implementiert `AdViewProvider`), `ImaMediaSourceFactory` implementiert media3-`MediaSource.Factory` (nur noch `setDrmSessionManagerProvider`/`setLoadErrorHandlingPolicy`), `createMediaSource(MediaItem)` statt `Uri`.
+- **PreviewSeekBar**: Upstream (rubengees/PreviewSeekBar) hat **kein media3-Artefakt** – `previewseekbar-exoplayer` endet bei ExoPlayer2. Deshalb In-Repo-Port `src/main/kotlin/com/github/rubensousa/previewseekbar/media3/PreviewTimeBar.kt` (extends media3 `DefaultTimeBar`, nutzt das unveränderte Core-Artefakt `previewseekbar:09eec85551` für `PreviewDelegate`/`PreviewView`/`PreviewLoader`). `previewseekbar-exoplayer`-Dependency entfällt.
+- `ErrorUtils`: `ExoPlaybackException`/`HttpDataSource` → `androidx.media3.*`, `Loader.UnexpectedLoaderException` → `androidx.media3.exoplayer.upstream.Loader`.
+- `TouchablePlayerView`/`StreamActivity`: `androidx.media3.ui.PlayerView`, `Player.audioAttributes` statt `audioComponent`, `setControllerVisibilityListener` mit explizitem `PlayerView.ControllerVisibilityListener` (sonst overload-ambig mit deprecated exo2-Typ). Totes `exo_simple_player_view.xml` (exo2-Layout-Override, unreferenziert) gelöscht.
+- `NEARBY_WIFI_DEVICES` (Phase 3) deckt media3-cast ab. Ergebnis: Release-APK 9,7 → 9,2 MB, AAB 12,7 → 13,3 MB (Desugar-Lib + media3-Module), Debug-APK 41 MB.
+- Verifiziert grün: `ktlintCheck`, `detekt`, `assembleDebug`, `assembleRelease`, `bundleRelease`, `assembleLogRelease`.
+
+**Abnahme:** Stream-Wiedergabe (lokal + Cast) auf Android 16 getestet, HLS + Werbung laufen – lokaler Build grün; Gerätetest folgt.
 
 ## Phase 8 – Performance + Polish
 

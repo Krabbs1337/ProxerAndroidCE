@@ -39,9 +39,9 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.callbacks.onCancel
 import com.bumptech.glide.request.target.CustomViewTarget
 import com.bumptech.glide.request.transition.Transition
-import com.github.rubensousa.previewseekbar.exoplayer.PreviewTimeBar
-import com.google.android.exoplayer2.ext.cast.CastPlayer
-import com.google.android.exoplayer2.ui.PlayerView
+import com.github.rubensousa.previewseekbar.media3.PreviewTimeBar
+import androidx.media3.cast.CastPlayer
+import androidx.media3.ui.PlayerView
 import com.google.android.gms.cast.framework.CastButtonFactory
 import com.google.android.gms.cast.framework.CastContext
 import com.google.android.gms.cast.framework.CastState
@@ -446,11 +446,13 @@ class StreamActivity : BaseActivity() {
                 )
         }
 
-        playerView.setControllerVisibilityListener {
-            toggleFullscreen(it == View.GONE)
+        playerView.setControllerVisibilityListener(
+            PlayerView.ControllerVisibilityListener {
+                toggleFullscreen(it == View.GONE)
 
-            toolbar.isVisible = it == View.VISIBLE
-        }
+                toolbar.isVisible = it == View.VISIBLE
+            },
+        )
 
         // Nobody understands fitsSystemWindows so this can probably be done better, but seems to work for now.
         ViewCompat.setOnApplyWindowInsetsListener(root) { _, insets ->

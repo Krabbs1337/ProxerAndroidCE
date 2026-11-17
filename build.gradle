@@ -58,6 +58,7 @@ android {
     compileOptions {
         sourceCompatibility javaVersion
         targetCompatibility javaVersion
+        coreLibraryDesugaringEnabled true
     }
 
     signingConfigs {

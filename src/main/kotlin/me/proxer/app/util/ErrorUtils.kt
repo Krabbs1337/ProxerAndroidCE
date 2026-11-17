@@ -4,9 +4,9 @@ import android.content.Intent
 import android.os.Build
 import android.provider.Settings
 import android.view.View
-import com.google.android.exoplayer2.ExoPlaybackException
-import com.google.android.exoplayer2.upstream.HttpDataSource
-import com.google.android.exoplayer2.upstream.Loader
+import androidx.media3.exoplayer.ExoPlaybackException
+import androidx.media3.datasource.HttpDataSource
+import androidx.media3.exoplayer.upstream.Loader
 import me.proxer.app.R
 import me.proxer.app.auth.LoginDialog
 import me.proxer.app.base.BaseActivity

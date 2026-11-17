@@ -2,38 +2,33 @@ package me.proxer.app.anime.stream
 
 import android.app.Activity
 import android.net.Uri
-import com.google.android.exoplayer2.C
-import com.google.android.exoplayer2.ExoPlaybackException
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.audio.AudioAttributes
-import com.google.android.exoplayer2.drm.DrmSessionManager
-import com.google.android.exoplayer2.drm.DrmSessionManagerProvider
-import com.google.android.exoplayer2.ext.cast.CastPlayer
-import com.google.android.exoplayer2.ext.cast.SessionAvailabilityListener
-import com.google.android.exoplayer2.ext.ima.ImaAdsLoader
-import com.google.android.exoplayer2.ext.okhttp.OkHttpDataSourceFactory
-import com.google.android.exoplayer2.source.MediaSource
-import com.google.android.exoplayer2.source.MediaSourceFactory
-import com.google.android.exoplayer2.source.ProgressiveMediaSource
-import com.google.android.exoplayer2.source.ads.AdsMediaSource
-import com.google.android.exoplayer2.source.dash.DashMediaSource
-import com.google.android.exoplayer2.source.dash.DefaultDashChunkSource
-import com.google.android.exoplayer2.source.hls.HlsMediaSource
-import com.google.android.exoplayer2.source.smoothstreaming.DefaultSsChunkSource
-import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource
-import com.google.android.exoplayer2.upstream.DataSource
-import com.google.android.exoplayer2.upstream.DataSpec
-import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
-import com.google.android.exoplayer2.upstream.HttpDataSource
-import com.google.android.exoplayer2.upstream.LoadErrorHandlingPolicy
-import com.google.android.exoplayer2.util.MimeTypes
-import com.google.android.exoplayer2.util.Util
-import com.google.android.gms.cast.MediaInfo
-import com.google.android.gms.cast.MediaMetadata
-import com.google.android.gms.cast.MediaQueueItem
-import com.google.android.gms.common.images.WebImage
+import android.os.Bundle
+import androidx.media3.cast.CastPlayer
+import androidx.media3.cast.SessionAvailabilityListener
+import androidx.media3.common.AudioAttributes
+import androidx.media3.common.C
+import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
+import androidx.media3.common.MimeTypes
+import androidx.media3.common.PlaybackException
+import androidx.media3.common.Player
+import androidx.media3.common.util.Util
+import androidx.media3.datasource.DataSource
+import androidx.media3.datasource.DataSpec
+import androidx.media3.datasource.okhttp.OkHttpDataSource
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.dash.DashMediaSource
+import androidx.media3.exoplayer.dash.DefaultDashChunkSource
+import androidx.media3.exoplayer.drm.DrmSessionManagerProvider
+import androidx.media3.exoplayer.hls.HlsMediaSource
+import androidx.media3.exoplayer.ima.ImaAdsLoader
+import androidx.media3.exoplayer.smoothstreaming.DefaultSsChunkSource
+import androidx.media3.exoplayer.smoothstreaming.SsMediaSource
+import androidx.media3.exoplayer.source.MediaSource
+import androidx.media3.exoplayer.source.ProgressiveMediaSource
+import androidx.media3.exoplayer.source.ads.AdsMediaSource
+import androidx.media3.exoplayer.upstream.LoadErrorHandlingPolicy
+import com.google.android.gms.cast.MediaMetadata.KEY_EPISODE_NUMBER
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import me.proxer.app.MainApplication.Companion.USER_AGENT
@@ -62,7 +57,8 @@ class StreamPlayerManager(
         object : SessionAvailabilityListener {
             override fun onCastSessionAvailable() {
                 if (castPlayer != null) {
-                    castPlayer.loadItem(castMediaSource, localPlayer.currentPosition)
+                    castPlayer.setMediaItem(castMediaItem, localPlayer.currentPosition)
+                    castPlayer.prepare()
 
                     currentPlayer = castPlayer
                 }
@@ -78,11 +74,8 @@ class StreamPlayerManager(
         }
 
     private val eventListener =
-        object : Player.EventListener {
-            override fun onPlayerStateChanged(
-                playWhenReady: Boolean,
-                playbackState: Int,
-            ) {
+        object : Player.Listener {
+            override fun onPlaybackStateChanged(playbackState: Int) {
                 when (playbackState) {
                     Player.STATE_BUFFERING, Player.STATE_IDLE -> {
                         playerStateSubject.onNext(PlayerState.LOADING)
@@ -94,7 +87,7 @@ class StreamPlayerManager(
 
                     Player.STATE_READY -> {
                         playerStateSubject.onNext(
-                            when (playWhenReady) {
+                            when (currentPlayer.playWhenReady) {
                                 true -> PlayerState.PLAYING
                                 false -> PlayerState.PAUSING
                             },
@@ -103,7 +96,21 @@ class StreamPlayerManager(
                 }
             }
 
-            override fun onPlayerError(error: ExoPlaybackException) {
+            override fun onPlayWhenReadyChanged(
+                playWhenReady: Boolean,
+                reason: Int,
+            ) {
+                if (currentPlayer.playbackState == Player.STATE_READY) {
+                    playerStateSubject.onNext(
+                        when (playWhenReady) {
+                            true -> PlayerState.PLAYING
+                            false -> PlayerState.PAUSING
+                        },
+                    )
+                }
+            }
+
+            override fun onPlayerError(error: PlaybackException) {
                 lastPosition = currentPlayer.currentPosition
 
                 errorSubject.onNext(ErrorUtils.handle(error))
@@ -162,7 +169,7 @@ class StreamPlayerManager(
         }
 
     private var localMediaSource = buildLocalMediaSourceWithAds(client, uri)
-    private var castMediaSource = buildCastMediaSource(name, episode, coverUri, uri)
+    private var castMediaItem = buildCastMediaItem(name, episode, coverUri, uri)
 
     private val uri get() = requireNotNull(weakContext.get()?.uri)
     private val name: String? get() = weakContext.get()?.name
@@ -206,7 +213,8 @@ class StreamPlayerManager(
         localPlayer.addListener(eventListener)
         castPlayer?.addListener(eventListener)
 
-        localPlayer.prepare(localMediaSource)
+        localPlayer.setMediaSource(localMediaSource)
+        localPlayer.prepare()
 
         context.application.registerActivityLifecycleCallbacks(lifecycleCallbacks)
     }
@@ -240,7 +248,8 @@ class StreamPlayerManager(
         if (currentPlayer == localPlayer) {
             localPlayer.prepare(localMediaSource, false, false)
         } else if (currentPlayer == castPlayer) {
-            castPlayer.loadItem(castMediaSource, lastPosition)
+            castPlayer.setMediaItem(castMediaItem, lastPosition)
+            castPlayer.prepare()
         }
     }
 
@@ -251,7 +260,7 @@ class StreamPlayerManager(
         lastPosition = -1
 
         localMediaSource = buildLocalMediaSourceWithAds(client, uri)
-        castMediaSource = buildCastMediaSource(name, episode, coverUri, uri)
+        castMediaItem = buildCastMediaItem(name, episode, coverUri, uri)
 
         retry()
 
@@ -284,8 +293,7 @@ class StreamPlayerManager(
     ): MediaSource {
         val context = requireNotNull(weakContext.get())
 
-        val bandwidthMeter = DefaultBandwidthMeter.Builder(context).build()
-        val okHttpDataSourceFactory = OkHttpDataSourceFactory(client, USER_AGENT, bandwidthMeter)
+        val okHttpDataSourceFactory = OkHttpDataSource.Factory(client).setUserAgent(USER_AGENT)
         val imaFactory = ImaMediaSourceFactory(okHttpDataSourceFactory, this::buildLocalMediaSource)
         val localMediaSource = buildLocalMediaSource(okHttpDataSourceFactory, uri)
 
@@ -308,67 +316,69 @@ class StreamPlayerManager(
     private fun buildLocalMediaSource(
         dataSourceFactory: DataSource.Factory,
         uri: Uri,
-    ): MediaSource =
-        when (val streamType = Util.inferContentType(uri)) {
+    ): MediaSource {
+        val mediaItem = MediaItem.fromUri(uri)
+
+        return when (Util.inferContentType(uri)) {
             C.TYPE_SS -> {
                 SsMediaSource
                     .Factory(DefaultSsChunkSource.Factory(dataSourceFactory), dataSourceFactory)
-                    .createMediaSource(uri)
+                    .createMediaSource(mediaItem)
             }
 
             C.TYPE_DASH -> {
                 DashMediaSource
                     .Factory(DefaultDashChunkSource.Factory(dataSourceFactory), dataSourceFactory)
-                    .createMediaSource(uri)
+                    .createMediaSource(mediaItem)
             }
 
             C.TYPE_HLS -> {
-                HlsMediaSource.Factory(dataSourceFactory).createMediaSource(uri)
+                HlsMediaSource.Factory(dataSourceFactory).createMediaSource(mediaItem)
             }
 
             C.TYPE_OTHER -> {
-                ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(uri)
+                ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(mediaItem)
             }
 
             else -> {
-                error("Unknown streamType: $streamType")
+                error("Unknown streamType for uri: $uri")
             }
         }
+    }
 
-    private fun buildCastMediaSource(
+    private fun buildCastMediaItem(
         name: String?,
         episode: Int?,
         coverUri: Uri?,
         uri: Uri,
-    ): MediaQueueItem {
+    ): MediaItem {
         val mediaMetadata =
-            MediaMetadata(MediaMetadata.MEDIA_TYPE_TV_SHOW).apply {
-                if (name != null) {
-                    putString(MediaMetadata.KEY_TITLE, name)
-                }
+            MediaMetadata
+                .Builder()
+                .apply {
+                    if (name != null) {
+                        setTitle(name)
+                    }
 
-                if (episode != null) {
-                    putInt(MediaMetadata.KEY_EPISODE_NUMBER, episode)
-                }
+                    if (episode != null) {
+                        setExtras(Bundle().apply { putInt(KEY_EPISODE_NUMBER, episode) })
+                    }
 
-                if (coverUri != null) {
-                    addImage(WebImage(coverUri))
-                }
-            }
+                    if (coverUri != null) {
+                        setArtworkUri(coverUri)
+                    }
+                }.build()
 
-        val mediaInfo =
-            MediaInfo
-                .Builder(uri.toString())
-                .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
-                .setContentType(MimeTypes.VIDEO_MP4)
-                .setMetadata(mediaMetadata)
-                .build()
-
-        return MediaQueueItem.Builder(mediaInfo).build()
+        return MediaItem
+            .Builder()
+            .setUri(uri)
+            .setMimeType(MimeTypes.VIDEO_MP4)
+            .setMediaMetadata(mediaMetadata)
+            .build()
     }
 
-    private fun buildLocalPlayer(context: StreamActivity): SimpleExoPlayer =
-        SimpleExoPlayer.Builder(context).build().apply {
+    private fun buildLocalPlayer(context: StreamActivity): ExoPlayer =
+        ExoPlayer.Builder(context).build().apply {
             val audioAttributes =
                 AudioAttributes
                     .Builder()
@@ -394,25 +404,19 @@ class StreamPlayerManager(
     }
 
     private class ImaMediaSourceFactory(
-        private val okHttpDataSourceFactory: OkHttpDataSourceFactory,
+        private val okHttpDataSourceFactory: OkHttpDataSource.Factory,
         private val mediaSourceFunction: (DataSource.Factory, Uri) -> MediaSource,
-    ) : MediaSourceFactory {
+    ) : MediaSource.Factory {
         override fun getSupportedTypes() = intArrayOf(C.TYPE_DASH, C.TYPE_HLS, C.TYPE_OTHER)
 
         override fun createMediaSource(mediaItem: MediaItem): MediaSource {
-            val uri = mediaItem.playbackProperties?.uri ?: throw IllegalArgumentException("MediaItem without uri")
+            val uri = mediaItem.localConfiguration?.uri ?: throw IllegalArgumentException("MediaItem without uri")
 
             return mediaSourceFunction(okHttpDataSourceFactory, uri)
         }
 
-        override fun setDrmSessionManagerProvider(drmSessionManagerProvider: DrmSessionManagerProvider?) = this
+        override fun setDrmSessionManagerProvider(drmSessionManagerProvider: DrmSessionManagerProvider) = this
 
-        override fun setDrmSessionManager(drmSessionManager: DrmSessionManager?) = this
-
-        override fun setDrmHttpDataSourceFactory(httpDataSourceFactory: HttpDataSource.Factory?) = this
-
-        override fun setDrmUserAgent(userAgent: String?) = this
-
-        override fun setLoadErrorHandlingPolicy(loadErrorHandlingPolicy: LoadErrorHandlingPolicy?) = this
+        override fun setLoadErrorHandlingPolicy(loadErrorHandlingPolicy: LoadErrorHandlingPolicy) = this
     }
 }

@@ -1,4 +1,6 @@
 dependencies {
+    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:$desugarJdkLibsVersion"
+
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
     implementation "io.insert-koin:koin-android:$koinVersion"
 
@@ -59,12 +61,15 @@ dependencies {
     implementation "me.zhanghai.android.materialratingbar:library:$materialRatingBarVersion"
     implementation "com.github.santalu:aspect-ratio-imageview:$aspectRatioImageViewVersion"
     implementation "com.github.rubensousa:gravitysnaphelper:$gravitySnapHelperVersion"
-    implementation "com.google.android.exoplayer:exoplayer:$exoplayerVersion"
-    implementation "com.google.android.exoplayer:extension-cast:$exoplayerVersion"
-    implementation "com.google.android.exoplayer:extension-okhttp:$exoplayerVersion"
-    implementation "com.google.android.exoplayer:extension-ima:$exoplayerVersion"
+    implementation "androidx.media3:media3-exoplayer:$media3Version"
+    implementation "androidx.media3:media3-exoplayer-hls:$media3Version"
+    implementation "androidx.media3:media3-exoplayer-dash:$media3Version"
+    implementation "androidx.media3:media3-exoplayer-smoothstreaming:$media3Version"
+    implementation "androidx.media3:media3-ui:$media3Version"
+    implementation "androidx.media3:media3-cast:$media3Version"
+    implementation "androidx.media3:media3-exoplayer-ima:$media3Version"
+    implementation "androidx.media3:media3-datasource-okhttp:$media3Version"
     implementation "com.github.rubengees.PreviewSeekBar:previewseekbar:$previewSeekbarVersion"
-    implementation "com.github.rubengees.PreviewSeekBar:previewseekbar-exoplayer:$previewSeekbarVersion"
 
     implementation "com.github.proxer:ProxerLibJava:$proxerLibVersion"
     implementation "com.jakewharton.threetenabp:threetenabp:$threetenVersion"

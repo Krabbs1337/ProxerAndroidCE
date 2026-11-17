@@ -36,7 +36,7 @@ ext {
     fragmentKtxVersion = "1.9.1"
     shareTargetVersion = "1.2.0"
     securityCryptoVersion = "1.1.0"
-    playCoreVersion = "1.10.3"
+    playAppUpdateVersion = "2.1.0"
     adsIdentifierVersion = "18.3.0"
     interactiveMediaVersion = "3.39.0"
     castVersion = "22.3.1"

@@ -78,3 +78,7 @@
     <init>(...);
     <fields>;
 }
+
+# Keep raw resources that are looked up via Resources.getIdentifier at runtime
+# (aboutlibraries.json in the license list).
+-keep class **.R$raw { *; }

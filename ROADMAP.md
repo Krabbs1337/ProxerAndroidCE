@@ -99,7 +99,14 @@ Checkliste (alle bekannten Berührungspunkte):
 - Verifiziert grün: `ktlintCheck`, `detekt`, `assembleDebug`, `assembleRelease`, `bundleRelease`, `assembleLogRelease`.
 - Offen (nächste Phasen): weitere `getSerializable`/`getParcelable`-Deprecations in MediaListFragment u. a. (nur Warnungen), `setRemoteAdapter(int, Intent)`-Deprecation in den Widget-Workern (Phase 7/8).
 
-**Abnahme:** Manueller Test auf Android 16 (API 36): Widgets, Notification-Aktionen, Deep-Links, Cast-Verbindung, Bild-Upload im Forum/Profil – alles ohne Crash. lokal: Build grün; Gerätetest folgt.
+**Gerätetest am 17.11.2026 (Emulator `Medium_Phone`, android-36.1 google_apis_playstore x86_64, meldet API 37/Android 17; Debug-APK installiert, `POST_NOTIFICATIONS` via `pm grant`):** App startet ohne Crash, `MainActivity` resumed, News zeigt „ANMELDEN" (erwartet, `NotLoggedInException` im Log), Drawer (News/Anime/Manga/Lesezeichen/Einstellungen/Info, kein Chat-Eintrag), Einstellungen und Info/About laden, LoginDialog öffnet mit gebundenen Feldern, Lizenzliste (aboutlibraries) befüllt. `logcat`: 0 `FATAL EXCEPTION`. Drei Runtime-Crashs dabei gefunden und gefixt:
+  - `WorkManager is already initialized` in `MainApplication.initLibs` → manuelles `WorkManager.initialize(...)` entfernt (Auto-Init via androidx.startup reicht).
+  - `SecurityException: RECEIVER_EXPORTED/RECEIVER_NOT_EXPORTED` aus play-core 1.10.3 (interner Receiver des In-App-Updates) → `com.google.android.play:core` durch `com.google.android.play:app-update:2.1.0` ersetzt, Imports in `InAppUpdateFlow.kt` auf `com.google.android.gms.tasks.*` umgestellt.
+  - `IllegalStateException: No view with id ... found in LoginDialog` → Kotterknife-Shim hatte keine `DialogFragment.bindView`-Überladung; `KotterKnife.kt` umgebaut (`finder`-Lambda, Überladungen für Activity/Fragment/DialogFragment/Dialog/View/ViewHolder, `dialog.findViewById ?: view?.findViewById` wie Upstream).
+  - Zusätzlich: aboutlibraries 12.2.4 registriert seinen res-generierenden Task über den von AGP 9 entfernten `AppExtension`-Typ nicht mehr („No Android AppExtension found") → `aboutlibraries.json` wurde nicht ins APK gepackt (Lizenzliste leer). Fix in `build.gradle`: Plugin per `apply plugin:` nach dem `plugins{}`-Block + `copyAboutLibrariesJson`-Task (Copy nach `build/generated/aboutLibraries/res/raw`, als statisches `sourceSets.main.res.srcDir` registriert, hängt an `preBuild`), der das exportierte JSON als `res/raw/aboutlibraries.json` einpackt. Lizenzliste im Emulator danach befüllt.
+  - Release-Shrinker-Streich: `shrinkResources` entfernte `raw/aboutlibraries` erneut („not reachable"), weil der Default-Lookup via `Resources.getIdentifier` unsichtbar ist. Fix in `ProxerLibsActivity`: JSON explizit per `openRawResource(R.raw.aboutlibraries)` laden und via `Libs.Builder().withJson(...).build()` + `LibsBuilder.withLibs(...)` setzen – danach in Debug-APK, Release-APK (obfuskiert `res/M7.json`) und AAB enthalten (`resources.txt`: „reachable from int me.proxer.app.R$raw.aboutlibraries"). `-keep class **.R$raw { *; }` in `config/shrinker/shrinker-rules.pro` ergänzt (allein nicht ausreichend, schadet nicht).
+
+**Abnahme:** Manueller Test auf Android 16 (API 36): Widgets, Notification-Aktionen, Deep-Links, Cast-Verbindung, Bild-Upload im Forum/Profil – alles ohne Crash. **Gerätetest Emulator (API 37) erledigt** (siehe oben: Start, News, Drawer, Settings, Info, Lizenzen, LoginDialog — 0 Crashes); Widgets/Stream/Cast/Upload noch auf echtem Gerät mit Login testen.
 
 ## Phase 4 – AndroidX + Kernbibliotheken
 
@@ -177,7 +184,7 @@ Checkliste (alle bekannten Berührungspunkte):
 - `NEARBY_WIFI_DEVICES` (Phase 3) deckt media3-cast ab. Ergebnis: Release-APK 9,7 → 9,2 MB, AAB 12,7 → 13,3 MB (Desugar-Lib + media3-Module), Debug-APK 41 MB.
 - Verifiziert grün: `ktlintCheck`, `detekt`, `assembleDebug`, `assembleRelease`, `bundleRelease`, `assembleLogRelease`.
 
-**Abnahme:** Stream-Wiedergabe (lokal + Cast) auf Android 16 getestet, HLS + Werbung laufen – lokaler Build grün; Gerätetest folgt.
+**Abnahme:** Stream-Wiedergabe (lokal + Cast) auf Android 16 getestet, HLS + Werbung laufen – lokaler Build grün; **Gerätetest Emulator (API 37) für App-Start/UI erledigt** (Phase 3, 0 Crashes); Stream/Cast auf Gerät mit Login folgt.
 
 ## Phase 8 – Performance + Polish
 
@@ -217,7 +224,7 @@ Checkliste (alle bekannten Berührungspunkte):
 - **Optionale Coroutines-Migration nicht begonnen** – bleibt laut Festlegung „RxJava bleibt Basis“ optional pro Feature.
 - Verifiziert grün: `ktlintCheck`, `detekt`, `assembleDebug`, `assembleRelease`, `bundleRelease`, `assembleLogRelease`, `:baselineprofile:assembleAndroidTest`, `dependencyUpdates`.
 
-**Abnahme:** Jeder Merge ist build- und lint-grün (ktlintCheck + detekt + alle Builds grün) – lokal erfüllt; Release nur mit erfüllter Regression-Checkliste (Login/2FA, News, Forum, Anime-Stream, Manga-Reader, Bookmarks, Benachrichtigungen, Widgets, Deep-Links, Einstellungen, About-Libraries) plus Gerätetest auf Android 16.
+**Abnahme:** Jeder Merge ist build- und lint-grün (ktlintCheck + detekt + alle Builds grün) – lokal erfüllt; Release nur mit erfüllter Regression-Checkliste (Login/2FA, News, Forum, Anime-Stream, Manga-Reader, Bookmarks, Benachrichtigungen, Widgets, Deep-Links, Einstellungen, About-Libraries) plus Gerätetest auf Android 16. **Erster Gerätetest (Emulator API 37) am 17.11.2026 bestanden** – Details siehe Phase 3 (4 Runtime-Fixes: WorkManager-Auto-Init, play app-update 2.1.0, Kotterknife-DialogFragment-Shim, aboutlibraries-JSON-Wiring für AGP 9).
 
 ---
 

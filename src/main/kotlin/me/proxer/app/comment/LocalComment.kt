@@ -18,16 +18,17 @@ data class LocalComment(
     val ratingDetails: RatingDetails,
     val content: String,
     val overallRating: Int,
-    val episode: Int
+    val episode: Int,
 ) : Parcelable {
-
     companion object {
         @Suppress("unused")
         @JvmField
-        val CREATOR = object : Parcelable.Creator<LocalComment> {
-            override fun createFromParcel(parcel: Parcel) = LocalComment(parcel)
-            override fun newArray(size: Int): Array<LocalComment?> = arrayOfNulls(size)
-        }
+        val CREATOR =
+            object : Parcelable.Creator<LocalComment> {
+                override fun createFromParcel(parcel: Parcel) = LocalComment(parcel)
+
+                override fun newArray(size: Int): Array<LocalComment?> = arrayOfNulls(size)
+            }
     }
 
     constructor(parcel: Parcel) : this(
@@ -37,12 +38,15 @@ data class LocalComment(
         RatingDetails(parcel.readInt(), parcel.readInt(), parcel.readInt(), parcel.readInt(), parcel.readInt()),
         parcel.readStringSafely(),
         parcel.readInt(),
-        parcel.readInt()
+        parcel.readInt(),
     )
 
     val parsedContent = content.toSimpleBBTree()
 
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
+    override fun writeToParcel(
+        parcel: Parcel,
+        flags: Int,
+    ) {
         parcel.writeString(id)
         parcel.writeString(entryId)
         parcel.writeString(ProxerUtils.getSafeApiEnumName(mediaProgress))

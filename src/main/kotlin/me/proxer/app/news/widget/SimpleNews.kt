@@ -16,16 +16,17 @@ data class SimpleNews(
     val categoryId: String,
     val subject: String,
     val category: String,
-    val date: Instant
+    val date: Instant,
 ) : Parcelable {
-
     companion object {
         @Suppress("unused")
         @JvmField
-        val CREATOR = object : Parcelable.Creator<SimpleNews> {
-            override fun createFromParcel(parcel: Parcel) = SimpleNews(parcel)
-            override fun newArray(size: Int): Array<SimpleNews?> = arrayOfNulls(size)
-        }
+        val CREATOR =
+            object : Parcelable.Creator<SimpleNews> {
+                override fun createFromParcel(parcel: Parcel) = SimpleNews(parcel)
+
+                override fun newArray(size: Int): Array<SimpleNews?> = arrayOfNulls(size)
+            }
     }
 
     constructor(parcel: Parcel) : this(
@@ -34,10 +35,13 @@ data class SimpleNews(
         parcel.readStringSafely(),
         parcel.readStringSafely(),
         parcel.readStringSafely(),
-        Instant.ofEpochMilli(parcel.readLong())
+        Instant.ofEpochMilli(parcel.readLong()),
     )
 
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
+    override fun writeToParcel(
+        parcel: Parcel,
+        flags: Int,
+    ) {
         parcel.writeString(id)
         parcel.writeString(threadId)
         parcel.writeString(categoryId)

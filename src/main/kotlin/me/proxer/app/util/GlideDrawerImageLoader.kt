@@ -18,9 +18,14 @@ import me.proxer.app.util.extension.resolveColor
  * @author Ruben Gees
  */
 class GlideDrawerImageLoader : AbstractDrawerImageLoader() {
-
-    override fun set(imageView: ImageView, uri: Uri, placeholder: Drawable, tag: String?) {
-        GlideApp.with(imageView)
+    override fun set(
+        imageView: ImageView,
+        uri: Uri,
+        placeholder: Drawable,
+        tag: String?,
+    ) {
+        GlideApp
+            .with(imageView)
             .load(uri)
             .centerCrop()
             .placeholder(placeholder)
@@ -29,10 +34,14 @@ class GlideDrawerImageLoader : AbstractDrawerImageLoader() {
 
     override fun cancel(imageView: ImageView) = GlideApp.with(imageView).clear(imageView)
 
-    override fun placeholder(ctx: Context, tag: String?): IconicsDrawable = IconicsDrawable(ctx).apply {
-        icon = CommunityMaterial.Icon.cmd_account
-        backgroundColorInt = ctx.resolveColor(R.attr.colorPrimary)
-        colorInt = ctx.resolveColor(R.attr.colorOnPrimary)
-        sizeDp = 48
-    }
+    override fun placeholder(
+        ctx: Context,
+        tag: String?,
+    ): IconicsDrawable =
+        IconicsDrawable(ctx).apply {
+            icon = CommunityMaterial.Icon.cmd_account
+            backgroundColorInt = ctx.resolveColor(R.attr.colorPrimary)
+            colorInt = ctx.resolveColor(R.attr.colorOnPrimary)
+            sizeDp = 48
+        }
 }

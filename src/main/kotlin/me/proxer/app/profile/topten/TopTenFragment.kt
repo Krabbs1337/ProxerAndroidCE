@@ -32,11 +32,11 @@ import kotlin.properties.Delegates
  * @author Ruben Gees
  */
 class TopTenFragment : BaseContentFragment<ZippedTopTenResult>(R.layout.fragment_top_ten) {
-
     companion object {
-        fun newInstance() = TopTenFragment().apply {
-            arguments = bundleOf()
-        }
+        fun newInstance() =
+            TopTenFragment().apply {
+                arguments = bundleOf()
+            }
     }
 
     override val viewModel by viewModel<TopTenViewModel> { parametersOf(userId, username) }
@@ -67,7 +67,8 @@ class TopTenFragment : BaseContentFragment<ZippedTopTenResult>(R.layout.fragment
         animeAdapter = TopTenAdapter()
         mangaAdapter = TopTenAdapter()
 
-        Observable.merge(animeAdapter.clickSubject, mangaAdapter.clickSubject)
+        Observable
+            .merge(animeAdapter.clickSubject, mangaAdapter.clickSubject)
             .autoDisposable(this.scope())
             .subscribe { (view, item) ->
                 if (item is LocalTopTenEntry.Ucp) {
@@ -77,12 +78,16 @@ class TopTenFragment : BaseContentFragment<ZippedTopTenResult>(R.layout.fragment
                 }
             }
 
-        Observable.merge(animeAdapter.deleteSubject, mangaAdapter.deleteSubject)
+        Observable
+            .merge(animeAdapter.deleteSubject, mangaAdapter.deleteSubject)
             .autoDisposable(this.scope())
             .subscribe { viewModel.addItemToDelete(it) }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
 
         val spanCount = DeviceUtils.calculateSpanAmount(requireActivity()) + 1
@@ -106,10 +111,10 @@ class TopTenFragment : BaseContentFragment<ZippedTopTenResult>(R.layout.fragment
                         getString(R.string.error_topten_entry_removal, getString(it.message)),
                         Snackbar.LENGTH_LONG,
                         it.buttonMessage,
-                        it.toClickListener(hostingActivity)
+                        it.toClickListener(hostingActivity),
                     )
                 }
-            }
+            },
         )
     }
 

@@ -16,12 +16,15 @@ import java.net.NetworkInterface
  * @author Ruben Gees
  */
 object Utils {
-
     val timeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
     val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
 
-    fun getCircleBitmapFromUrl(context: Context, url: HttpUrl) = try {
-        GlideApp.with(context)
+    fun getCircleBitmapFromUrl(
+        context: Context,
+        url: HttpUrl,
+    ) = try {
+        GlideApp
+            .with(context)
             .asBitmap()
             .load(url.toString())
             .circleCrop()
@@ -33,36 +36,45 @@ object Utils {
         null
     }
 
-    fun getIpAddress(): String? = try {
-        NetworkInterface.getNetworkInterfaces().asSequence()
-            .flatMap { it.inetAddresses.asSequence() }
-            .filterNot { it.isLoopbackAddress || it.isLinkLocalAddress }
-            .map { it.hostAddress }
-            .firstOrNull()
-    } catch (error: Throwable) {
-        Timber.e(error, "Error trying to get ip address")
+    fun getIpAddress(): String? =
+        try {
+            NetworkInterface
+                .getNetworkInterfaces()
+                .asSequence()
+                .flatMap { it.inetAddresses.asSequence() }
+                .filterNot { it.isLoopbackAddress || it.isLinkLocalAddress }
+                .map { it.hostAddress }
+                .firstOrNull()
+        } catch (error: Throwable) {
+            Timber.e(error, "Error trying to get ip address")
 
-        null
-    }
+            null
+        }
 
-    fun getNativeAppPackage(context: Context, url: HttpUrl): Set<String> {
+    fun getNativeAppPackage(
+        context: Context,
+        url: HttpUrl,
+    ): Set<String> {
         val browserActivityIntent = Intent(Intent.ACTION_VIEW, Uri.parse("http://www.generic.com"))
-        val genericResolvedList = extractPackageNames(
-            context.packageManager.queryIntentActivities(browserActivityIntent, 0)
-        )
+        val genericResolvedList =
+            extractPackageNames(
+                context.packageManager.queryIntentActivities(browserActivityIntent, 0),
+            )
 
         val specializedActivityIntent = Intent(Intent.ACTION_VIEW, url.androidUri())
-        val resolvedSpecializedList = extractPackageNames(
-            context.packageManager.queryIntentActivities(specializedActivityIntent, 0)
-        )
+        val resolvedSpecializedList =
+            extractPackageNames(
+                context.packageManager.queryIntentActivities(specializedActivityIntent, 0),
+            )
 
         resolvedSpecializedList.removeAll(genericResolvedList)
 
         return resolvedSpecializedList
     }
 
-    private fun extractPackageNames(resolveInfo: List<ResolveInfo>) = resolveInfo
-        .asSequence()
-        .map { it.activityInfo.packageName }
-        .toMutableSet()
+    private fun extractPackageNames(resolveInfo: List<ResolveInfo>) =
+        resolveInfo
+            .asSequence()
+            .map { it.activityInfo.packageName }
+            .toMutableSet()
 }

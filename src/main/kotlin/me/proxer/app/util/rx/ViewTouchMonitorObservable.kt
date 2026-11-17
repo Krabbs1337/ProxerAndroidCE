@@ -13,9 +13,8 @@ import me.proxer.app.util.extension.checkMainThread
  */
 class ViewTouchMonitorObservable(
     private val view: View,
-    private val handled: (MotionEvent) -> Boolean
+    private val handled: (MotionEvent) -> Boolean,
 ) : Observable<MotionEvent>() {
-
     override fun subscribeActual(observer: Observer<in MotionEvent>) {
         if (!observer.checkMainThread()) {
             return
@@ -30,12 +29,15 @@ class ViewTouchMonitorObservable(
     internal class Listener(
         private val view: View,
         private val handled: (MotionEvent) -> Boolean,
-        private val observer: Observer<in MotionEvent>
-    ) : MainThreadDisposable(), View.OnTouchListener {
-
+        private val observer: Observer<in MotionEvent>,
+    ) : MainThreadDisposable(),
+        View.OnTouchListener {
         @SuppressLint("ClickableViewAccessibility")
-        override fun onTouch(v: View, event: MotionEvent): Boolean {
-            return if (!isDisposed) {
+        override fun onTouch(
+            v: View,
+            event: MotionEvent,
+        ): Boolean =
+            if (!isDisposed) {
                 try {
                     observer.onNext(event)
 
@@ -49,7 +51,6 @@ class ViewTouchMonitorObservable(
             } else {
                 false
             }
-        }
 
         override fun onDispose() {
             view.setOnTouchListener(null)

@@ -29,7 +29,6 @@ import me.proxer.library.util.ProxerUrls
  * @author Ruben Gees
  */
 class TranslatorGroupProjectAdapter : BaseAdapter<TranslatorGroupProject, ViewHolder>() {
-
     var glide: GlideRequests? = null
     val clickSubject: PublishSubject<Pair<ImageView, TranslatorGroupProject>> = PublishSubject.create()
 
@@ -37,11 +36,15 @@ class TranslatorGroupProjectAdapter : BaseAdapter<TranslatorGroupProject, ViewHo
         setHasStableIds(true)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_project, parent, false))
-    }
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): ViewHolder = ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_project, parent, false))
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(data[position])
+    override fun onBindViewHolder(
+        holder: ViewHolder,
+        position: Int,
+    ) = holder.bind(data[position])
 
     override fun onViewRecycled(holder: ViewHolder) {
         glide?.clear(holder.image)
@@ -51,8 +54,9 @@ class TranslatorGroupProjectAdapter : BaseAdapter<TranslatorGroupProject, ViewHo
         glide = null
     }
 
-    inner class ViewHolder(itemView: View) : AutoDisposeViewHolder(itemView) {
-
+    inner class ViewHolder(
+        itemView: View,
+    ) : AutoDisposeViewHolder(itemView) {
         internal val container: ViewGroup by bindView(R.id.container)
         internal val title: TextView by bindView(R.id.title)
         internal val medium: TextView by bindView(R.id.medium)
@@ -62,7 +66,8 @@ class TranslatorGroupProjectAdapter : BaseAdapter<TranslatorGroupProject, ViewHo
         internal val status: TextView by bindView(R.id.status)
 
         fun bind(item: TranslatorGroupProject) {
-            container.clicks()
+            container
+                .clicks()
                 .mapBindingAdapterPosition({ bindingAdapterPosition }) { image to data[it] }
                 .autoDisposable(this)
                 .subscribe(clickSubject)

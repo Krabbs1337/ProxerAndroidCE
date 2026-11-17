@@ -5,8 +5,9 @@ package me.proxer.app
  */
 @Suppress("unused")
 object FlavorInitializer {
-
-    fun initialize(@Suppress("UNUSED_PARAMETER") application: MainApplication) {
+    fun initialize(
+        @Suppress("UNUSED_PARAMETER") application: MainApplication,
+    ) {
         // Do nothing in debug flavor.
     }
 }

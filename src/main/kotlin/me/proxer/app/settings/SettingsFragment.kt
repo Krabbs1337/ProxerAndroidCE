@@ -36,22 +36,24 @@ import me.proxer.app.util.extension.clearTop
 import me.proxer.app.util.extension.clicks
 import me.proxer.app.util.extension.safeInject
 import me.proxer.app.util.extension.snackbar
-import net.xpece.android.support.preference.ListPreference
-import net.xpece.android.support.preference.Preference
-import net.xpece.android.support.preference.PreferenceCategory
-import net.xpece.android.support.preference.TwoStatePreference
-import net.xpece.android.support.preference.XpPreferenceFragment
+import androidx.preference.ListPreference
+import androidx.preference.Preference
+import androidx.preference.PreferenceCategory
+import androidx.preference.TwoStatePreference
+import androidx.preference.PreferenceFragmentCompat
 import kotlin.system.exitProcess
 
 /**
  * @author Ruben Gees
  */
-class SettingsFragment : XpPreferenceFragment(), OnSharedPreferenceChangeListener {
-
+class SettingsFragment :
+    PreferenceFragmentCompat(),
+    OnSharedPreferenceChangeListener {
     companion object {
-        fun newInstance() = SettingsFragment().apply {
-            arguments = bundleOf()
-        }
+        fun newInstance() =
+            SettingsFragment().apply {
+                arguments = bundleOf()
+            }
     }
 
     private val hostingActivity: BaseActivity
@@ -68,7 +70,10 @@ class SettingsFragment : XpPreferenceFragment(), OnSharedPreferenceChangeListene
     private val notificationsInterval by bindPreference<ListPreference>(NOTIFICATIONS_INTERVAL)
     private val developerOptions by bindPreference<PreferenceCategory>("developer_options")
 
-    override fun onCreatePreferences2(savedInstanceState: Bundle?, rootKey: String?) {
+    override fun onCreatePreferences(
+        savedInstanceState: Bundle?,
+        rootKey: String?,
+    ) {
         addPreferencesFromResource(R.xml.preferences)
 
         if (
@@ -83,18 +88,23 @@ class SettingsFragment : XpPreferenceFragment(), OnSharedPreferenceChangeListene
         }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
 
         storageHelper.isLoggedInObservable
             .autoDisposable(viewLifecycleOwner.scope())
             .subscribe { profile.isEnabled = it }
 
-        profile.clicks()
+        profile
+            .clicks()
             .autoDisposable(viewLifecycleOwner.scope())
             .subscribe { ProfileSettingsActivity.navigateTo(requireActivity()) }
 
-        ageConfirmation.clicks()
+        ageConfirmation
+            .clicks()
             .autoDisposable(viewLifecycleOwner.scope())
             .subscribe {
                 if (ageConfirmation.isChecked) {
@@ -104,7 +114,8 @@ class SettingsFragment : XpPreferenceFragment(), OnSharedPreferenceChangeListene
                 }
             }
 
-        theme.clicks()
+        theme
+            .clicks()
             .autoDisposable(viewLifecycleOwner.scope())
             .subscribe {
                 ThemeDialog.show(requireActivity() as AppCompatActivity)
@@ -112,9 +123,12 @@ class SettingsFragment : XpPreferenceFragment(), OnSharedPreferenceChangeListene
 
         profile.isEnabled = storageHelper.isLoggedIn
 
-        theme.summary = preferenceHelper.themeContainer.let { (theme, variant) ->
-            "${getString(theme.themeName)} ${if (variant.variantName != null) getString(variant.variantName) else ""}"
-        }
+        theme.summary =
+            preferenceHelper.themeContainer.let { (theme, variant) ->
+                "${getString(
+                    theme.themeName,
+                )} ${if (variant.variantName != null) getString(variant.variantName) else ""}"
+            }
 
         updateIntervalNotificationPreference()
 
@@ -139,10 +153,15 @@ class SettingsFragment : XpPreferenceFragment(), OnSharedPreferenceChangeListene
         super.onDestroyView()
     }
 
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
+    override fun onSharedPreferenceChanged(
+        sharedPreferences: SharedPreferences,
+        key: String?,
+    ) {
         when (key) {
-            AGE_CONFIRMATION -> if (preferenceHelper.isAgeRestrictedMediaAllowed) {
-                ageConfirmation.isChecked = true
+            AGE_CONFIRMATION -> {
+                if (preferenceHelper.isAgeRestrictedMediaAllowed) {
+                    ageConfirmation.isChecked = true
+                }
             }
 
             NOTIFICATIONS_NEWS, NOTIFICATIONS_ACCOUNT -> {
@@ -151,14 +170,18 @@ class SettingsFragment : XpPreferenceFragment(), OnSharedPreferenceChangeListene
                 NotificationWorker.enqueueIfPossible()
             }
 
-            NOTIFICATIONS_CHAT -> MessengerWorker.enqueueSynchronizationIfPossible()
+            NOTIFICATIONS_CHAT -> {
+                MessengerWorker.enqueueSynchronizationIfPossible()
+            }
 
             NOTIFICATIONS_INTERVAL -> {
                 NotificationWorker.enqueueIfPossible()
                 MessengerWorker.enqueueSynchronizationIfPossible()
             }
 
-            EXTERNAL_CACHE, HTTP_LOG_LEVEL, HTTP_VERBOSE, HTTP_REDACT_TOKEN -> showRestartMessage()
+            EXTERNAL_CACHE, HTTP_LOG_LEVEL, HTTP_VERBOSE, HTTP_REDACT_TOKEN -> {
+                showRestartMessage()
+            }
         }
     }
 
@@ -171,12 +194,13 @@ class SettingsFragment : XpPreferenceFragment(), OnSharedPreferenceChangeListene
         hostingActivity.snackbar(
             R.string.fragment_settings_restart_message,
             actionMessage = R.string.fragment_settings_restart_action,
-            actionCallback = View.OnClickListener {
-                val intent = packageManager.getLaunchIntentForPackage(BuildConfig.APPLICATION_ID)?.clearTop()
+            actionCallback =
+                View.OnClickListener {
+                    val intent = packageManager.getLaunchIntentForPackage(BuildConfig.APPLICATION_ID)?.clearTop()
 
-                startActivity(intent)
-                exitProcess(0)
-            }
+                    startActivity(intent)
+                    exitProcess(0)
+                },
         )
     }
 }

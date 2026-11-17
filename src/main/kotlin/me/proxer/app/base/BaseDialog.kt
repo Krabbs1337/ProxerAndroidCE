@@ -22,16 +22,16 @@ import kotlin.properties.Delegates
  * @author Ruben Gees
  */
 @Suppress("UnnecessaryAbstractClass")
-abstract class BaseDialog : DialogFragment(), CustomTabsAware {
-
-    val dialogLifecycleOwner: LifecycleOwner = object : LifecycleOwner {
-
-        override fun getLifecycle(): Lifecycle {
-            return lifecycleRegistry ?: LifecycleRegistry(this).also {
-                lifecycleRegistry = it
-            }
+abstract class BaseDialog :
+    DialogFragment(),
+    CustomTabsAware {
+    val dialogLifecycleOwner: LifecycleOwner =
+        object : LifecycleOwner {
+            override fun getLifecycle(): Lifecycle =
+                lifecycleRegistry ?: LifecycleRegistry(this).also {
+                    lifecycleRegistry = it
+                }
         }
-    }
 
     protected val bus by safeInject<RxBus>()
     protected val storageHelper by safeInject<StorageHelper>()
@@ -102,11 +102,14 @@ abstract class BaseDialog : DialogFragment(), CustomTabsAware {
         super.onDestroyView()
     }
 
-    override fun setLikelyUrl(url: HttpUrl): Boolean {
-        return customTabsHelper.mayLaunchUrl(url.androidUri(), bundleOf(), emptyList())
-    }
+    override fun setLikelyUrl(url: HttpUrl): Boolean =
+        customTabsHelper.mayLaunchUrl(url.androidUri(), bundleOf(), emptyList())
 
-    override fun showPage(url: HttpUrl, forceBrowser: Boolean, skipCheck: Boolean) {
+    override fun showPage(
+        url: HttpUrl,
+        forceBrowser: Boolean,
+        skipCheck: Boolean,
+    ) {
         customTabsHelper.fallbackHandleLink(requireActivity(), url, forceBrowser, skipCheck)
     }
 

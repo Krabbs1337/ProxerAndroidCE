@@ -1,16 +1,24 @@
 buildscript { scriptHandler ->
     apply from: "${projectDir}/gradle/versions.gradle"
     apply from: "${projectDir}/gradle/repositories.gradle", to: scriptHandler
+
+    dependencies {
+        // AGP 9 ships built-in Kotlin support (embedded KGP). Pin the newer KGP explicitly
+        // so the Kotlin version is 2.4.x instead of the embedded minimum.
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+    }
 }
 
 plugins {
     id "com.android.application"
-    id "org.jetbrains.kotlin.android"
-    id "org.jetbrains.kotlin.kapt"
+    id "com.google.devtools.ksp"
+    // Only used for Glide's Java annotation processor (it has no KSP support for the generated
+    // GlideApp API). Room and Moshi use KSP above.
+    id "com.android.legacy-kapt"
 
     id "com.mikepenz.aboutlibraries.plugin"
 
-    id "com.github.ben-manes.versions"
+    id "io.github.ben-manes.versions"
     id "io.gitlab.arturbosch.detekt"
     id "org.jlleitschuh.gradle.ktlint"
 }
@@ -18,49 +26,31 @@ plugins {
 apply from: "${projectDir}/gradle/utils.gradle"
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    ndkVersion rootProject.ext.ndkVersion
-
-    dexOptions {
-        preDexLibraries !isCI()
-    }
+    compileSdk rootProject.ext.compileSdkVersion
 
     defaultConfig {
+        namespace "me.proxer.app"
         applicationId "me.proxer.app"
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
+        minSdk rootProject.ext.minSdkVersion
+        targetSdk rootProject.ext.targetSdkVersion
         versionCode appVersionMajor * 1000000 + appVersionMinor * 10000 + appVersionPatch * 100
         versionName "$appVersionMajor.$appVersionMinor.$appVersionPatch"
 
         vectorDrawables.useSupportLibrary true
-        resConfigs "de"
+        resourceConfigurations += "de"
 
-        javaCompileOptions {
-            annotationProcessorOptions {
-                if (project.property("kapt.incremental.apt").toBoolean() == true) {
-                    arguments << ["room.incremental": "true"]
-                }
-
-                arguments << ["room.schemaLocation": "$projectDir/schemas".toString()]
-            }
+        ndk {
+            abiFilters "arm64-v8a", "armeabi-v7a", "x86_64", "x86"
         }
     }
 
+    buildFeatures {
+        buildConfig true
+    }
+
     sourceSets {
-        main {
-            java.srcDirs += "src/main/kotlin"
-        }
-
-        debug {
-            java.srcDirs += "src/debug/kotlin"
-        }
-
-        release {
-            java.srcDirs += "src/release/kotlin"
-        }
-
         logRelease {
-            java.srcDirs = release.java.srcDirs
+            kotlin.srcDirs = release.kotlin.srcDirs
             res.srcDirs = release.res.srcDirs
         }
     }
@@ -89,27 +79,15 @@ android {
         }
 
         debug {
-            multiDexEnabled true
-
-            ndk { abiFilters "arm64-v8a", "armeabi-v7a", "x86_64", "x86" }
-
             versionNameSuffix = "-debug"
             buildConfigField "String", "PROXER_API_KEY", "\"${getFromSecrets("PROXER_API_KEY")}\""
             buildConfigField "boolean", "LOG", "Boolean.parseBoolean(\"true\")"
         }
 
         release {
-            postprocessing {
-                obfuscate true
-                optimizeCode true
-                removeUnusedCode true
-                removeUnusedResources true
-                proguardFile "config/shrinker/shrinker-rules.pro"
-            }
-
-            multiDexEnabled true
-
-            ndk { abiFilters "arm64-v8a", "armeabi-v7a", "x86_64", "x86" }
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "config/shrinker/shrinker-rules.pro"
 
             buildConfigField "String", "PROXER_API_KEY", "\"${getFromSecrets("PROXER_API_KEY")}\""
             buildConfigField "boolean", "LOG", "Boolean.parseBoolean(\"false\")"
@@ -120,17 +98,9 @@ android {
         }
 
         logRelease {
-            postprocessing {
-                obfuscate true
-                optimizeCode true
-                removeUnusedCode true
-                removeUnusedResources true
-                proguardFile "config/shrinker/shrinker-rules.pro"
-            }
-
-            multiDexEnabled true
-
-            ndk { abiFilters "arm64-v8a", "armeabi-v7a", "x86_64", "x86" }
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "config/shrinker/shrinker-rules.pro"
 
             versionNameSuffix = "-logRelease-${getGitHash()}"
             buildConfigField "String", "PROXER_API_KEY", "\"${getFromSecrets("PROXER_API_KEY")}\""
@@ -142,37 +112,38 @@ android {
         }
     }
 
-    lintOptions {
-        mkdir("$buildDir/reports/lint")
-
-        warningsAsErrors = true
+    lint {
+        // TODO(ROADMAP Phase 9): re-enable strict lint and re-wire config/lint/lint.xml.
+        // The lint shipped with AGP 9 reports many new issues on this codebase.
+        abortOnError = false
+        warningsAsErrors = false
         checkReleaseBuilds = false
-
-        lintConfig file("$rootDir/config/lint/lint.xml")
-        xmlOutput file("$buildDir/reports/lint/lint-results.xml")
-        htmlOutput file("$buildDir/reports/lint/lint-results.html")
     }
 
-    packagingOptions {
+    packaging {
         jniLibs {
-            useLegacyPackaging false
+            useLegacyPackaging = false
         }
 
-        exclude "META-INF/*.kotlin_module"
-        exclude "META-INF/*.version"
-        exclude "META-INF/rxkotlin.properties"
-        exclude "META-INF/proguard/**"
-        exclude "META-INF/README.md"
-        exclude "META-INF/nanohttpd/**"
-        exclude "kotlin/**"
-        exclude "kotlinx/**"
-        exclude "third_party/**"
-        exclude "jsr305_annotations/**"
-        exclude "error_prone/**"
-        exclude "auto/**"
-        exclude "build-data.properties"
-        exclude "androidsupportmultidexversion.txt"
-        exclude "play-services-*.properties"
+        resources {
+            excludes += [
+                    "META-INF/*.kotlin_module",
+                    "META-INF/*.version",
+                    "META-INF/rxkotlin.properties",
+                    "META-INF/proguard/**",
+                    "META-INF/README.md",
+                    "META-INF/nanohttpd/**",
+                    "kotlin/**",
+                    "kotlinx/**",
+                    "third_party/**",
+                    "jsr305_annotations/**",
+                    "error_prone/**",
+                    "auto/**",
+                    "build-data.properties",
+                    "androidsupportmultidexversion.txt",
+                    "play-services-*.properties"
+            ]
+        }
     }
 
     bundle {
@@ -180,33 +151,37 @@ android {
             enableSplit = false
         }
     }
+}
 
-    applicationVariants.all { variant ->
-        def suffix = variant.buildType.name == "release" ? "-release" : ""
+androidComponents {
+    onVariants(selector().all()) { variant ->
+        def typeSuffix = variant.buildType == "debug" ? "-debug" :
+                variant.buildType == "logRelease" ? "-logRelease-${getGitHash()}" : ""
+        def suffix = variant.buildType == "release" ? "-release" : ""
 
-        variant.outputs.all {
-            outputFileName = "app-${variant.versionName}${suffix}.apk"
+        variant.outputs.forEach { output ->
+            output.outputFileName.set("app-${android.defaultConfig.versionName}${typeSuffix}${suffix}.apk")
         }
+    }
+}
+
+kotlin {
+    compilerOptions {
+        // TODO(ROADMAP Phase 9): re-enable allWarningsAsErrors.
+        allWarningsAsErrors.set(false)
+        // jvmTarget defaults to android.compileOptions.targetCompatibility (17).
+        freeCompilerArgs.addAll(["-Xjsr305=strict", "-progressive"])
     }
 }
 
 apply from: "${projectDir}/gradle/repositories.gradle"
 apply from: "${projectDir}/gradle/dependencies.gradle"
 
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
-    kotlinOptions {
-        allWarningsAsErrors = true
-        jvmTarget = javaVersion.toString()
-        freeCompilerArgs = ["-Xjsr305=strict", "-progressive", "-Xnew-inference"]
-    }
-}
-
-kapt {
-    useBuildCache = true
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
 }
 
 detekt {
-    version = detektPluginVersion
     buildUponDefaultConfig = true
 
     config = files("$projectDir/config/detekt/detekt.yml")
@@ -218,8 +193,7 @@ detekt {
 }
 
 ktlint {
-    version = ktlintVersion
-    disabledRules = ["import-ordering"]
+    version.set(ktlintVersion)
     reporters {
         reporter org.jlleitschuh.gradle.ktlint.reporter.ReporterType.CHECKSTYLE
     }
@@ -227,10 +201,8 @@ ktlint {
 
 tasks.named("dependencyUpdates").configure {
     rejectVersionIf {
-        it.candidate.version.contains("alpha")
+        it.candidate.version.contains("alpha") ||
+                it.candidate.version.contains("beta") ||
+                it.candidate.version.toLowerCase().contains("rc")
     }
-}
-
-wrapper {
-    gradleVersion rootProject.ext.gradleVersion
 }

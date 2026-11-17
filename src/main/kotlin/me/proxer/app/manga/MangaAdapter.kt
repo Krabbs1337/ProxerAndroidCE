@@ -53,8 +53,9 @@ import kotlin.properties.Delegates
 /**
  * @author Ruben Gees
  */
-class MangaAdapter(var isVertical: Boolean) : BaseAdapter<Page, MangaViewHolder>() {
-
+class MangaAdapter(
+    var isVertical: Boolean,
+) : BaseAdapter<Page, MangaViewHolder>() {
     private companion object {
         private const val VIEW_TYPE_IMAGE = 1
         private const val VIEW_TYPE_GIF = 2
@@ -76,26 +77,37 @@ class MangaAdapter(var isVertical: Boolean) : BaseAdapter<Page, MangaViewHolder>
 
     override fun getItemId(position: Int) = data[position].decodedName.hashCode().toLong()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = when (viewType) {
-        VIEW_TYPE_IMAGE -> ImageViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.item_manga_page, parent, false)
-        )
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ) = when (viewType) {
+        VIEW_TYPE_IMAGE -> {
+            ImageViewHolder(
+                LayoutInflater.from(parent.context).inflate(R.layout.item_manga_page, parent, false),
+            )
+        }
 
-        VIEW_TYPE_GIF -> GifViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.item_manga_page_gif, parent, false)
-        )
+        VIEW_TYPE_GIF -> {
+            GifViewHolder(
+                LayoutInflater.from(parent.context).inflate(R.layout.item_manga_page_gif, parent, false),
+            )
+        }
 
-        else -> error("Unknown viewType: $viewType")
+        else -> {
+            error("Unknown viewType: $viewType")
+        }
     }
 
-    override fun onBindViewHolder(holder: MangaViewHolder, position: Int) = holder.bind(data[position])
+    override fun onBindViewHolder(
+        holder: MangaViewHolder,
+        position: Int,
+    ) = holder.bind(data[position])
 
-    override fun getItemViewType(position: Int): Int {
-        return when (data[position].decodedName.endsWith(".gif", ignoreCase = true)) {
+    override fun getItemViewType(position: Int): Int =
+        when (data[position].decodedName.endsWith(".gif", ignoreCase = true)) {
             true -> VIEW_TYPE_GIF
             false -> VIEW_TYPE_IMAGE
         }
-    }
 
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
         glide = null
@@ -109,8 +121,14 @@ class MangaAdapter(var isVertical: Boolean) : BaseAdapter<Page, MangaViewHolder>
                 holder.glideTarget = null
                 holder.image.recycle()
             }
-            is GifViewHolder -> glide?.clear(holder.image)
-            else -> error("Unknown ViewHolder: ${holder::class.java.name}")
+
+            is GifViewHolder -> {
+                glide?.clear(holder.image)
+            }
+
+            else -> {
+                error("Unknown ViewHolder: ${holder::class.java.name}")
+            }
         }
     }
 
@@ -120,8 +138,9 @@ class MangaAdapter(var isVertical: Boolean) : BaseAdapter<Page, MangaViewHolder>
         this.id = chapter.id
     }
 
-    abstract inner class MangaViewHolder(itemView: View) : AutoDisposeViewHolder(itemView) {
-
+    abstract inner class MangaViewHolder(
+        itemView: View,
+    ) : AutoDisposeViewHolder(itemView) {
         internal abstract val image: View
 
         internal val errorIndicator: ImageView by bindView(R.id.errorIndicator)
@@ -151,7 +170,10 @@ class MangaAdapter(var isVertical: Boolean) : BaseAdapter<Page, MangaViewHolder>
             Timber.e(error)
 
             when {
-                error is OutOfMemoryError || error.cause is OutOfMemoryError -> lowMemorySubject.onNext(Unit)
+                error.cause is OutOfMemoryError -> {
+                    lowMemorySubject.onNext(Unit)
+                }
+
                 else -> {
                     errorIndicator.isVisible = true
                     image.isVisible = false
@@ -163,35 +185,38 @@ class MangaAdapter(var isVertical: Boolean) : BaseAdapter<Page, MangaViewHolder>
         private fun initListeners() {
             // Rebind on itemView clicks.
             // This only emits if the image is not visible, which is the case if an error occurred.
-            itemView.clicks()
+            itemView
+                .clicks()
                 .mapBindingAdapterPosition({ positionResolver.resolve(bindingAdapterPosition) }) { data[it] }
                 .autoDisposable(this)
                 .subscribe(this::bind)
 
-            image.touchesMonitored { false }
+            image
+                .touchesMonitored { false }
                 .filter { it.actionMasked == MotionEvent.ACTION_DOWN }
                 .map {
                     val (viewX, viewY) = IntArray(2).apply { image.getLocationInWindow(this) }
 
                     it.x + viewX to it.y + viewY
-                }
-                .autoDisposable(this)
+                }.autoDisposable(this)
                 .subscribe { lastTouchCoordinates = it }
 
-            image.clicks()
+            image
+                .clicks()
                 .mapBindingAdapterPosition({ bindingAdapterPosition }) { positionResolver.resolve(it) }
                 .flatMap { position ->
-                    Observable.just(lastTouchCoordinates.toOptional())
+                    Observable
+                        .just(lastTouchCoordinates.toOptional())
                         .filterSome()
                         .map { Triple(image, it, position) }
-                }
-                .autoDisposable(this)
+                }.autoDisposable(this)
                 .subscribe(clickSubject)
         }
     }
 
-    inner class ImageViewHolder(itemView: View) : MangaViewHolder(itemView) {
-
+    inner class ImageViewHolder(
+        itemView: View,
+    ) : MangaViewHolder(itemView) {
         override val image: SubsamplingScaleImageView by bindView(R.id.image)
 
         internal var glideTarget: GlideFileTarget? = null
@@ -230,15 +255,18 @@ class MangaAdapter(var isVertical: Boolean) : BaseAdapter<Page, MangaViewHolder>
         }
 
         private fun initListeners() {
-            image.events()
+            image
+                .events()
                 .publish()
                 .also { observable ->
-                    observable.filter { it is SubsamplingScaleImageViewEventObservable.Event.Error }
+                    observable
+                        .filter { it is SubsamplingScaleImageViewEventObservable.Event.Error }
                         .map { it as SubsamplingScaleImageViewEventObservable.Event.Error }
                         .autoDisposable(this)
                         .subscribe { event -> handleImageLoadError(event.error) }
 
-                    observable.filter { it is SubsamplingScaleImageViewEventObservable.Event.Ready }
+                    observable
+                        .filter { it is SubsamplingScaleImageViewEventObservable.Event.Ready }
                         .autoDisposable(this)
                         .subscribe {
                             val newMaxScale = image.minScale * 2.5f
@@ -248,14 +276,16 @@ class MangaAdapter(var isVertical: Boolean) : BaseAdapter<Page, MangaViewHolder>
 
                             image.setScaleAndCenter(image.scale, image.center?.also { it.y = 0f })
                         }
-                }
-                .connect()
+                }.connect()
         }
 
         internal inner class GlideFileTarget : OriginalSizeGlideTarget<File>() {
-
-            override fun onResourceReady(resource: File, transition: Transition<in File>?) {
-                Single.fromCallable { ImageSource.uri(resource.path) }
+            override fun onResourceReady(
+                resource: File,
+                transition: Transition<in File>?,
+            ) {
+                Single
+                    .fromCallable { ImageSource.uri(resource.path) }
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeAndLogErrors { source -> image.setImage(source) }
@@ -268,8 +298,9 @@ class MangaAdapter(var isVertical: Boolean) : BaseAdapter<Page, MangaViewHolder>
         }
     }
 
-    inner class GifViewHolder(itemView: View) : MangaViewHolder(itemView) {
-
+    inner class GifViewHolder(
+        itemView: View,
+    ) : MangaViewHolder(itemView) {
         override val image: ImageView by bindView(R.id.image)
 
         override fun bind(item: Page) {
@@ -289,7 +320,7 @@ class MangaAdapter(var isVertical: Boolean) : BaseAdapter<Page, MangaViewHolder>
                             errorIndicator.isVisible = true
                             image.isVisible = false
                         }
-                    }
+                    },
                 )
         }
     }

@@ -10,8 +10,9 @@ import me.proxer.app.util.extension.checkMainThread
 /**
  * @author Ruben Gees
  */
-class PreviewTimeBarRequestObservable(private val view: PreviewTimeBar) : Observable<Long>() {
-
+class PreviewTimeBarRequestObservable(
+    private val view: PreviewTimeBar,
+) : Observable<Long>() {
     override fun subscribeActual(observer: Observer<in Long>) {
         if (!observer.checkMainThread()) {
             return
@@ -26,10 +27,13 @@ class PreviewTimeBarRequestObservable(private val view: PreviewTimeBar) : Observ
 
     internal class Loader(
         private val view: PreviewTimeBar,
-        private val observer: Observer<in Long>
-    ) : MainThreadDisposable(), PreviewLoader {
-
-        override fun loadPreview(currentPosition: Long, max: Long) {
+        private val observer: Observer<in Long>,
+    ) : MainThreadDisposable(),
+        PreviewLoader {
+        override fun loadPreview(
+            currentPosition: Long,
+            max: Long,
+        ) {
             if (!isDisposed) {
                 try {
                     observer.onNext(currentPosition)

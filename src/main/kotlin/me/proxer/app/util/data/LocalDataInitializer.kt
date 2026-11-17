@@ -18,13 +18,12 @@ class LocalDataInitializer(
     private val context: Context,
     private val jsonParser: HawkMoshiParser,
     private val preferences: SharedPreferences,
-    private val storagePreferences: SharedPreferences
+    private val storagePreferences: SharedPreferences,
 ) {
-
     private companion object {
         private const val VERSION = "version"
 
-        private const val currentVersion = 7
+        private const val CURRENT_VERSION = 7
     }
 
     @Volatile
@@ -55,8 +54,8 @@ class LocalDataInitializer(
                         migrate6To7(storagePreferences)
                     }
 
-                    if (previousVersion != currentVersion) {
-                        preferences.edit(commit = true) { putInt(VERSION, currentVersion) }
+                    if (previousVersion != CURRENT_VERSION) {
+                        preferences.edit(commit = true) { putInt(VERSION, CURRENT_VERSION) }
                     }
 
                     isInitialized = true
@@ -67,7 +66,8 @@ class LocalDataInitializer(
 
     private fun initHawk() {
         if (!Hawk.isBuilt()) {
-            Hawk.init(context)
+            Hawk
+                .init(context)
                 .setParser(jsonParser)
                 .setConverter(null)
                 .build()
@@ -134,17 +134,20 @@ class LocalDataInitializer(
 
     private fun migrate6To7(storagePreferences: SharedPreferences) {
         // The preference filename was incorrect in the previous version.
-        val masterKey = MasterKey.Builder(context)
-            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-            .build()
+        val masterKey =
+            MasterKey
+                .Builder(context)
+                .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+                .build()
 
-        val previousPreferences = EncryptedSharedPreferences.create(
-            context,
-            "me.proxer.encrypted_preferences.xml",
-            masterKey,
-            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-        )
+        val previousPreferences =
+            EncryptedSharedPreferences.create(
+                context,
+                "me.proxer.encrypted_preferences.xml",
+                masterKey,
+                EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM,
+            )
 
         storagePreferences.edit(commit = true) {
             previousPreferences.all.forEach { (key, value) ->

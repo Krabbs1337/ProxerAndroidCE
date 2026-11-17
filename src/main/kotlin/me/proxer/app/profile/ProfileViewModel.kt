@@ -2,6 +2,7 @@ package me.proxer.app.profile
 
 import com.gojuno.koptional.None
 import com.gojuno.koptional.Optional
+import com.gojuno.koptional.toNullable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.plusAssign
 import me.proxer.app.base.BaseViewModel
@@ -14,24 +15,37 @@ import me.proxer.library.entity.user.UserInfo
  */
 class ProfileViewModel(
     private val userId: String?,
-    private val username: String?
+    private val username: String?,
 ) : BaseViewModel<UserInfoWrapper>() {
-
     override val dataSingle: Single<UserInfoWrapper>
-        get() = Single.fromCallable { validate() }
-            .flatMap { api.user.info(userId, username).buildSingle() }
-            .flatMap { userInfo ->
-                val maybeUcpSingle = when (storageHelper.user?.matches(userId, username) == true) {
-                    true -> api.ucp.watchedEpisodes().buildSingle().map { Optional.toOptional(it) }
-                    false -> Single.just(None)
-                }
+        get() =
+            Single
+                .fromCallable { validate() }
+                .flatMap { api.user.info(userId, username).buildSingle() }
+                .flatMap { userInfo ->
+                    val maybeUcpSingle =
+                        when (storageHelper.user?.matches(userId, username) == true) {
+                            true -> {
+                                api.ucp
+                                    .watchedEpisodes()
+                                    .buildSingle()
+                                    .map { Optional.toOptional(it) }
+                            }
 
-                maybeUcpSingle.map { watchedEpisodes -> UserInfoWrapper(userInfo, watchedEpisodes.toNullable()) }
-            }
+                            false -> {
+                                Single.just(None)
+                            }
+                        }
+
+                    maybeUcpSingle.map { watchedEpisodes -> UserInfoWrapper(userInfo, watchedEpisodes.toNullable()) }
+                }
 
     init {
         disposables += storageHelper.isLoggedInObservable.subscribe { reload() }
     }
 
-    data class UserInfoWrapper(val info: UserInfo, val watchedEpisodes: Int?)
+    data class UserInfoWrapper(
+        val info: UserInfo,
+        val watchedEpisodes: Int?,
+    )
 }

@@ -23,11 +23,11 @@ import kotlin.properties.Delegates
  * @author Ruben Gees
  */
 class ScheduleFragment : BaseContentFragment<Map<CalendarDay, List<CalendarEntry>>>(R.layout.fragment_schedule) {
-
     companion object {
-        fun newInstance() = ScheduleFragment().apply {
-            arguments = bundleOf()
-        }
+        fun newInstance() =
+            ScheduleFragment().apply {
+                arguments = bundleOf()
+            }
     }
 
     override val viewModel by viewModel<ScheduleViewModel>()
@@ -51,7 +51,10 @@ class ScheduleFragment : BaseContentFragment<Map<CalendarDay, List<CalendarEntry
             }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
 
         adapter.glide = GlideApp.with(this)

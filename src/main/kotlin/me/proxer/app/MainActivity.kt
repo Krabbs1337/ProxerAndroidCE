@@ -12,29 +12,23 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.postDelayed
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commitNow
+import androidx.activity.result.contract.ActivityResultContracts
 import com.google.android.material.tabs.TabLayout
-import com.rubengees.introduction.IntroductionActivity.OPTION_RESULT
-import com.rubengees.introduction.IntroductionBuilder
-import com.rubengees.introduction.Option
 import kotterknife.bindView
 import me.proxer.app.anime.schedule.ScheduleFragment
 import me.proxer.app.base.BackPressAware
 import me.proxer.app.base.DrawerActivity
 import me.proxer.app.bookmark.BookmarkFragment
 import me.proxer.app.chat.ChatContainerFragment
+import me.proxer.app.introduction.IntroductionActivity
 import me.proxer.app.media.list.MediaListFragment
 import me.proxer.app.news.NewsFragment
-import me.proxer.app.notification.NotificationWorker
 import me.proxer.app.profile.settings.ProfileSettingsViewModel
 import me.proxer.app.settings.AboutFragment
 import me.proxer.app.settings.SettingsFragment
-import me.proxer.app.settings.theme.Theme
-import me.proxer.app.settings.theme.ThemeContainer
-import me.proxer.app.settings.theme.ThemeVariant
 import me.proxer.app.ui.view.RatingDialog
 import me.proxer.app.util.InAppUpdateFlow
 import me.proxer.app.util.extension.intentFor
-import me.proxer.app.util.wrapper.IntroductionWrapper
 import me.proxer.app.util.wrapper.MaterialDrawerWrapper.DrawerItem
 import me.proxer.library.enums.Category
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -45,18 +39,24 @@ import org.threeten.bp.temporal.ChronoUnit
  * @author Ruben Gees
  */
 class MainActivity : DrawerActivity() {
-
     companion object {
         private const val TITLE_STATE = "title"
         private const val SECTION_EXTRA = "section"
         private const val SECTION_ACTION_PREFIX = "me.proxer.app.intent.action."
 
-        fun navigateToSection(context: Context, section: DrawerItem) = context
+        fun navigateToSection(
+            context: Context,
+            section: DrawerItem,
+        ) = context
             .startActivity(getSectionIntent(context, section))
 
-        fun getSectionIntent(context: Context, section: DrawerItem): Intent = context
-            .intentFor<MainActivity>(SECTION_EXTRA to section)
-            .setAction(SECTION_ACTION_PREFIX + section.name)
+        fun getSectionIntent(
+            context: Context,
+            section: DrawerItem,
+        ): Intent =
+            context
+                .intentFor<MainActivity>(SECTION_EXTRA to section)
+                .setAction(SECTION_ACTION_PREFIX + section.name)
     }
 
     override val contentView = R.layout.activity_main
@@ -69,6 +69,11 @@ class MainActivity : DrawerActivity() {
     private val profileSettingsViewModel by viewModel<ProfileSettingsViewModel>()
 
     private val inAppUpdateFlow = InAppUpdateFlow()
+
+    private val introductionLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            displayFirstPage(null)
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -145,31 +150,6 @@ class MainActivity : DrawerActivity() {
         }
     }
 
-    @Suppress("DEPRECATION") // TODO: Wait for stable release and fix in introduction.
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (requestCode == IntroductionBuilder.INTRODUCTION_REQUEST_CODE) {
-            if (resultCode == RESULT_OK) {
-                data?.getParcelableArrayListExtra<Option>(OPTION_RESULT)?.forEach { option ->
-                    when (option.position) {
-                        1 -> {
-                            preferenceHelper.areNewsNotificationsEnabled = option.isActivated
-                            preferenceHelper.areAccountNotificationsEnabled = option.isActivated
-
-                            NotificationWorker.enqueueIfPossible(delay = true)
-                        }
-                        2 -> if (option.isActivated) {
-                            preferenceHelper.themeContainer = ThemeContainer(Theme.CLASSIC, ThemeVariant.DARK)
-                        }
-                    }
-                }
-            }
-
-            displayFirstPage(null)
-        }
-    }
-
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
 
@@ -200,7 +180,10 @@ class MainActivity : DrawerActivity() {
         }
     }
 
-    private fun setFragment(fragment: Fragment, newTitle: Int) {
+    private fun setFragment(
+        fragment: Fragment,
+        newTitle: Int,
+    ) {
         title = getString(newTitle)
 
         supportFragmentManager.commitNow {
@@ -213,7 +196,7 @@ class MainActivity : DrawerActivity() {
             val shouldIntroduce = preferenceHelper.launches <= 0 && intent.action == Intent.ACTION_MAIN
 
             if (shouldIntroduce) {
-                IntroductionWrapper.introduce(this)
+                introductionLauncher.launch(Intent(this, IntroductionActivity::class.java))
             } else {
                 val itemToLoad = getItemToLoad()
 
@@ -229,19 +212,25 @@ class MainActivity : DrawerActivity() {
     }
 
     private fun getItemToLoad(): DrawerItem {
-        val actionDrawerItem = when (intent.action == Intent.ACTION_VIEW) {
-            true -> when (intent.data?.pathSegments?.firstOrNull()) {
-                "news" -> DrawerItem.NEWS
-                "chat" -> DrawerItem.CHAT
-                "messages" -> DrawerItem.MESSENGER
-                "reminder" -> DrawerItem.BOOKMARKS
-                "anime" -> DrawerItem.ANIME
-                "calendar" -> DrawerItem.SCHEDULE
-                "manga" -> DrawerItem.MANGA
-                else -> null
+        val actionDrawerItem =
+            when (intent.action == Intent.ACTION_VIEW) {
+                true -> {
+                    when (intent.data?.pathSegments?.firstOrNull()) {
+                        "news" -> DrawerItem.NEWS
+                        "chat" -> DrawerItem.CHAT
+                        "messages" -> DrawerItem.MESSENGER
+                        "reminder" -> DrawerItem.BOOKMARKS
+                        "anime" -> DrawerItem.ANIME
+                        "calendar" -> DrawerItem.SCHEDULE
+                        "manga" -> DrawerItem.MANGA
+                        else -> null
+                    }
+                }
+
+                false -> {
+                    null
+                }
             }
-            false -> null
-        }
 
         return when (actionDrawerItem) {
             null -> {
@@ -249,12 +238,17 @@ class MainActivity : DrawerActivity() {
 
                 sectionExtra ?: preferenceHelper.startPage
             }
-            else -> actionDrawerItem
+
+            else -> {
+                actionDrawerItem
+            }
         }
     }
 
-    override fun handleDrawerItemClick(item: DrawerItem) = when (isRootActivity /*|| item == drawer.currentItem*/) {
-        true -> setFragment(item)
-        false -> super.handleDrawerItemClick(item)
-    }
+    override fun handleDrawerItemClick(item: DrawerItem) =
+        // || item == drawer.currentItem
+        when (isRootActivity) {
+            true -> setFragment(item)
+            false -> super.handleDrawerItemClick(item)
+        }
 }

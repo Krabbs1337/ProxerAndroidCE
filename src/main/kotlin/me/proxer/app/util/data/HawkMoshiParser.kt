@@ -7,12 +7,13 @@ import java.lang.reflect.Type
 /**
  * @author Ruben Gees
  */
-class HawkMoshiParser(private val moshi: Moshi) : Parser {
-    override fun <T : Any?> fromJson(content: String, type: Type): T? {
-        return moshi.adapter<T>(type).fromJson(content)
-    }
+class HawkMoshiParser(
+    private val moshi: Moshi,
+) : Parser {
+    override fun <T : Any?> fromJson(
+        content: String,
+        type: Type,
+    ): T? = moshi.adapter<T>(type).fromJson(content)
 
-    override fun toJson(body: Any): String? {
-        return moshi.adapter(body.javaClass).toJson(body)
-    }
+    override fun toJson(body: Any): String? = moshi.adapter(body.javaClass).toJson(body)
 }

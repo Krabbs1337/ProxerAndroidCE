@@ -13,21 +13,21 @@ import me.proxer.app.util.bindPreference
 import me.proxer.app.util.extension.changes
 import me.proxer.library.enums.UcpSettingConstraint
 import me.proxer.library.util.ProxerUtils
-import net.xpece.android.support.preference.ListPreference
-import net.xpece.android.support.preference.SwitchPreference
-import net.xpece.android.support.preference.XpPreferenceFragment
+import androidx.preference.ListPreference
+import androidx.preference.SwitchPreference
+import androidx.preference.PreferenceFragmentCompat
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.util.Locale
 
 /**
  * @author Ruben Gees
  */
-class ProfileSettingsFragment : XpPreferenceFragment() {
-
+class ProfileSettingsFragment : PreferenceFragmentCompat() {
     companion object {
-        fun newInstance() = ProfileSettingsFragment().apply {
-            arguments = bundleOf()
-        }
+        fun newInstance() =
+            ProfileSettingsFragment().apply {
+                arguments = bundleOf()
+            }
     }
 
     private val viewModel by sharedViewModel<ProfileSettingsViewModel>()
@@ -49,24 +49,31 @@ class ProfileSettingsFragment : XpPreferenceFragment() {
     private val gallery by bindPreference<ListPreference>("gallery")
     private val article by bindPreference<ListPreference>("article")
 
-    override fun onCreatePreferences2(savedInstanceState: Bundle?, rootKey: String?) {
+    override fun onCreatePreferences(
+        savedInstanceState: Bundle?,
+        rootKey: String?,
+    ) {
         addPreferencesFromResource(R.xml.profile_preferences)
 
         // Hide this setting until it are actually implemented.
         bannerAdsEnabled.isVisible = false
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.data.observe(
             viewLifecycleOwner,
             Observer {
                 showData(it)
-            }
+            },
         )
 
-        bannerAdsEnabled.changes<Boolean>()
+        bannerAdsEnabled
+            .changes<Boolean>()
             .autoDisposable(this.scope())
             .subscribe {
                 val currentSettings = viewModel.data.value
@@ -78,7 +85,8 @@ class ProfileSettingsFragment : XpPreferenceFragment() {
                 }
             }
 
-        videoAdsInterval.changes<String>()
+        videoAdsInterval
+            .changes<String>()
             .autoDisposable(this.scope())
             .subscribe {
                 val currentSettings = viewModel.data.value
@@ -139,8 +147,9 @@ class ProfileSettingsFragment : XpPreferenceFragment() {
 
     private fun initPreference(
         preference: Preference,
-        copyCallback: (LocalProfileSettings, UcpSettingConstraint) -> LocalProfileSettings
-    ) = preference.changes<String>()
+        copyCallback: (LocalProfileSettings, UcpSettingConstraint) -> LocalProfileSettings,
+    ) = preference
+        .changes<String>()
         .autoDisposable(this.scope())
         .subscribe {
             val currentSettings = viewModel.data.value
@@ -153,19 +162,19 @@ class ProfileSettingsFragment : XpPreferenceFragment() {
             }
         }
 
-    private fun normalizeAdInterval(source: Int): Int {
-        return resources.getStringArray(R.array.profile_settings_video_ads_interval_values)
+    private fun normalizeAdInterval(source: Int): Int =
+        resources
+            .getStringArray(R.array.profile_settings_video_ads_interval_values)
             .map { it.toInt() }
             .sortedDescending()
             .find { source >= it }
             ?: 0
-    }
 
     private fun updateVideoAdsIntervalSummary() {
         val value = videoAdsInterval.value ?: "0"
         val index = resources.getStringArray(R.array.profile_settings_video_ads_interval_values).indexOf(value)
         val keyword = resources.getStringArray(R.array.profile_settings_video_ads_interval_titles)[index]
-        val newSummary = getString(R.string.profile_preference_video_ads_summary, keyword.toLowerCase(Locale.GERMANY))
+        val newSummary = getString(R.string.profile_preference_video_ads_summary, keyword.lowercase(Locale.GERMANY))
 
         videoAdsInterval.summary = newSummary
     }

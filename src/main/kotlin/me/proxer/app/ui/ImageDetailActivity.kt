@@ -23,11 +23,14 @@ import okhttp3.HttpUrl
  * @author Ruben Gees
  */
 class ImageDetailActivity : BaseActivity() {
-
     companion object {
         private const val URL_EXTRA = "url"
 
-        fun navigateTo(context: Activity, url: HttpUrl, imageView: ImageView? = null) {
+        fun navigateTo(
+            context: Activity,
+            url: HttpUrl,
+            imageView: ImageView? = null,
+        ) {
             context.intentFor<ImageDetailActivity>(URL_EXTRA to url.toString()).let {
                 ActivityUtils.navigateToWithImageTransition(it, context, imageView)
             }
@@ -50,7 +53,8 @@ class ImageDetailActivity : BaseActivity() {
 
         ViewCompat.setTransitionName(image, ActivityUtils.getTransitionName(this))
 
-        GlideApp.with(this)
+        GlideApp
+            .with(this)
             .load(url)
             .logErrors()
             .into(
@@ -62,10 +66,11 @@ class ImageDetailActivity : BaseActivity() {
                             supportStartPostponedEnterTransition()
                         }
                     }
-                }
+                },
             )
 
-        root.clicks()
+        root
+            .clicks()
             .autoDisposable(this.scope())
             .subscribe { supportFinishAfterTransition() }
     }

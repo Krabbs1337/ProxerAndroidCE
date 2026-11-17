@@ -23,11 +23,11 @@ import kotlin.properties.Delegates
  * @author Ruben Gees
  */
 class IndustryProjectFragment : PagedContentFragment<IndustryProject>() {
-
     companion object {
-        fun newInstance() = IndustryProjectFragment().apply {
-            arguments = bundleOf()
-        }
+        fun newInstance() =
+            IndustryProjectFragment().apply {
+                arguments = bundleOf()
+            }
     }
 
     override val emptyDataMessage = R.string.error_no_data_projects
@@ -59,7 +59,10 @@ class IndustryProjectFragment : PagedContentFragment<IndustryProject>() {
             }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
 
         innerAdapter.glide = GlideApp.with(this)

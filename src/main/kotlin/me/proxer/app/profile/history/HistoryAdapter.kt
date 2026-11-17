@@ -28,7 +28,6 @@ import me.proxer.library.util.ProxerUrls
  * @author Ruben Gees
  */
 class HistoryAdapter : BaseAdapter<LocalUserHistoryEntry, ViewHolder>() {
-
     var glide: GlideRequests? = null
     val clickSubject: PublishSubject<Pair<ImageView, LocalUserHistoryEntry>> = PublishSubject.create()
     val longClickSubject: PublishSubject<Pair<ImageView, LocalUserHistoryEntry>> = PublishSubject.create()
@@ -37,11 +36,15 @@ class HistoryAdapter : BaseAdapter<LocalUserHistoryEntry, ViewHolder>() {
         setHasStableIds(false)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_history_entry, parent, false))
-    }
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): ViewHolder = ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_history_entry, parent, false))
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(data[position])
+    override fun onBindViewHolder(
+        holder: ViewHolder,
+        position: Int,
+    ) = holder.bind(data[position])
 
     override fun onViewRecycled(holder: ViewHolder) {
         glide?.clear(holder.image)
@@ -51,8 +54,9 @@ class HistoryAdapter : BaseAdapter<LocalUserHistoryEntry, ViewHolder>() {
         glide = null
     }
 
-    inner class ViewHolder(itemView: View) : AutoDisposeViewHolder(itemView) {
-
+    inner class ViewHolder(
+        itemView: View,
+    ) : AutoDisposeViewHolder(itemView) {
         internal val container: ViewGroup by bindView(R.id.container)
         internal val title: TextView by bindView(R.id.title)
         internal val medium: TextView by bindView(R.id.medium)
@@ -60,12 +64,14 @@ class HistoryAdapter : BaseAdapter<LocalUserHistoryEntry, ViewHolder>() {
         internal val status: TextView by bindView(R.id.status)
 
         fun bind(item: LocalUserHistoryEntry) {
-            container.clicks()
+            container
+                .clicks()
                 .mapBindingAdapterPosition({ bindingAdapterPosition }) { image to data[it] }
                 .autoDisposable(this)
                 .subscribe(clickSubject)
 
-            container.longClicks()
+            container
+                .longClicks()
                 .mapBindingAdapterPosition({ bindingAdapterPosition }) { image to data[it] }
                 .autoDisposable(this)
                 .subscribe(longClickSubject)
@@ -75,23 +81,29 @@ class HistoryAdapter : BaseAdapter<LocalUserHistoryEntry, ViewHolder>() {
             title.text = item.name
             medium.text = item.medium.toAppString(medium.context)
 
-            status.text = when (item is LocalUserHistoryEntry.Ucp) {
-                true -> status.context.getString(
-                    when (item.category) {
-                        Category.ANIME -> R.string.fragment_history_entry_ucp_status_anime
-                        Category.MANGA, Category.NOVEL -> R.string.fragment_history_entry_ucp_status_manga
-                    },
-                    item.episode,
-                    item.date.distanceInWordsToNow(status.context)
-                )
-                false -> status.context.getString(
-                    when (item.category) {
-                        Category.ANIME -> R.string.fragment_history_entry_status_anime
-                        Category.MANGA, Category.NOVEL -> R.string.fragment_history_entry_status_manga
-                    },
-                    item.episode
-                )
-            }
+            status.text =
+                when (item is LocalUserHistoryEntry.Ucp) {
+                    true -> {
+                        status.context.getString(
+                            when (item.category) {
+                                Category.ANIME -> R.string.fragment_history_entry_ucp_status_anime
+                                Category.MANGA, Category.NOVEL -> R.string.fragment_history_entry_ucp_status_manga
+                            },
+                            item.episode,
+                            item.date.distanceInWordsToNow(status.context),
+                        )
+                    }
+
+                    false -> {
+                        status.context.getString(
+                            when (item.category) {
+                                Category.ANIME -> R.string.fragment_history_entry_status_anime
+                                Category.MANGA, Category.NOVEL -> R.string.fragment_history_entry_status_manga
+                            },
+                            item.episode,
+                        )
+                    }
+                }
 
             glide?.defaultLoad(image, ProxerUrls.entryImage(item.entryId))
         }

@@ -42,7 +42,6 @@ import java.io.File
  * @author Ruben Gees
  */
 object PdfPrototype : AutoClosingPrototype {
-
     private const val WIDTH_ARGUMENT = "width"
 
     private val widthAttributeRegex = Regex("(?:size)? *= *(.+?)( |\$)", REGEX_OPTIONS)
@@ -50,57 +49,73 @@ object PdfPrototype : AutoClosingPrototype {
     override val startRegex = Regex(" *pdf *=? *\"?.*?\"?( .*?)?", REGEX_OPTIONS)
     override val endRegex = Regex("/ *pdf *", REGEX_OPTIONS)
 
-    override fun construct(code: String, parent: BBTree): BBTree {
+    override fun construct(
+        code: String,
+        parent: BBTree,
+    ): BBTree {
         val width = BBUtils.cutAttribute(code, widthAttributeRegex)?.toIntOrNull()
 
         return BBTree(this, parent, args = BBArgs(custom = arrayOf(WIDTH_ARGUMENT to width)))
     }
 
-    override fun makeViews(parent: BBCodeView, children: List<BBTree>, args: BBArgs): List<View> {
+    override fun makeViews(
+        parent: BBCodeView,
+        children: List<BBTree>,
+        args: BBArgs,
+    ): List<View> {
         val childViews = children.flatMap { it.makeViews(parent, args) }
 
         return when {
-            childViews.isEmpty() -> childViews
-            else -> listOf(
-                SubsamplingScaleImageView(parent.context).also { view: SubsamplingScaleImageView ->
-                    val url = (childViews.firstOrNull() as? TextView)?.text.toString().trim()
-                    val parsedUrl = url.toPrefixedUrlOrNull()
+            childViews.isEmpty() -> {
+                childViews
+            }
 
-                    @Suppress("UNCHECKED_CAST")
-                    val heightMap = args[ImagePrototype.HEIGHT_MAP_ARGUMENT] as MutableMap<String, Int>?
+            else -> {
+                listOf(
+                    SubsamplingScaleImageView(parent.context).also { view: SubsamplingScaleImageView ->
+                        val url = (childViews.firstOrNull() as? TextView)?.text.toString().trim()
+                        val parsedUrl = url.toPrefixedUrlOrNull()
 
-                    val width = args[WIDTH_ARGUMENT] as Int? ?: MATCH_PARENT
-                    val height = parsedUrl?.let { heightMap?.get(it.toString()) } ?: WRAP_CONTENT
+                        @Suppress("UNCHECKED_CAST")
+                        val heightMap = args[ImagePrototype.HEIGHT_MAP_ARGUMENT] as MutableMap<String, Int>?
 
-                    view.layoutParams = ViewGroup.MarginLayoutParams(MATCH_PARENT, height)
+                        val width = args[WIDTH_ARGUMENT] as Int? ?: MATCH_PARENT
+                        val height = parsedUrl?.let { heightMap?.get(it.toString()) } ?: WRAP_CONTENT
 
-                    val animationDuration = view.context.resources.getInteger(android.R.integer.config_shortAnimTime)
+                        view.layoutParams = ViewGroup.MarginLayoutParams(MATCH_PARENT, height)
 
-                    view.setDoubleTapZoomDuration(animationDuration)
-                    view.setMinimumTileDpi(196)
+                        val animationDuration =
+                            view.context.resources.getInteger(
+                                android.R.integer.config_shortAnimTime,
+                            )
 
-                    args.glide?.let { loadImage(it, view, parsedUrl, heightMap) }
+                        view.setDoubleTapZoomDuration(animationDuration)
+                        view.setMinimumTileDpi(196)
 
-                    view.clicks()
-                        .filter { view.getTag(R.id.error_tag) == true }
-                        .autoDisposable(ViewScopeProvider.from(parent))
-                        .subscribe {
-                            view.tag = null
+                        args.glide?.let { loadImage(it, view, parsedUrl, heightMap) }
 
-                            args.glide?.let { loadImage(it, view, parsedUrl, heightMap) }
-                        }
+                        view
+                            .clicks()
+                            .filter { view.getTag(R.id.error_tag) == true }
+                            .autoDisposable(ViewScopeProvider.from(parent))
+                            .subscribe {
+                                view.tag = null
 
-                    view.doOnLayout {
-                        if (width < view.width) {
-                            view.updateLayoutParams {
-                                this.width = width
+                                args.glide?.let { loadImage(it, view, parsedUrl, heightMap) }
                             }
 
-                            view.requestLayout()
+                        view.doOnLayout {
+                            if (width < view.width) {
+                                view.updateLayoutParams {
+                                    this.width = width
+                                }
+
+                                view.requestLayout()
+                            }
                         }
-                    }
-                }
-            )
+                    },
+                )
+            }
         }
     }
 
@@ -108,17 +123,17 @@ object PdfPrototype : AutoClosingPrototype {
         glide: GlideRequests,
         view: SubsamplingScaleImageView,
         url: HttpUrl?,
-        heightMap: MutableMap<String, Int>?
+        heightMap: MutableMap<String, Int>?,
     ) = glide
         .download(url.toString())
         .listener(
             object : SimpleGlideRequestListener<File?> {
                 override fun onResourceReady(
-                    resource: File?,
-                    model: Any?,
-                    target: Target<File?>?,
-                    dataSource: DataSource?,
-                    isFirstResource: Boolean
+                    resource: File,
+                    model: Any,
+                    target: Target<File?>,
+                    dataSource: DataSource,
+                    isFirstResource: Boolean,
                 ): Boolean {
                     (target as? GlidePdfTarget)?.view?.also { view ->
                         if (view.layoutParams.height <= 0) {
@@ -128,20 +143,20 @@ object PdfPrototype : AutoClosingPrototype {
 
                     return false
                 }
-            }
-        )
-        .into(GlidePdfTarget(view, url.toString(), heightMap))
+            },
+        ).into(GlidePdfTarget(view, url.toString(), heightMap))
 
     private fun handleLoadError(view: SubsamplingScaleImageView) {
         view.setTag(R.id.error_tag, true)
 
         view.setImage(
             ImageSource.bitmap(
-                IconicsDrawable(view.context, CommunityMaterial.Icon3.cmd_refresh).apply {
-                    colorInt = view.context.resolveColor(R.attr.colorIcon)
-                    sizeDp = 32
-                }.toBitmap()
-            )
+                IconicsDrawable(view.context, CommunityMaterial.Icon3.cmd_refresh)
+                    .apply {
+                        colorInt = view.context.resolveColor(R.attr.colorIcon)
+                        sizeDp = 32
+                    }.toBitmap(),
+            ),
         )
     }
 
@@ -158,9 +173,8 @@ object PdfPrototype : AutoClosingPrototype {
     private class GlidePdfTarget(
         view: SubsamplingScaleImageView,
         private val model: String,
-        private val dimensionMap: MutableMap<String, Int>?
+        private val dimensionMap: MutableMap<String, Int>?,
     ) : OriginalSizeGlideTarget<File>() {
-
         var view: SubsamplingScaleImageView? = view
             private set
 
@@ -168,15 +182,18 @@ object PdfPrototype : AutoClosingPrototype {
 
         init {
             view.doOnLayout {
-                view.events()
+                view
+                    .events()
                     .publish()
                     .autoConnect(2)
                     .also { observable ->
-                        observable.filter { it is SubsamplingScaleImageViewEventObservable.Event.Error }
+                        observable
+                            .filter { it is SubsamplingScaleImageViewEventObservable.Event.Error }
                             .autoDisposable(ViewScopeProvider.from(view))
                             .subscribe { handleLoadError(view) }
 
-                        observable.filter { it is SubsamplingScaleImageViewEventObservable.Event.Loaded }
+                        observable
+                            .filter { it is SubsamplingScaleImageViewEventObservable.Event.Loaded }
                             .autoDisposable(ViewScopeProvider.from(view))
                             .subscribe {
                                 view.setDoubleTapZoomScale(view.scale * 2.5f)
@@ -188,11 +205,15 @@ object PdfPrototype : AutoClosingPrototype {
             }
         }
 
-        override fun onResourceReady(resource: File, transition: Transition<in File>?) {
+        override fun onResourceReady(
+            resource: File,
+            transition: Transition<in File>?,
+        ) {
             view?.also { safeView ->
-                regionDecoder = PDFRegionDecoder(0, resource, 8f).also {
-                    safeView.setRegionDecoderFactory { it }
-                }
+                regionDecoder =
+                    PDFRegionDecoder(0, resource, 8f).also {
+                        safeView.setRegionDecoderFactory { it }
+                    }
 
                 safeView.setBitmapDecoderFactory { PDFDecoder(0, resource, 8f) }
 

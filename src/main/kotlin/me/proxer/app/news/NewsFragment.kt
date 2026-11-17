@@ -23,11 +23,11 @@ import kotlin.properties.Delegates
  * @author Ruben Gees
  */
 class NewsFragment : PagedContentFragment<NewsArticle>() {
-
     companion object {
-        fun newInstance() = NewsFragment().apply {
-            arguments = bundleOf()
-        }
+        fun newInstance() =
+            NewsFragment().apply {
+                arguments = bundleOf()
+            }
     }
 
     override val emptyDataMessage = R.string.error_no_data_news
@@ -55,12 +55,15 @@ class NewsFragment : PagedContentFragment<NewsArticle>() {
                 ImageDetailActivity.navigateTo(
                     requireActivity(),
                     ProxerUrls.newsImage(article.id, article.image),
-                    view
+                    view,
                 )
             }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
 
         innerAdapter.glide = GlideApp.with(this)

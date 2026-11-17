@@ -40,7 +40,6 @@ import okhttp3.HttpUrl
  * @author Ruben Gees
  */
 object ImagePrototype : AutoClosingPrototype {
-
     const val HEIGHT_MAP_ARGUMENT = "dimension_map"
 
     private const val WIDTH_ARGUMENT = "width"
@@ -50,13 +49,20 @@ object ImagePrototype : AutoClosingPrototype {
     override val startRegex = Regex(" *img *=? *\"?.*?\"?( .*?)?", REGEX_OPTIONS)
     override val endRegex = Regex("/ *img *", REGEX_OPTIONS)
 
-    override fun construct(code: String, parent: BBTree): BBTree {
+    override fun construct(
+        code: String,
+        parent: BBTree,
+    ): BBTree {
         val width = BBUtils.cutAttribute(code, widthAttributeRegex)?.toIntOrNull()
 
         return BBTree(this, parent, args = BBArgs(custom = arrayOf(WIDTH_ARGUMENT to width)))
     }
 
-    override fun makeViews(parent: BBCodeView, children: List<BBTree>, args: BBArgs): List<View> {
+    override fun makeViews(
+        parent: BBCodeView,
+        children: List<BBTree>,
+        args: BBArgs,
+    ): List<View> {
         val childViews = children.flatMap { it.makeViews(parent, args) }
 
         val url = (childViews.firstOrNull() as? TextView)?.text.toString().trim()
@@ -77,7 +83,8 @@ object ImagePrototype : AutoClosingPrototype {
                 args.glide?.let { loadImage(it, view, proxyUrl, heightMap) }
 
                 (parent.context as? Activity)?.let { context ->
-                    view.clicks()
+                    view
+                        .clicks()
                         .autoDisposable(ViewScopeProvider.from(parent))
                         .subscribe {
                             if (view.getTag(R.id.error_tag) == true) {
@@ -89,7 +96,7 @@ object ImagePrototype : AutoClosingPrototype {
                             }
                         }
                 }
-            }
+            },
         )
     }
 
@@ -97,18 +104,18 @@ object ImagePrototype : AutoClosingPrototype {
         glide: GlideRequests,
         view: ImageView,
         url: HttpUrl?,
-        heightMap: MutableMap<String, Int>?
+        heightMap: MutableMap<String, Int>?,
     ) = glide
         .load(url.toString())
         .centerInside()
         .listener(
             object : SimpleGlideRequestListener<Drawable?> {
                 override fun onResourceReady(
-                    resource: Drawable?,
-                    model: Any?,
-                    target: Target<Drawable?>?,
-                    dataSource: DataSource?,
-                    isFirstResource: Boolean
+                    resource: Drawable,
+                    model: Any,
+                    target: Target<Drawable?>,
+                    dataSource: DataSource,
+                    isFirstResource: Boolean,
                 ): Boolean {
                     if (resource is Drawable && model is String) {
                         heightMap?.put(model, resource.intrinsicHeight)
@@ -126,15 +133,13 @@ object ImagePrototype : AutoClosingPrototype {
 
                     return false
                 }
-            }
-        )
-        .error(
+            },
+        ).error(
             IconicsDrawable(view.context, CommunityMaterial.Icon3.cmd_refresh).apply {
                 colorInt = view.context.resolveColor(R.attr.colorIcon)
                 sizeDp = 32
-            }
-        )
-        .logErrors()
+            },
+        ).logErrors()
         .into(view)
 
     private fun findHost(view: View): BBCodeView? {

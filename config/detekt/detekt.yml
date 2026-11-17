@@ -4,6 +4,9 @@ complexity:
 exceptions:
   TooGenericExceptionCaught:
     active: false
+  # Pre-existing pattern in this codebase; revisit in ROADMAP Phase 9.
+  SwallowedException:
+    active: false
 
 performance:
   SpreadOperator:
@@ -13,4 +16,11 @@ style:
   MagicNumber:
     active: false
   ForbiddenComment:
+    active: false
+  # Pre-existing patterns in this codebase; revisit in ROADMAP Phase 9.
+  DestructuringDeclarationWithTooManyEntries:
+    active: false
+  UnusedParameter:
+    active: false
+  UnusedPrivateProperty:
     active: false

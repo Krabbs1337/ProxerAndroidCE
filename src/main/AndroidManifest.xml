@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="me.proxer.app"
     android:installLocation="internalOnly"
     android:targetSandboxVersion="2"
     tools:ignore="UnusedAttribute">
@@ -48,7 +47,7 @@
             android:name="com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME"
             android:value="me.proxer.app.anime.stream.CastOptionsProvider" />
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity" android:exported="true">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -148,7 +147,7 @@
                 android:resource="@xml/shortcuts" />
         </activity>
 
-        <activity android:name=".profile.ProfileActivity">
+        <activity android:name=".profile.ProfileActivity" android:exported="true">
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -174,7 +173,8 @@
 
         <activity
             android:name=".chat.prv.PrvMessengerActivity"
-            android:label="@string/activity_prv_messenger_send_to">
+            android:label="@string/activity_prv_messenger_send_to"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -198,7 +198,7 @@
             android:name=".comment.EditCommentActivity"
             android:windowSoftInputMode="adjustResize" />
 
-        <activity android:name=".media.MediaActivity">
+        <activity android:name=".media.MediaActivity" android:exported="true">
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -231,7 +231,7 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             android:launchMode="singleTask" />
 
-        <activity android:name=".manga.MangaActivity">
+        <activity android:name=".manga.MangaActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -260,7 +260,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".anime.AnimeActivity">
+        <activity android:name=".anime.AnimeActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -279,7 +279,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".forum.TopicActivity">
+        <activity android:name=".forum.TopicActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -308,7 +308,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".settings.status.ServerStatusActivity">
+        <activity android:name=".settings.status.ServerStatusActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -327,7 +327,12 @@
 
         <activity android:name=".settings.ProxerLibsActivity" />
 
-        <activity android:name=".ui.WebViewActivity" />
+        <activity android:name=".ui.WebViewActivity" android:exported="true" />
+
+        <activity
+            android:name=".introduction.IntroductionActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Proxer.Introduction" />
 
         <service
             android:name=".news.widget.NewsWidgetService"
@@ -348,7 +353,7 @@
         <receiver
             android:name=".news.widget.NewsWidgetProvider"
             android:icon="@mipmap/ic_launcher"
-            android:label="@string/widget_news_label">
+            android:label="@string/widget_news_label" android:exported="true">
 
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -362,7 +367,7 @@
         <receiver
             android:name=".news.widget.NewsWidgetDarkProvider"
             android:icon="@mipmap/ic_launcher"
-            android:label="@string/widget_news_label">
+            android:label="@string/widget_news_label" android:exported="true">
 
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -376,7 +381,7 @@
         <receiver
             android:name=".anime.schedule.widget.ScheduleWidgetProvider"
             android:icon="@mipmap/ic_launcher"
-            android:label="@string/widget_schedule_label">
+            android:label="@string/widget_schedule_label" android:exported="true">
 
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -390,7 +395,7 @@
         <receiver
             android:name=".anime.schedule.widget.ScheduleWidgetDarkProvider"
             android:icon="@mipmap/ic_launcher"
-            android:label="@string/widget_schedule_label">
+            android:label="@string/widget_schedule_label" android:exported="true">
 
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

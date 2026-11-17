@@ -41,7 +41,6 @@ import me.proxer.library.util.ProxerUrls
  * @author Ruben Gees
  */
 class RecommendationAdapter : BaseAdapter<Recommendation, ViewHolder>() {
-
     var glide: GlideRequests? = null
     val clickSubject: PublishSubject<Pair<ImageView, Recommendation>> = PublishSubject.create()
 
@@ -51,11 +50,15 @@ class RecommendationAdapter : BaseAdapter<Recommendation, ViewHolder>() {
 
     override fun getItemId(position: Int) = data[position].id.toLong()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_recommendation, parent, false))
-    }
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): ViewHolder = ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_recommendation, parent, false))
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(data[position])
+    override fun onBindViewHolder(
+        holder: ViewHolder,
+        position: Int,
+    ) = holder.bind(data[position])
 
     override fun onViewRecycled(holder: ViewHolder) {
         glide?.clear(holder.image)
@@ -65,8 +68,9 @@ class RecommendationAdapter : BaseAdapter<Recommendation, ViewHolder>() {
         glide = null
     }
 
-    inner class ViewHolder(itemView: View) : AutoDisposeViewHolder(itemView) {
-
+    inner class ViewHolder(
+        itemView: View,
+    ) : AutoDisposeViewHolder(itemView) {
         internal val container: ViewGroup by bindView(R.id.container)
         internal val title: TextView by bindView(R.id.title)
         internal val medium: TextView by bindView(R.id.medium)
@@ -88,7 +92,8 @@ class RecommendationAdapter : BaseAdapter<Recommendation, ViewHolder>() {
         }
 
         fun bind(item: Recommendation) {
-            container.clicks()
+            container
+                .clicks()
                 .mapBindingAdapterPosition({ bindingAdapterPosition }) { image to data[it] }
                 .autoDisposable(this)
                 .subscribe(clickSubject)
@@ -97,13 +102,14 @@ class RecommendationAdapter : BaseAdapter<Recommendation, ViewHolder>() {
 
             title.text = item.name
             medium.text = item.medium.toAppString(medium.context)
-            episodes.text = episodes.context.getQuantityString(
-                when (item.category) {
-                    Category.ANIME -> R.plurals.media_episode_count
-                    Category.MANGA, Category.NOVEL -> R.plurals.media_chapter_count
-                },
-                item.episodeAmount
-            )
+            episodes.text =
+                episodes.context.getQuantityString(
+                    when (item.category) {
+                        Category.ANIME -> R.plurals.media_episode_count
+                        Category.MANGA, Category.NOVEL -> R.plurals.media_chapter_count
+                    },
+                    item.episodeAmount,
+                )
 
             if (item.rating > 0) {
                 ratingContainer.isVisible = true
@@ -125,6 +131,7 @@ class RecommendationAdapter : BaseAdapter<Recommendation, ViewHolder>() {
             when (item.userVote) {
                 true -> upvotesImage.setImageDrawable(generateUpvotesImage(true))
                 false -> downvotesImage.setImageDrawable(generateUpvotesImage(true))
+                null -> Unit
             }
 
             upvotesText.text = item.positiveVotes.toString()
@@ -134,28 +141,32 @@ class RecommendationAdapter : BaseAdapter<Recommendation, ViewHolder>() {
             glide?.defaultLoad(image, ProxerUrls.entryImage(item.id))
         }
 
-        private fun generateUpvotesImage(userVoted: Boolean = false) = IconicsDrawable(upvotesImage.context).apply {
-            icon = CommunityMaterial.Icon3.cmd_thumb_up
+        private fun generateUpvotesImage(userVoted: Boolean = false) =
+            IconicsDrawable(upvotesImage.context).apply {
+                icon = CommunityMaterial.Icon3.cmd_thumb_up
 
-            colorInt = when (userVoted) {
-                true -> ContextCompat.getColor(upvotesImage.context, R.color.green_500)
-                false -> upvotesImage.context.resolveColor(R.attr.colorIcon)
+                colorInt =
+                    when (userVoted) {
+                        true -> ContextCompat.getColor(upvotesImage.context, R.color.green_500)
+                        false -> upvotesImage.context.resolveColor(R.attr.colorIcon)
+                    }
+
+                paddingDp = 4
+                sizeDp = 32
             }
 
-            paddingDp = 4
-            sizeDp = 32
-        }
+        private fun generateDownvotesImage(userVoted: Boolean = false) =
+            IconicsDrawable(downvotesImage.context).apply {
+                icon = CommunityMaterial.Icon3.cmd_thumb_down
 
-        private fun generateDownvotesImage(userVoted: Boolean = false) = IconicsDrawable(downvotesImage.context).apply {
-            icon = CommunityMaterial.Icon3.cmd_thumb_down
+                colorInt =
+                    when (userVoted) {
+                        true -> ContextCompat.getColor(upvotesImage.context, R.color.red_500)
+                        false -> upvotesImage.context.resolveColor(R.attr.colorIcon)
+                    }
 
-            colorInt = when (userVoted) {
-                true -> ContextCompat.getColor(upvotesImage.context, R.color.red_500)
-                false -> upvotesImage.context.resolveColor(R.attr.colorIcon)
+                paddingDp = 4
+                sizeDp = 32
             }
-
-            paddingDp = 4
-            sizeDp = 32
-        }
     }
 }

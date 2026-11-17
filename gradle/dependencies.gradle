@@ -1,6 +1,6 @@
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
-    implementation "org.koin:koin-androidx-viewmodel:$koinVersion"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+    implementation "io.insert-koin:koin-androidx-viewmodel:$koinVersion"
 
     implementation "com.google.android.play:core:$playCoreVersion"
     implementation "com.google.android.gms:play-services-cast-framework:$castVersion"
@@ -41,8 +41,6 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout:$constaintLayoutVersion"
     implementation "com.google.android.material:material:$materialComponentsVersion"
     implementation "androidx.preference:preference:$preferenceVersion"
-    implementation "com.github.consp1racy.android-support-preference:support-preference:$supportPreferenceVersion"
-    implementation "com.github.consp1racy.android-support-preference:support-spinner:$supportPreferenceVersion"
     implementation "com.mikepenz:iconics-core:$iconicsVersion"
     implementation "com.mikepenz:iconics-views:$iconicsVersion"
     implementation "com.mikepenz:community-material-typeface:$communityMaterialTypefaceVersion"
@@ -54,12 +52,10 @@ dependencies {
     implementation "com.github.rubengees:subsampling-scale-image-view:$subsamplingScaleImageViewVersion"
     implementation "com.github.num42:subsampling-pdf-decoder:$subsamplingPdfDecoderVersion"
     implementation "com.afollestad.material-dialogs:core:$materialDialogsVersion"
-    implementation "com.google.android:flexbox:$flexboxVersion"
+    implementation "com.google.android.flexbox:flexbox:$flexboxVersion"
     implementation "com.github.vanniktech.Emoji:emoji-ios:$emojiIosVersion"
     implementation "me.zhanghai.android.materialprogressbar:library:$materialProgressBarVersion"
     implementation "me.zhanghai.android.materialratingbar:library:$materialRatingBarVersion"
-    implementation "me.zhanghai.android.customtabshelper:library:$customtabsHelperVersion"
-    implementation "com.github.rubengees:introduction:$introductionVersion"
     implementation "com.github.santalu:aspect-ratio-imageview:$aspectRatioImageViewVersion"
     implementation "com.github.rubensousa:gravitysnaphelper:$gravitySnapHelperVersion"
     implementation "com.google.android.exoplayer:exoplayer:$exoplayerVersion"
@@ -72,16 +68,12 @@ dependencies {
     implementation "com.github.proxer:ProxerLibJava:$proxerLibVersion"
     implementation "com.jakewharton.threetenabp:threetenabp:$threetenVersion"
     implementation "com.github.bumptech.glide:glide:$glideVersion"
-    implementation "com.github.bumptech.glide:okhttp3-integration:$glideVersion"
     implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
     implementation "com.squareup.okhttp3:okhttp:$okHttpVersion"
     implementation "com.squareup.okhttp3:okhttp-brotli:$okHttpVersion"
     implementation "com.squareup.okhttp3:logging-interceptor:$okHttpVersion"
-    implementation "com.squareup.okio:okio:$okioVersion"
     implementation "com.squareup.moshi:moshi:$moshiVersion"
     implementation "com.squareup.moshi:moshi-adapters:$moshiVersion"
-    implementation "com.github.rubengees:easy-header-footer-adapter:$easyHeaderFooterAdapterVersion"
-    implementation "com.gojuno.koptional:koptional-rxjava2-extensions:$kOptionalVersion"
     implementation "com.github.rubengees:kotterknife:$kotterknifeVersion"
     implementation "com.github.seven332.Image:core:$imageDecoderVersion"
     implementation "com.github.seven332.Image:jpeg:$imageDecoderVersion"
@@ -97,22 +89,19 @@ dependencies {
     implementation "com.jakewharton.timber:timber:$timberVersion"
     implementation "com.github.anrwatchdog:anrwatchdog:$anrWatchdogVersion"
 
-    implementation "com.squareup.leakcanary:plumber-android:$leakCanaryVersion"
     debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
 
     releaseImplementation "cat.ereza:customactivityoncrash:$customActivityOnCrashVersion"
     logReleaseImplementation "cat.ereza:customactivityoncrash:$customActivityOnCrashVersion"
 
-    kapt "androidx.room:room-compiler:$roomVersion"
+    ksp "androidx.room:room-compiler:$roomVersion"
     kapt "com.github.bumptech.glide:compiler:$glideVersion"
-    kapt "com.squareup.moshi:moshi-kotlin-codegen:$moshiVersion"
+    ksp "com.squareup.moshi:moshi-kotlin-codegen:$moshiVersion"
 
-    compileOnly "com.github.pengrad:jdk9-deps:$jdkDeps9Version"
 }
 
 configurations.all {
-    resolutionStrategy.dependencySubstitution {
-        substitute module("com.squareup.moshi:moshi") with module("com.github.square.moshi:moshi:dd8611a1d9")
-        substitute module("com.squareup.moshi:moshi-kotlin-codegen") with module("com.github.square.moshi:moshi-kotlin-codegen:dd8611a1d9")
-    }
+    // The app is fully on AndroidX; legacy support-library artifacts (still referenced transitively
+    // by a few old dependencies) would clash with their AndroidX counterparts.
+    exclude group: "com.android.support"
 }

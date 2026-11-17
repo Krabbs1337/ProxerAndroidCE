@@ -14,7 +14,6 @@ import java.util.Date
  */
 @Suppress("unused")
 class RoomConverters {
-
     @TypeConverter
     fun fromDate(date: Date?) = date?.time
 

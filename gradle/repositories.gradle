@@ -1,38 +1,15 @@
 repositories {
-    google {
-        mavenContent { releasesOnly() }
+    google()
+
+    mavenCentral {
         content {
-            includeGroupByRegex "androidx.*"
-            includeGroupByRegex "zipflinger.*"
-            includeGroupByRegex "com\\.android.*"
-            includeGroupByRegex "com\\.google\\.android.*"
-            includeModuleByRegex "org\\.jetbrains\\.kotlin.*", "kotlin-symbol-processing-api"
+            // Everything under com.github.* comes from jitpack, except the few that are
+            // published to Maven Central under that group.
+            excludeGroupByRegex "com\\.github\\.(?!bumptech|anrwatchdog).*"
         }
     }
 
-    jcenter {
-        mavenContent { releasesOnly() }
-        content {
-            excludeGroupByRegex "androidx.*"
-            excludeGroupByRegex "zipflinger.*"
-            excludeGroupByRegex "com\\.android.*"
-            excludeGroupByRegex "com\\.github\\.(?!bumptech|rubensousa|shyiko|anrwatchdog|pengrad).*"
-            excludeModuleByRegex "com\\.google\\.android\\.*", "(?!flexbox).*"
-            excludeModuleByRegex "org\\.jetbrains\\.kotlin.*", "kotlin-symbol-processing-api"
-        }
-    }
-
-    gradlePluginPortal {
-        mavenContent { releasesOnly() }
-        content {
-            excludeGroupByRegex "androidx.*"
-            excludeGroupByRegex "zipflinger.*"
-            excludeGroupByRegex "com\\.github\\.(?!ben-manes).*"
-            excludeGroupByRegex "com\\.android.*"
-            excludeGroupByRegex "com\\.google\\.android\\.*"
-            excludeModuleByRegex "org\\.jetbrains\\.kotlin.*", "kotlin-symbol-processing-api"
-        }
-    }
+    gradlePluginPortal()
 
     maven {
         url "https://jitpack.io"

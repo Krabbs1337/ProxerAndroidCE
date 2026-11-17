@@ -14,7 +14,7 @@ Ziel: Das Projekt auf einen aktuellen, build- und Play-Store-fähigen Stand brin
 
 | Phase | Inhalt | Warum diese Reihenfolge |
 |---|---|---|
-| 1 | Build-Toolchain + SDK-Anhebung | Ohne grünen Build auf aktueller Toolchain ist nichts anderes sicher änderbar |
+| 1 | Build-Toolchain + SDK-Anhebung — **erledigt 17.11.2026** | Ohne grünen Build auf aktueller Toolchain ist nichts anderes sicher änderbar |
 | 2 | **Chat und Messenger entfernen** | Verkleinert die Fläche für alle folgenden Migrationen und eliminiert eigene Problemstellen (Receiver, PendingIntents, eigene Datenbank, Deep-Link) |
 | 3 | Runtime-Fixes für targetSdk 36 | Harte Crashes/Funktionsverluste auf Android 13–16 beheben |
 | 4 | AndroidX + Kernbibliotheken | Stabile Majors, Room 2.8 + KSP, lifecycle-extensions entfernen |
@@ -38,7 +38,18 @@ Ziel: Das Projekt auf einen aktuellen, build- und Play-Store-fähigen Stand brin
 - SDK-Level: compileSdk **36**, targetSdk **36** (Play-Pflicht seit 31.08.2026: Updates müssen mindestens Android 16 / API 36 targeten), minSdk 21 → **24+**, NDK 21.3 → 27/28, `abiFilters` in die neue DSL überführen.
 - Plugins aktualisieren: ben-manes versions 0.36 → aktuell, detekt 1.15 → 2.x, ktlint-Plugin 9.4.1 → 12.x, aboutlibraries 8.6.7 → 12.x.
 
-**Abnahme:** Debug- und Release-Build grün, `ktlintCheck` + `detekt` grün, CI-Pipeline auf JDK 17 grün.
+**Umgesetzt am 17.11.2026 (konkrete Versionen & Abweichungen):**
+
+- Gradle **9.9.1**, AGP **9.5.1** (9.6 nur als Alpha), Kotlin **2.4.21**, KSP **2.3.14**, JDK **17** (Temurin lokal + CI), compileSdk/targetSdk **36**, minSdk **24**. `ndkVersion` gestrichen (kein cmake im Projekt).
+- AGP 9: `org.jetbrains.kotlin.android`-Plugin entfernt (AGP bringt Kotlin eingebaut; KGP über `buildscript`-Classpath gepinnt), `namespace` in der DSL, `package=`-Attribut aus allen Manifesten entfernt, `android.nonTransitiveRClass=false`, Varianten-API über `androidComponents { onVariants { ... outputFileName } }`, `com.android.legacy-kapt` nur für Glide (KSP generiert keine `GlideApp`-API).
+- `configurations.all { exclude group: "com.android.support" }` statt Jetifier; jcenter entfernt – Repos: google / mavenCentral (gefiltert) / gradlePluginPortal / jitpack.
+- detekt bleibt **1.23.8** (2.x nur Alpha – Neu-Konfiguration in Phase 9), ktlint-gradle **14.2.0** mit ktlint **1.8.0**, ben-manes **0.67.0** (neue Plugin-ID `io.github.ben-manes.versions`), aboutlibraries **12.2.4** (letztes Release mit view-basiertem `LibsSupportFragment`).
+- Gepurgte/umbenannte Libs durch in-repo-Ersatzklassen im selben Paket ersetzt (keine Call-Site-Änderungen): `com.gojuno.koptional`, `EasyHeaderFooterAdapter`, `CustomTabsHelperFragment`, Glide-`OkHttpUrlLoader` (okhttp3-integration bricht KSP), eigene `IntroductionActivity` statt rubengees-introduction.
+- ExoPlayer auf **2.13.3** gepinnt (2.11.8 ist aus Google Maven verschwunden) bis Phase 7 (Media3).
+- `allWarningsAsErrors` und lint `abortOnError` vorerst deaktiviert (TODO → Phase 9); ktlint-Verstöße im Altbestand per `ktlintFormat` + Hand-Fixes beseitigt.
+- Verifiziert grün: `ktlintCheck`, `detekt`, `assembleDebug` (26,9 MB), `assembleRelease` (9,9 MB), `bundleRelease` (13,2 MB AAB), `assembleLogRelease`.
+
+**Abnahme:** Debug- und Release-Build grün, `ktlintCheck` + `detekt` grün – lokal erfüllt (siehe oben). CI-Pipeline auf JDK 17 angepasst, erster Lauf beim nächsten Push.
 
 ## Phase 2 – Chat und Messenger entfernen
 

@@ -29,7 +29,6 @@ import okhttp3.HttpUrl
  * @author Ruben Gees
  */
 abstract class ImageTabsActivity : DrawerActivity() {
-
     override val contentView
         get() = R.layout.activity_image_tabs
 
@@ -71,16 +70,19 @@ abstract class ImageTabsActivity : DrawerActivity() {
         super.onDestroy()
     }
 
-    override fun onBackPressed() = when (isHeaderImageVisible && headerImage.drawable != null) {
-        true -> super.onBackPressed()
-        false -> finish()
-    }
+    override fun onBackPressed() =
+        when (isHeaderImageVisible && headerImage.drawable != null) {
+            true -> super.onBackPressed()
+            false -> finish()
+        }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            android.R.id.home -> when (isHeaderImageVisible && headerImage.drawable != null) {
-                true -> supportFinishAfterTransition()
-                false -> finish()
+            android.R.id.home -> {
+                when (isHeaderImageVisible && headerImage.drawable != null) {
+                    true -> supportFinishAfterTransition()
+                    false -> finish()
+                }
             }
         }
 
@@ -91,22 +93,25 @@ abstract class ImageTabsActivity : DrawerActivity() {
         appbar.setExpanded(false)
     }
 
-    fun headerHeightChanges(): Observable<Float> = appbar.offsetChanges()
-        .map { verticalOffset ->
-            val overallHeight = collapsingToolbar.height
-            val toolbarHeight = toolbar.height
-            val toolbarTranslation = IntArray(2).apply { toolbar.getLocationOnScreen(this) }[1]
-            val tabLayoutHeight = tabs.height
+    fun headerHeightChanges(): Observable<Float> =
+        appbar
+            .offsetChanges()
+            .map { verticalOffset ->
+                val overallHeight = collapsingToolbar.height
+                val toolbarHeight = toolbar.height
+                val toolbarTranslation = IntArray(2).apply { toolbar.getLocationOnScreen(this) }[1]
+                val tabLayoutHeight = tabs.height
 
-            val collapsedHeight = overallHeight - toolbarHeight - toolbarTranslation - tabLayoutHeight
+                val collapsedHeight = overallHeight - toolbarHeight - toolbarTranslation - tabLayoutHeight
 
-            (-collapsedHeight - verticalOffset).toFloat()
-        }
+                (-collapsedHeight - verticalOffset).toFloat()
+            }
 
     protected open fun setupImage() {
         ViewCompat.setTransitionName(headerImage, ActivityUtils.getTransitionName(this))
 
-        headerImage.clicks()
+        headerImage
+            .clicks()
             .autoDisposable(this.scope())
             .subscribe {
                 val safeHeaderImageUrl = headerImageUrl
@@ -127,7 +132,8 @@ abstract class ImageTabsActivity : DrawerActivity() {
 
             supportStartPostponedEnterTransition()
         } else {
-            GlideApp.with(this)
+            GlideApp
+                .with(this)
                 .load(headerImageUrl.toString())
                 .logErrors()
                 .into(
@@ -143,7 +149,7 @@ abstract class ImageTabsActivity : DrawerActivity() {
                         override fun onLoadFailed(errorDrawable: Drawable?) {
                             supportStartPostponedEnterTransition()
                         }
-                    }
+                    },
                 )
         }
     }
@@ -156,7 +162,8 @@ abstract class ImageTabsActivity : DrawerActivity() {
 
         collapsingToolbar.isTitleEnabled = false
 
-        appbar.offsetChanges()
+        appbar
+            .offsetChanges()
             .autoDisposable(this.scope())
             .subscribe {
                 isHeaderImageVisible = collapsingToolbar.height + it > collapsingToolbar.scrimVisibleHeightTrigger
@@ -176,7 +183,6 @@ abstract class ImageTabsActivity : DrawerActivity() {
 
     protected open fun loadEmptyImage() {}
 
-    private fun isTransitionPossible(savedInstanceState: Bundle?): Boolean {
-        return savedInstanceState == null && ActivityUtils.getTransitionName(this) != null
-    }
+    private fun isTransitionPossible(savedInstanceState: Bundle?): Boolean =
+        savedInstanceState == null && ActivityUtils.getTransitionName(this) != null
 }

@@ -10,22 +10,22 @@ import com.bumptech.glide.request.target.Target
  */
 @Suppress("FunctionOnlyReturningConstant")
 interface SimpleGlideRequestListener<R> : RequestListener<R> {
-
     override fun onLoadFailed(
         error: GlideException?,
         model: Any?,
-        target: Target<R>?,
-        isFirstResource: Boolean
+        target: Target<R>,
+        isFirstResource: Boolean,
     ) = onLoadFailed(error)
 
     override fun onResourceReady(
-        resource: R,
-        model: Any?,
-        target: Target<R>?,
-        dataSource: DataSource?,
-        isFirstResource: Boolean
+        resource: R & Any,
+        model: Any,
+        target: Target<R>,
+        dataSource: DataSource,
+        isFirstResource: Boolean,
     ) = onResourceReady(resource)
 
     fun onLoadFailed(error: GlideException?) = false
-    fun onResourceReady(resource: R) = false
+
+    fun onResourceReady(resource: R & Any) = false
 }

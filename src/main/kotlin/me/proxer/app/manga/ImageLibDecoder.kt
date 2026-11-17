@@ -12,29 +12,38 @@ import com.hippo.image.BitmapDecoder
 /**
  * @author Ruben Gees
  */
-class ImageLibDecoder @JvmOverloads @Keep constructor(bitmapConfig: Bitmap.Config? = null) : ImageDecoder {
+class ImageLibDecoder
+    @JvmOverloads @Keep
+    constructor(
+        bitmapConfig: Bitmap.Config? = null,
+    ) : ImageDecoder {
+        private val bitmapConfig: Int
 
-    private val bitmapConfig: Int
+        init {
+            val globalBitmapConfig = SubsamplingScaleImageView.getPreferredBitmapConfig()
 
-    init {
-        val globalBitmapConfig = SubsamplingScaleImageView.getPreferredBitmapConfig()
+            val bitmapConfigToUse =
+                when {
+                    bitmapConfig != null -> bitmapConfig
+                    globalBitmapConfig != null -> globalBitmapConfig
+                    else -> BitmapDecoder.CONFIG_RGB_565
+                }
 
-        val bitmapConfigToUse = when {
-            bitmapConfig != null -> bitmapConfig
-            globalBitmapConfig != null -> globalBitmapConfig
-            else -> BitmapDecoder.CONFIG_RGB_565
+            this.bitmapConfig =
+                when (bitmapConfigToUse) {
+                    Bitmap.Config.RGB_565 -> BitmapDecoder.CONFIG_RGB_565
+                    Bitmap.Config.ARGB_8888 -> BitmapDecoder.CONFIG_RGBA_8888
+                    else -> BitmapDecoder.CONFIG_RGB_565
+                }
         }
 
-        this.bitmapConfig = when (bitmapConfigToUse) {
-            Bitmap.Config.RGB_565 -> BitmapDecoder.CONFIG_RGB_565
-            Bitmap.Config.ARGB_8888 -> BitmapDecoder.CONFIG_RGBA_8888
-            else -> BitmapDecoder.CONFIG_RGB_565
-        }
+        override fun decode(
+            context: Context?,
+            uri: Uri,
+        ): Bitmap =
+            uri
+                .toFile()
+                .inputStream()
+                .use { BitmapDecoder.decode(it) }
+                .let { requireNotNull(it) }
     }
-
-    override fun decode(context: Context?, uri: Uri): Bitmap {
-        return uri.toFile().inputStream()
-            .use { BitmapDecoder.decode(it) }
-            .let { requireNotNull(it) }
-    }
-}

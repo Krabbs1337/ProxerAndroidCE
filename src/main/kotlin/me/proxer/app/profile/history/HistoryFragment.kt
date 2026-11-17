@@ -25,11 +25,11 @@ import kotlin.properties.Delegates
  * @author Ruben Gees
  */
 class HistoryFragment : PagedContentFragment<LocalUserHistoryEntry>() {
-
     companion object {
-        fun newInstance() = HistoryFragment().apply {
-            arguments = bundleOf()
-        }
+        fun newInstance() =
+            HistoryFragment().apply {
+                arguments = bundleOf()
+            }
     }
 
     override val emptyDataMessage = R.string.error_no_data_history
@@ -40,7 +40,7 @@ class HistoryFragment : PagedContentFragment<LocalUserHistoryEntry>() {
     override val layoutManager by lazy {
         StaggeredGridLayoutManager(
             DeviceUtils.calculateSpanAmount(requireActivity()) + 1,
-            StaggeredGridLayoutManager.VERTICAL
+            StaggeredGridLayoutManager.VERTICAL,
         )
     }
 
@@ -64,21 +64,26 @@ class HistoryFragment : PagedContentFragment<LocalUserHistoryEntry>() {
             .autoDisposable(this.scope())
             .subscribe { (_, entry) ->
                 when (entry.category) {
-                    Category.ANIME -> AnimeActivity.navigateTo(
-                        requireActivity(),
-                        entry.entryId,
-                        entry.episode,
-                        entry.language.toAnimeLanguage(),
-                        entry.name
-                    )
-                    Category.MANGA, Category.NOVEL -> MangaActivity.navigateTo(
-                        requireActivity(),
-                        entry.entryId,
-                        entry.episode,
-                        entry.language.toGeneralLanguage(),
-                        null,
-                        entry.name
-                    )
+                    Category.ANIME -> {
+                        AnimeActivity.navigateTo(
+                            requireActivity(),
+                            entry.entryId,
+                            entry.episode,
+                            entry.language.toAnimeLanguage(),
+                            entry.name,
+                        )
+                    }
+
+                    Category.MANGA, Category.NOVEL -> {
+                        MangaActivity.navigateTo(
+                            requireActivity(),
+                            entry.entryId,
+                            entry.episode,
+                            entry.language.toGeneralLanguage(),
+                            null,
+                            entry.name,
+                        )
+                    }
                 }
             }
 
@@ -89,7 +94,10 @@ class HistoryFragment : PagedContentFragment<LocalUserHistoryEntry>() {
             }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
 
         innerAdapter.glide = GlideApp.with(this)

@@ -83,3 +83,7 @@
     <init>(...);
     <fields>;
 }
+
+# Hawk references Gson, but the app uses the Moshi parser (HawkMoshiParser), so gson is
+# excluded on purpose. Suppress the resulting R8 missing-class errors.
+-dontwarn com.google.gson.**

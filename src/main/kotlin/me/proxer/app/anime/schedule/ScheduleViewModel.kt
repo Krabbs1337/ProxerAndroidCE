@@ -10,14 +10,15 @@ import me.proxer.library.enums.CalendarDay
  * @author Ruben Gees
  */
 class ScheduleViewModel : BaseViewModel<Map<CalendarDay, List<CalendarEntry>>>() {
-
     override val dataSingle: Single<Map<CalendarDay, List<CalendarEntry>>>
-        get() = Single.fromCallable { validate() }
-            .flatMap { api.media.calendar().buildSingle() }
-            .map { calendarEntries -> calendarEntries.groupBy { it.weekDay } }
-            .map { groupedCalendarEntries ->
-                groupedCalendarEntries.mapValues { (_, calendarEntries) ->
-                    calendarEntries.sortedBy { it.date }
+        get() =
+            Single
+                .fromCallable { validate() }
+                .flatMap { api.media.calendar().buildSingle() }
+                .map { calendarEntries -> calendarEntries.groupBy { it.weekDay } }
+                .map { groupedCalendarEntries ->
+                    groupedCalendarEntries.mapValues { (_, calendarEntries) ->
+                        calendarEntries.sortedBy { it.date }
+                    }
                 }
-            }
 }

@@ -27,10 +27,11 @@ abstract class BaseDialog :
     CustomTabsAware {
     val dialogLifecycleOwner: LifecycleOwner =
         object : LifecycleOwner {
-            override fun getLifecycle(): Lifecycle =
-                lifecycleRegistry ?: LifecycleRegistry(this).also {
-                    lifecycleRegistry = it
-                }
+            override val lifecycle: Lifecycle
+                get() =
+                    lifecycleRegistry ?: LifecycleRegistry(this).also {
+                        lifecycleRegistry = it
+                    }
         }
 
     protected val bus by safeInject<RxBus>()

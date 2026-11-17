@@ -136,11 +136,11 @@ class SettingsFragment :
     override fun onResume() {
         super.onResume()
 
-        preferenceManager.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
+        preferenceManager.sharedPreferences?.registerOnSharedPreferenceChangeListener(this)
     }
 
     override fun onPause() {
-        preferenceManager.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
+        preferenceManager.sharedPreferences?.unregisterOnSharedPreferenceChangeListener(this)
 
         super.onPause()
     }
@@ -191,7 +191,7 @@ class SettingsFragment :
                 View.OnClickListener {
                     val intent = packageManager.getLaunchIntentForPackage(BuildConfig.APPLICATION_ID)?.clearTop()
 
-                    startActivity(intent)
+                    intent?.let { safeIntent -> startActivity(safeIntent) }
                     exitProcess(0)
                 },
         )

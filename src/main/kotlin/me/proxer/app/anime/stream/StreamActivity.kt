@@ -394,7 +394,7 @@ class StreamActivity : BaseActivity() {
 
     override fun onMultiWindowModeChanged(
         isInMultiWindowMode: Boolean,
-        newConfig: Configuration?,
+        newConfig: Configuration,
     ) {
         super.onMultiWindowModeChanged(isInMultiWindowMode, newConfig)
 

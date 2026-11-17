@@ -17,7 +17,7 @@ Ziel: Das Projekt auf einen aktuellen, build- und Play-Store-fähigen Stand brin
 | 1 | Build-Toolchain + SDK-Anhebung — **erledigt 17.11.2026** | Ohne grünen Build auf aktueller Toolchain ist nichts anderes sicher änderbar |
 | 2 | **Chat und Messenger entfernen** — **erledigt 17.11.2026** | Verkleinert die Fläche für alle folgenden Migrationen und eliminiert eigene Problemstellen (Receiver, PendingIntents, eigene Datenbank, Deep-Link) |
 | 3 | Runtime-Fixes für targetSdk 36 — **erledigt 17.11.2026** | Harte Crashes/Funktionsverluste auf Android 13–16 beheben |
-| 4 | AndroidX + Kernbibliotheken | Stabile Majors, Room 2.8 + KSP, lifecycle-extensions entfernen |
+| 4 | AndroidX + Kernbibliotheken — **erledigt 17.11.2026** | Stabile Majors, Room 2.8 + KSP, lifecycle-extensions entfernen |
 | 5 | Sicherheit | Token-Speicherung, Cleartext, CVE-behaftete Libs |
 | 6 | DI + View-Layer | Koin 2→4, Kotterknife→ViewBinding, AutoDispose 2 |
 | 7 | Media | ExoPlayer 2.11 → Media3 |
@@ -109,7 +109,19 @@ Checkliste (alle bekannten Berührungspunkte):
 - WorkManager 2.5.0-rc01 → 2.11.x (betrifft `NotificationWorker`, Widget-Worker; Chat-Worker entfällt in Phase 2).
 - Übrige UI-Libs aktualisieren (iconics, materialdrawer, flexbox 3.0.0, material-dialogs-Alternative evaluieren, jitpack-Commit-Deps wo möglich auf stabile Releases).
 
-**Abnahme:** Build grün, Room-Migration auf bestehendem Gerät getestet (App öffnet Chats-lose Version mit erhaltenen Tags), WorkManager-Jobs laufen.
+**Umgesetzt am 17.11.2026 (konkrete Versionen & Abweichungen):**
+
+- AndroidX auf Stables: appcompat **1.8.0**, core-ktx **1.19.1**, fragment-ktx **1.9.1**, browser **1.10.0**, preference **1.2.1**, recyclerview **1.4.0**, viewpager2 **1.1.0**, constraintlayout **2.2.2**, exifinterface **1.4.2**, gridlayout **1.1.0**, material **1.14.0**, security-crypto **1.1.0** (Alpha → stable), sharetarget 1.2.0, cardview 1.0.0, play core **1.10.3**.
+- **compileSdk 36 → 37** (targetSdk bleibt 36): core-ktx/core 1.19.x verlangen compileSdk 37; AGP 9.5.1 unterstützt API 37, Plattform android-37 bereits im SDK vorhanden.
+- `lifecycle-extensions` entfernt (wurde nirgends direkt genutzt) → `lifecycle-viewmodel-ktx` + `lifecycle-livedata-ktx` **2.11.0**. Fix: `LifecycleOwner` ist in lifecycle 2.11 eine Kotlin-val (`BaseDialog`).
+- Room **2.8.5** (bereits in Phase 1) + `fallbackToDestructiveMigrationOnDowngrade()` für `TagDatabase`; Schema-Export via KSP-Arg `room.schemaLocation` war bereits konfiguriert, Schemas unverändert.
+- WorkManager **2.12.0**. Fix: `Logger` hat in 2.12 einzelne `Throwable`-Überladungen statt vararg (`WorkManagerTimberLogger` umgeschrieben).
+- Timber **5.0.1**; iconics **5.6.0** (community-material-typeface bleibt 5.8.55.0-kotlin, da 7.x die Icon/Icon2/Icon3-APIs ändert).
+- Weitere compileSdk-37-Anpassungen: `onMultiWindowModeChanged(Boolean, Configuration)` wieder non-null (StreamActivity/MangaActivity), `ActivityResultContract<Input, LocalComment?>`, `preferenceManager.sharedPreferences?` in SettingsFragment.
+- Bewusst **nicht** angehoben (hängen in Phase 7 an ExoPlayer 2.13.3): cast-framework 19.0.0, interactivemedia 3.14.0, ads-identifier 17.0.0, ExoPlayer 2.13.3. Ebenfalls stehen gelassen: materialdrawer 8.3.1 / material-about-library 3.2.0-rc01 / StrictModeCompat 30.1.1 (nur noch via Jitpack/jcenter-Nachfolge erreichbar, kein stabiles neueres Release; Umbau des Drawers folgt in Phase 6).
+- Verifiziert grün: `ktlintCheck`, `detekt`, `assembleDebug`, `assembleRelease`, `bundleRelease`, `assembleLogRelease`.
+
+**Abnahme:** Build grün – lokal erfüllt. Room-Migration/WorkManager-Laufzeit auf bestehendem Gerät testen; Tags bleiben erhalten (nur `TagDatabase` mit Schema v2).
 
 ## Phase 5 – Sicherheit
 

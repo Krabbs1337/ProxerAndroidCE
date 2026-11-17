@@ -13,54 +13,57 @@ class WorkManagerTimberLogger(
     loggingLevel: Int = Log.INFO,
 ) : Logger(loggingLevel) {
     override fun verbose(
-        tag: String?,
+        tag: String,
         message: String,
-        vararg throwables: Throwable,
-    ) {
-        log(Log.VERBOSE, message, throwables)
-    }
+    ) = Timber.v(message)
+
+    override fun verbose(
+        tag: String,
+        message: String,
+        throwable: Throwable,
+    ) = Timber.v(throwable, message)
 
     override fun debug(
-        tag: String?,
+        tag: String,
         message: String,
-        vararg throwables: Throwable,
-    ) {
-        log(Log.DEBUG, message, throwables)
-    }
+    ) = Timber.d(message)
+
+    override fun debug(
+        tag: String,
+        message: String,
+        throwable: Throwable,
+    ) = Timber.d(throwable, message)
 
     override fun info(
-        tag: String?,
+        tag: String,
         message: String,
-        vararg throwables: Throwable,
-    ) {
-        log(Log.INFO, message, throwables)
-    }
+    ) = Timber.i(message)
+
+    override fun info(
+        tag: String,
+        message: String,
+        throwable: Throwable,
+    ) = Timber.i(throwable, message)
 
     override fun warning(
-        tag: String?,
+        tag: String,
         message: String,
-        vararg throwables: Throwable,
-    ) {
-        log(Log.WARN, message, throwables)
-    }
+    ) = Timber.w(message)
+
+    override fun warning(
+        tag: String,
+        message: String,
+        throwable: Throwable,
+    ) = Timber.w(throwable, message)
 
     override fun error(
-        tag: String?,
+        tag: String,
         message: String,
-        vararg throwables: Throwable,
-    ) {
-        log(Log.ERROR, message, throwables)
-    }
+    ) = Timber.e(message)
 
-    private fun log(
-        priority: Int,
+    override fun error(
+        tag: String,
         message: String,
-        throwables: Array<out Throwable>,
-    ) {
-        if (throwables.isEmpty()) {
-            Timber.log(priority, message)
-        } else {
-            throwables.forEach { Timber.log(priority, message, it) }
-        }
-    }
+        throwable: Throwable,
+    ) = Timber.e(throwable, message)
 }

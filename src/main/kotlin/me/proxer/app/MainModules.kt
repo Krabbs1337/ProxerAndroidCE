@@ -210,6 +210,7 @@ private val applicationModules =
             Room
                 .databaseBuilder(androidContext(), TagDatabase::class.java, TAG_DATABASE_NAME)
                 .addMigrations(TagDatabase.MIGRATION_1_2)
+                .fallbackToDestructiveMigrationOnDowngrade()
                 .build()
         }
 

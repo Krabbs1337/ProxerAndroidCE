@@ -8,7 +8,7 @@ import com.bumptech.glide.request.target.Target
 import me.proxer.app.GlideApp
 import me.proxer.app.util.extension.androidUri
 import okhttp3.HttpUrl
-import org.threeten.bp.format.DateTimeFormatter
+import java.time.format.DateTimeFormatter
 import timber.log.Timber
 import java.net.NetworkInterface
 

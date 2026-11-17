@@ -79,7 +79,9 @@ ext {
 
     // Utils
     proxerLibVersion = "5.4.0"
-    threetenVersion = "1.3.0"
+    leakCanaryVersion = "2.14"
+    profileInstallerVersion = "1.4.1"
+    benchmarkVersion = "1.5.0"
     desugarJdkLibsVersion = "2.1.5"
     glideVersion = "4.16.0"
     retrofitVersion = "2.12.0"
@@ -92,7 +94,6 @@ ext {
     // Debugging
     customActivityOnCrashVersion = "2.3.0"
     strictModeCompatVersion = "30.1.1"
-    leakCanaryVersion = "2.14"
     anrWatchdogVersion = "1.4.0"
     timberVersion = "5.0.1"
 }

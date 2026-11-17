@@ -16,7 +16,7 @@ pluginManagement { scriptHandler ->
     resolutionStrategy {
         eachPlugin {
 
-            if (requested.id.id == "com.android.application") {
+            if (requested.id.id in ["com.android.application", "com.android.library", "com.android.test"]) {
                 useModule("com.android.tools.build:gradle:${androidPluginVersion}")
             }
         }
@@ -24,3 +24,5 @@ pluginManagement { scriptHandler ->
 }
 
 rootProject.name = "ProxerAndroid"
+
+include(":baselineprofile")

@@ -7,11 +7,11 @@ import com.bumptech.glide.GlideBuilder
 import com.bumptech.glide.Registry
 import com.bumptech.glide.annotation.GlideModule
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader
-import com.bumptech.glide.load.DecodeFormat
-import com.bumptech.glide.load.engine.cache.DiskLruCacheFactory
+import com.bumptech.glide.load.engine.cache.DiskCache
+import com.bumptech.glide.load.engine.cache.ExternalCacheDiskCacheFactory
+import com.bumptech.glide.load.engine.cache.InternalCacheDiskCacheFactory
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.module.AppGlideModule
-import com.bumptech.glide.request.RequestOptions
 import me.proxer.app.util.data.PreferenceHelper
 import me.proxer.app.util.extension.safeInject
 import okhttp3.OkHttpClient
@@ -34,21 +34,19 @@ class ProxerGlideModule : AppGlideModule() {
         context: Context,
         builder: GlideBuilder,
     ) {
-        val cacheDir =
-            when (!Environment.isExternalStorageEmulated() && preferenceHelper.shouldCacheExternally) {
-                true -> context.externalCacheDir ?: context.cacheDir
-                false -> context.cacheDir
+        // Hardware bitmaps and ARGB_8888 are Glide's defaults since 4.x; keeping them saves
+        // RAM/GPU memory pressure compared to disallowHardwareConfig() + PREFER_RGB_565.
+        builder.setLogRequestOrigins(BuildConfig.DEBUG)
+
+        val useExternalCache = !Environment.isExternalStorageEmulated() && preferenceHelper.shouldCacheExternally
+
+        val diskCacheFactory: DiskCache.Factory =
+            when (useExternalCache) {
+                true -> ExternalCacheDiskCacheFactory(context, CACHE_DIR, CACHE_SIZE.toInt())
+                false -> InternalCacheDiskCacheFactory(context, CACHE_DIR, CACHE_SIZE)
             }
 
-        builder
-            .setLogRequestOrigins(BuildConfig.DEBUG)
-            .setDefaultRequestOptions(
-                RequestOptions()
-                    .disallowHardwareConfig()
-                    .format(DecodeFormat.PREFER_RGB_565),
-            )
-
-        builder.setDiskCache(DiskLruCacheFactory(cacheDir.path, CACHE_DIR, CACHE_SIZE))
+        builder.setDiskCache(diskCacheFactory)
     }
 
     override fun registerComponents(

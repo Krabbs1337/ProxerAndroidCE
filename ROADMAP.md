@@ -21,7 +21,7 @@ Ziel: Das Projekt auf einen aktuellen, build- und Play-Store-fähigen Stand brin
 | 5 | Sicherheit — **erledigt 17.11.2026** | Token-Speicherung, Cleartext, CVE-behaftete Libs |
 | 6 | DI + View-Layer — **erledigt 17.11.2026** | Koin 2→4, Kotterknife→Shim, AutoDispose 1.4.1 |
 | 7 | Media — **erledigt 17.11.2026** | ExoPlayer 2.13.3 → Media3 1.11.1 |
-| 8 | Performance + Polish | Glide, Baseline Profiles, AAB-Splits, Desugaring |
+| 8 | Performance + Polish — **erledigt 17.11.2026** | Glide, Baseline Profiles, AAB-Splits, Desugaring |
 | 9 | Qualitätssicherung + optionale Coroutines-Migration | detekt/ktlint/CI aktuell, schrittweise RxJava-Ablösung |
 
 ---
@@ -189,7 +189,18 @@ Checkliste (alle bekannten Berührungspunkte):
 - `initConnectionManager` in `MainApplication`: `NetworkCallback` in `onTerminate` abmelden.
 - `largeHeap` entfernen (Phase 3), Speicherverhalten mit LeakCanary 2.x prüfen.
 
-**Abnahme:** Kaltstart- und Scroll-Performance messbar verbessert (Macrobenchmark oder Profiler), AAB-Größe durch Splits reduziert.
+**Umgesetzt am 17.11.2026 (konkrete Versionen & Abweichungen):**
+
+- **Glide** (bleibt 4.16.0; 5.x wäre separater Major-Umbau): `disallowHardwareConfig()` und `PREFER_RGB_565` entfernt (Hardware-Bitmaps + ARGB_8888 sind Glide-Default), `DiskLruCacheFactory` → `DiskCache.Factory` via `InternalCacheDiskCacheFactory`/`ExternalCacheDiskCacheFactory` (250 MB Cache, externe Cache-Nutzung bei nicht-emuliertem External Storage wie bisher).
+- **threetenabp entfernt** (Desugaring war in Phase 7 aktiviert): Dependency + `AndroidThreeTen.init()` raus, 25 Dateien von `org.threeten.bp.*` auf `java.time.*` umgestellt (Instant/LocalDate/LocalDateTime/ZoneId/Duration/Period/format.*/temporal.ChronoUnit – API-kompatibel).
+- **Baseline Profiles**: `androidx.profileinstaller:profileinstaller:1.4.1` als App-Dependency (Initializer auto-registriert via AAR-Manifest) + neues Modul `:baselineprofile` (`com.android.test`, `benchmark-macro-junit4` 1.5.0, `targetProjectPath = ":"`) mit `BaselineProfileGenerator` (Startup COLD, `startActivityAndWait`). Profil-Generierung braucht Device/Emulator: `./gradlew :baselineprofile:connectedReleaseAndroidTest` bzw. `:baselineprofile:generateReleaseBaselineProfile` – lokal nur kompiliert (`assembleAndroidTest` grün), generación im CI/Gerät.
+- **AAB-Splits**: `bundle { language { enableSplit = true }; abi { enableSplit = true } }`, `resourceConfigurations += "de"` entfernt (sonst kein Language-Split). Universal-APK wächst dadurch 9,2 → 10,3 MB (alle Locales drin), AAB 13,3 → 13,6 MB mit Sprach-/ABI-Splits für schlankere Installs.
+- **LeakCanary** `debugImplementation com.squareup.leakcanary:leakcanary-android:2.14` (nur Debug-Builds).
+- `BaseViewModel.load()`/`reload()`: `data.value = null` pro Reload entfernt – Daten halten, nur `isLoading`/`error` setzen (kein Flackern mehr beim Refresh).
+- `MainApplication.initConnectionManager()`: `NetworkCallback` wird als Feld gehalten und in `onTerminate()` abgemeldet.
+- Verifiziert grün: `ktlintCheck`, `detekt`, `assembleDebug`, `assembleRelease`, `bundleRelease`, `assembleLogRelease`, `:baselineprofile:assembleAndroidTest`.
+
+**Abnahme:** Kaltstart-/Scroll-Gewinn messbar sobald Baseline-Profile auf Gerät/CI generiert sind (Macrobenchmark-Modul vorhanden); AAB liefert ABI-/Language-Splits – lokaler Build grün.
 
 ## Phase 9 – Qualitätssicherung + optionale Coroutines-Migration
 

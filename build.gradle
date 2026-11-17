@@ -37,7 +37,6 @@ android {
         versionName "$appVersionMajor.$appVersionMinor.$appVersionPatch"
 
         vectorDrawables.useSupportLibrary true
-        resourceConfigurations += "de"
 
         ndk {
             abiFilters "arm64-v8a", "armeabi-v7a", "x86_64", "x86"
@@ -149,7 +148,11 @@ android {
 
     bundle {
         language {
-            enableSplit = false
+            enableSplit = true
+        }
+
+        abi {
+            enableSplit = true
         }
     }
 }

@@ -19,7 +19,6 @@ import com.github.anrwatchdog.ANRWatchDog
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.common.GooglePlayServicesUtil
 import com.google.android.gms.security.ProviderInstaller
-import com.jakewharton.threetenabp.AndroidThreeTen
 import com.kirillr.strictmodehelper.StrictModeCompat
 import com.mikepenz.materialdrawer.util.DrawerImageLoader
 import com.rubengees.rxbus.RxBus
@@ -86,6 +85,8 @@ class MainApplication : Application() {
         loginHandler.listen(this)
     }
 
+    private var networkCallback: ConnectivityManager.NetworkCallback? = null
+
     private fun initConnectionManager() {
         val connectivityManager = requireNotNull(getSystemService<ConnectivityManager>())
 
@@ -101,7 +102,21 @@ class MainApplication : Application() {
                 }
             }
 
+        networkCallback = callback
+
         connectivityManager.registerNetworkCallback(NetworkRequest.Builder().build(), callback)
+    }
+
+    override fun onTerminate() {
+        networkCallback?.let { callback ->
+            runCatching {
+                requireNotNull(getSystemService<ConnectivityManager>()).unregisterNetworkCallback(callback)
+            }
+        }
+
+        networkCallback = null
+
+        super.onTerminate()
     }
 
     private fun initGlobalErrorHandler() {
@@ -176,7 +191,6 @@ class MainApplication : Application() {
     @SuppressLint("RestrictedApi")
     private fun initLibs() {
         WorkManager.initialize(this, Configuration.Builder().build())
-        AndroidThreeTen.init(this)
 
         if (BuildConfig.LOG) {
             Timber.plant(TimberFileTree())

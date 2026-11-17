@@ -72,8 +72,10 @@ dependencies {
     implementation "com.github.rubengees.PreviewSeekBar:previewseekbar:$previewSeekbarVersion"
 
     implementation "com.github.proxer:ProxerLibJava:$proxerLibVersion"
-    implementation "com.jakewharton.threetenabp:threetenabp:$threetenVersion"
     implementation "com.github.bumptech.glide:glide:$glideVersion"
+    implementation "androidx.profileinstaller:profileinstaller:$profileInstallerVersion"
+
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
     implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
     implementation "com.squareup.okhttp3:okhttp:$okHttpVersion"
     implementation "com.squareup.okhttp3:okhttp-brotli:$okHttpVersion"
@@ -90,7 +92,6 @@ dependencies {
     implementation "com.jakewharton.timber:timber:$timberVersion"
     implementation "com.github.anrwatchdog:anrwatchdog:$anrWatchdogVersion"
 
-    debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
 
     releaseImplementation "cat.ereza:customactivityoncrash:$customActivityOnCrashVersion"
     logReleaseImplementation "cat.ereza:customactivityoncrash:$customActivityOnCrashVersion"

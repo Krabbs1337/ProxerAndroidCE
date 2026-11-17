@@ -89,7 +89,6 @@ abstract class BaseViewModel<T> : ViewModel() {
                 .doOnSubscribe {
                     isLoading.value = true
                     error.value = null
-                    data.value = null
                 }.doAfterTerminate { isLoading.value = false }
                 .subscribeAndLogErrors(
                     {
@@ -113,7 +112,6 @@ abstract class BaseViewModel<T> : ViewModel() {
 
     open fun reload() {
         error.value = null
-        data.value = null
 
         load()
     }

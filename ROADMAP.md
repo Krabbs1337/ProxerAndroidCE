@@ -22,7 +22,7 @@ Ziel: Das Projekt auf einen aktuellen, build- und Play-Store-fähigen Stand brin
 | 6 | DI + View-Layer — **erledigt 17.11.2026** | Koin 2→4, Kotterknife→Shim, AutoDispose 1.4.1 |
 | 7 | Media — **erledigt 17.11.2026** | ExoPlayer 2.13.3 → Media3 1.11.1 |
 | 8 | Performance + Polish — **erledigt 17.11.2026** | Glide, Baseline Profiles, AAB-Splits, Desugaring |
-| 9 | Qualitätssicherung + optionale Coroutines-Migration | detekt/ktlint/CI aktuell, schrittweise RxJava-Ablösung |
+| 9 | Qualitätssicherung + optionale Coroutines-Migration — **erledigt 17.11.2026** | detekt/ktlint/CI aktuell, schrittweise RxJava-Ablösung |
 
 ---
 
@@ -208,7 +208,16 @@ Checkliste (alle bekannten Berührungspunkte):
 - Manuelle Regression-Checkliste pro Release: Login/2FA, News, Forum, Anime-Stream, Manga-Reader, Bookmarks, Benachrichtigungen, Widgets, Deep-Links, Einstellungen, About-Libraries.
 - Optional und schrittweise pro Feature: RxJava → Coroutines/Flow (Start z. B. mit `BaseViewModel.load()`), Compose nur für neue Screens.
 
-**Abnahme:** Jeder Merge ist build- und lint-grün; Release nur mit erfüllter Regression-Checkliste.
+**Umgesetzt am 17.11.2026 (konkrete Versionen & Abweichungen):**
+
+- **CI aktuell**: `actions/checkout@v7`, `actions/setup-java@v7` (Temurin 17), `actions/upload-artifact@v6`, neu `gradle/actions/setup-gradle@v4` (Gradle-Caching). Build-Step bleibt `./gradlew ktlintCheck detekt build bundle`.
+- **detekt**: 2.x existiert nicht (letztes Release bleibt **1.23.8**, bereits genutzt) – Abweichung dokumentiert. ktlint-gradle **14.2.0** + ktlint **1.8.0** sind latest.
+- **dependencyUpdates** läuft regelmäßig (CI/ lokal): alleandroidx/media3/gms/okhttp/moshi/room/work etc. auf latest milestone. Sichere Bumps: okhttp **4.12.0 → 4.12.1**, customactivityoncrash **2.3.0 → 2.4.0**, uiautomator **2.3.0 → 2.4.1** (baselineprofile). Bewusst offen: glide 5.x, retrofit 3.0, cast-framework 23.0.0 (braucht media3 ≥ 1.12), aboutlibraries 14.x/materialdrawer 10 (Compose-UI-Umbau), jitpack-Commit-Pins (previewseekbar, subsampling-scale-image-view, emoji-ios, material-about-library rc).
+- **`allWarningsAsErrors` bleibt deaktiviert** (Abweichung): frischer Vollauf zeigt 162 Warnungen in 42 Dateien – überwiegend Platform-Deprecations (getParcelable/getSerializable-Overloads, `onOptionsItemSelected`, `setRemoteAdapter`, `bundleOf`) und Library-Deprecations ohne ziviles Non-Deprecated-Ersatz in den gepinnten Versionen (security-crypto 1.1.0 MasterKey/EncryptedSharedPreferences, media3 `prepare(source, bool, bool)`/`C.TYPE_*`/`CastPlayer(CastContext)`, Koin-`viewModel`-DSL-Umzug, Room `fallbackToDestructiveMigrationOnDowngrade`, Glide `ExternalCacheDiskCacheFactory`). Fix wäre 42-Dateien-Umbau inkl. security-crypto-Neuer-API – als separates Follow-up markiert, nicht Teil dieser Phase.
+- **Optionale Coroutines-Migration nicht begonnen** – bleibt laut Festlegung „RxJava bleibt Basis“ optional pro Feature.
+- Verifiziert grün: `ktlintCheck`, `detekt`, `assembleDebug`, `assembleRelease`, `bundleRelease`, `assembleLogRelease`, `:baselineprofile:assembleAndroidTest`, `dependencyUpdates`.
+
+**Abnahme:** Jeder Merge ist build- und lint-grün (ktlintCheck + detekt + alle Builds grün) – lokal erfüllt; Release nur mit erfüllter Regression-Checkliste (Login/2FA, News, Forum, Anime-Stream, Manga-Reader, Bookmarks, Benachrichtigungen, Widgets, Deep-Links, Einstellungen, About-Libraries) plus Gerätetest auf Android 16.
 
 ---
 

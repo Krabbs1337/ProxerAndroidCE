@@ -1,6 +1,7 @@
 package me.proxer.app.anime.schedule.widget
 
 import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
@@ -188,7 +189,13 @@ class ScheduleWidgetUpdateWorker(
             }
 
         val detailIntent = applicationContext.intentFor<MediaActivity>()
-        val detailPendingIntent = PendingIntent.getActivity(applicationContext, 0, detailIntent, FLAG_UPDATE_CURRENT)
+        val detailPendingIntent =
+            PendingIntent.getActivity(
+                applicationContext,
+                0,
+                detailIntent,
+                FLAG_IMMUTABLE or FLAG_UPDATE_CURRENT,
+            )
 
         val position =
             when (calendarEntries.isEmpty()) {
@@ -252,7 +259,13 @@ class ScheduleWidgetUpdateWorker(
         views.setTextViewText(R.id.errorText, applicationContext.getString(errorAction.message))
 
         if (errorIntent != null) {
-            val errorPendingIntent = PendingIntent.getActivity(applicationContext, 0, errorIntent, FLAG_UPDATE_CURRENT)
+            val errorPendingIntent =
+                PendingIntent.getActivity(
+                    applicationContext,
+                    0,
+                    errorIntent,
+                    FLAG_IMMUTABLE or FLAG_UPDATE_CURRENT,
+                )
 
             views.setTextViewText(R.id.errorButton, applicationContext.getString(errorAction.buttonMessage))
             views.setOnClickPendingIntent(R.id.errorButton, errorPendingIntent)
@@ -287,7 +300,13 @@ class ScheduleWidgetUpdateWorker(
         views: RemoteViews,
     ) {
         val intent = MainActivity.getSectionIntent(applicationContext, MaterialDrawerWrapper.DrawerItem.SCHEDULE)
-        val pendingIntent = PendingIntent.getActivity(applicationContext, 0, intent, FLAG_UPDATE_CURRENT)
+        val pendingIntent =
+            PendingIntent.getActivity(
+                applicationContext,
+                0,
+                intent,
+                FLAG_IMMUTABLE or FLAG_UPDATE_CURRENT,
+            )
 
         val updateIntent =
             applicationContext
@@ -295,7 +314,13 @@ class ScheduleWidgetUpdateWorker(
                 .setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE)
                 .putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, intArrayOf(id))
 
-        val updatePendingIntent = PendingIntent.getBroadcast(applicationContext, 0, updateIntent, FLAG_UPDATE_CURRENT)
+        val updatePendingIntent =
+            PendingIntent.getBroadcast(
+                applicationContext,
+                0,
+                updateIntent,
+                FLAG_IMMUTABLE or FLAG_UPDATE_CURRENT,
+            )
 
         views.setTextViewText(R.id.day, LocalDate.now().format(dayDateTimeFormatter))
         views.setOnClickPendingIntent(R.id.title, pendingIntent)

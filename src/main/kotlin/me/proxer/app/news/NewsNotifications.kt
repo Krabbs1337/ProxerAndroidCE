@@ -63,7 +63,7 @@ object NewsNotifications {
                         context,
                         ID,
                         TopicActivity.getIntent(context, current.threadId, current.categoryId, current.subject),
-                        PendingIntent.FLAG_UPDATE_CURRENT,
+                        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
                     )
 
                 style =
@@ -82,7 +82,7 @@ object NewsNotifications {
                         context,
                         ID,
                         MainActivity.getSectionIntent(context, DrawerItem.NEWS),
-                        PendingIntent.FLAG_UPDATE_CURRENT,
+                        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
                     )
 
                 style =

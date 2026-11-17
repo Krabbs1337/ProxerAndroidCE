@@ -16,7 +16,7 @@ Ziel: Das Projekt auf einen aktuellen, build- und Play-Store-fähigen Stand brin
 |---|---|---|
 | 1 | Build-Toolchain + SDK-Anhebung — **erledigt 17.11.2026** | Ohne grünen Build auf aktueller Toolchain ist nichts anderes sicher änderbar |
 | 2 | **Chat und Messenger entfernen** — **erledigt 17.11.2026** | Verkleinert die Fläche für alle folgenden Migrationen und eliminiert eigene Problemstellen (Receiver, PendingIntents, eigene Datenbank, Deep-Link) |
-| 3 | Runtime-Fixes für targetSdk 36 | Harte Crashes/Funktionsverluste auf Android 13–16 beheben |
+| 3 | Runtime-Fixes für targetSdk 36 — **erledigt 17.11.2026** | Harte Crashes/Funktionsverluste auf Android 13–16 beheben |
 | 4 | AndroidX + Kernbibliotheken | Stabile Majors, Room 2.8 + KSP, lifecycle-extensions entfernen |
 | 5 | Sicherheit | Token-Speicherung, Cleartext, CVE-behaftete Libs |
 | 6 | DI + View-Layer | Koin 2→4, Kotterknife→ViewBinding, AutoDispose 2 |
@@ -89,7 +89,17 @@ Checkliste (alle bekannten Berührungspunkte):
 - Veraltete Aufrufe migrieren: `MainActivity.onActivityResult` → Activity Result API; `MangaFragment.kt:146` `getParcelable` → typisierte Variante.
 - Manifest härten: `usesCleartextTraffic="true"` entfernen, `network_security_config.xml` base-config auf `cleartextTrafficPermitted="false"` (nur notwendige Domains in `domain-config`), `android:largeHeap="true"` und `android:targetSandboxVersion="2"` entfernen, `android:exported` an allen Receivern prüfen.
 
-**Abnahme:** Manueller Test auf Android 16 (API 36): Widgets, Notification-Aktionen, Deep-Links, Cast-Verbindung, Bild-Upload im Forum/Profil – alles ohne Crash.
+**Umgesetzt am 17.11.2026:**
+
+- Alle 10 PendingIntent-Stellen (2 Widget-Worker à 4, `NewsNotifications`, `AccountNotifications`, beide Read-Receiver) auf `FLAG_IMMUTABLE or FLAG_UPDATE_CURRENT` umgestellt; Chat-Receiver entfielen durch Phase 2, kein `FLAG_MUTABLE` mehr nötig.
+- Manifest: `POST_NOTIFICATIONS` + `NEARBY_WIFI_DEVICES` (`neverForLocation`) deklariert; `usesCleartextTraffic`, `largeHeap`, `targetSandboxVersion` entfernt; `network_security_config.xml` base-config auf `cleartextTrafficPermitted="false"` (kein Cleartext nötig – Code enthält keine http-Endpunkte, `HttpsUpgradeInterceptor` erzwingt https).
+- `MainActivity`: veralteter `WRITE_EXTERNAL_STORAGE`-Runtime-Request entfernt (bei targetSdk 36 ohnehin wirkungslos; app-spezifische Log-Dirs brauchen seit API 29 keine Permission), stattdessen `POST_NOTIFICATIONS`-Request über `ActivityResultContracts.RequestPermission`. Kein `onActivityResult` mehr im Code.
+- `MangaFragment`: `getParcelable` auf die typisierte Variante (API 33+) migriert, inkl. Fallback für ältere APIs.
+- `exported` an allen Activities/Receivern/Provider verifiziert (Widget-Provider `true`, Read-Receiver `false`, Services nur mit `BIND_REMOTEVIEWS`).
+- Verifiziert grün: `ktlintCheck`, `detekt`, `assembleDebug`, `assembleRelease`, `bundleRelease`, `assembleLogRelease`.
+- Offen (nächste Phasen): weitere `getSerializable`/`getParcelable`-Deprecations in MediaListFragment u. a. (nur Warnungen), `setRemoteAdapter(int, Intent)`-Deprecation in den Widget-Workern (Phase 7/8).
+
+**Abnahme:** Manueller Test auf Android 16 (API 36): Widgets, Notification-Aktionen, Deep-Links, Cast-Verbindung, Bild-Upload im Forum/Profil – alles ohne Crash. lokal: Build grün; Gerätetest folgt.
 
 ## Phase 4 – AndroidX + Kernbibliotheken
 

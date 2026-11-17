@@ -61,7 +61,7 @@ object AccountNotifications {
                         context,
                         ID,
                         Intent(Intent.ACTION_VIEW, notifications.first().contentLink.androidUri()),
-                        PendingIntent.FLAG_UPDATE_CURRENT,
+                        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
                     )
 
                 style =
@@ -80,7 +80,7 @@ object AccountNotifications {
                         context,
                         ID,
                         NotificationActivity.getIntent(context),
-                        PendingIntent.FLAG_UPDATE_CURRENT,
+                        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
                     )
 
                 style =

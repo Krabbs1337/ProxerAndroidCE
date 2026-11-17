@@ -1,13 +1,12 @@
 package me.proxer.app
 
-import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+import android.Manifest.permission.POST_NOTIFICATIONS
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.os.Bundle
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.postDelayed
 import androidx.fragment.app.Fragment
@@ -74,16 +73,18 @@ class MainActivity : DrawerActivity() {
             displayFirstPage(null)
         }
 
+    private val notificationPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+            // Notifications are optional, no further action needed.
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Request storage permission for writing logs in debug variants.
-        if (BuildConfig.LOG && VERSION.SDK_INT >= VERSION_CODES.M) {
-            if (VERSION.SDK_INT >= VERSION_CODES.M) {
-                if (ContextCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE) != PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(this, arrayOf(WRITE_EXTERNAL_STORAGE), 1)
-                }
-            }
+        if (VERSION.SDK_INT >= VERSION_CODES.TIRAMISU &&
+            ContextCompat.checkSelfPermission(this, POST_NOTIFICATIONS) != PERMISSION_GRANTED
+        ) {
+            notificationPermissionLauncher.launch(POST_NOTIFICATIONS)
         }
 
         supportPostponeEnterTransition()

@@ -1,5 +1,6 @@
 package me.proxer.app.manga
 
+import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.Gravity
@@ -147,7 +148,13 @@ class MangaFragment : BaseContentFragment<MangaChapterInfo>(R.layout.fragment_ma
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        lastPosition = savedInstanceState?.getParcelable(LAST_POSITION_STATE)
+        lastPosition =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                savedInstanceState?.getParcelable(LAST_POSITION_STATE, Parcelable::class.java)
+            } else {
+                @Suppress("DEPRECATION")
+                savedInstanceState?.getParcelable(LAST_POSITION_STATE)
+            }
         hasLowMemory = savedInstanceState?.getByte(LOW_MEMORY_STATE) == 1.toByte()
 
         preloader = MangaPreloader()

@@ -21,7 +21,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.rxbinding3.view.clicks
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import kotterknife.bindView
 import me.proxer.app.R
 import me.proxer.app.base.BaseContentFragment
@@ -43,7 +43,7 @@ import me.proxer.app.util.extension.toTypeAppString
 import me.proxer.library.entity.info.Entry
 import me.proxer.library.entity.info.MediaUserInfo
 import me.proxer.library.enums.IndustryType
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.core.parameter.parametersOf
 
 /**
@@ -63,7 +63,7 @@ class MediaInfoFragment : BaseContentFragment<Entry>(R.layout.fragment_media_inf
     override val hostingActivity: MediaActivity
         get() = activity as MediaActivity
 
-    override val viewModel by sharedViewModel<MediaInfoViewModel> { parametersOf(id) }
+    override val viewModel by activityViewModel<MediaInfoViewModel> { parametersOf(id) }
 
     private val id: String
         get() = hostingActivity.id
@@ -118,27 +118,27 @@ class MediaInfoFragment : BaseContentFragment<Entry>(R.layout.fragment_media_inf
 
         noteContainer
             .clicks()
-            .autoDisposable(viewLifecycleOwner.scope())
+            .autoDispose(viewLifecycleOwner.scope())
             .subscribe { viewModel.note() }
 
         favorContainer
             .clicks()
-            .autoDisposable(viewLifecycleOwner.scope())
+            .autoDispose(viewLifecycleOwner.scope())
             .subscribe { viewModel.toggleFavorite() }
 
         finishContainer
             .clicks()
-            .autoDisposable(viewLifecycleOwner.scope())
+            .autoDispose(viewLifecycleOwner.scope())
             .subscribe { viewModel.markAsFinished() }
 
         subscribeContainer
             .clicks()
-            .autoDisposable(viewLifecycleOwner.scope())
+            .autoDispose(viewLifecycleOwner.scope())
             .subscribe { viewModel.toggleSubscription() }
 
         unratedTags
             .clicks()
-            .autoDisposable(viewLifecycleOwner.scope())
+            .autoDispose(viewLifecycleOwner.scope())
             .subscribe {
                 showUnratedTags = !showUnratedTags
 
@@ -147,7 +147,7 @@ class MediaInfoFragment : BaseContentFragment<Entry>(R.layout.fragment_media_inf
 
         spoilerTags
             .clicks()
-            .autoDisposable(viewLifecycleOwner.scope())
+            .autoDispose(viewLifecycleOwner.scope())
             .subscribe {
                 showSpoilerTags = !showSpoilerTags
 
@@ -292,7 +292,7 @@ class MediaInfoFragment : BaseContentFragment<Entry>(R.layout.fragment_media_inf
 
                             contentView
                                 .clicks()
-                                .autoDisposable(viewLifecycleOwner.scope(Lifecycle.Event.ON_DESTROY))
+                                .autoDispose(viewLifecycleOwner.scope(Lifecycle.Event.ON_DESTROY))
                                 .subscribe {
                                     MediaActivity.navigateTo(
                                         requireActivity(),
@@ -423,7 +423,7 @@ class MediaInfoFragment : BaseContentFragment<Entry>(R.layout.fragment_media_inf
 
                 image
                     .clicks()
-                    .autoDisposable(viewLifecycleOwner.scope())
+                    .autoDispose(viewLifecycleOwner.scope())
                     .subscribe {
                         hostingActivity.multilineSnackbar(constraint.toAppStringDescription(requireContext()))
                     }
@@ -490,13 +490,13 @@ class MediaInfoFragment : BaseContentFragment<Entry>(R.layout.fragment_media_inf
                 if (onClick != null) {
                     chip
                         .clicks()
-                        .autoDisposable(viewLifecycleOwner.scope(Lifecycle.Event.ON_DESTROY))
+                        .autoDispose(viewLifecycleOwner.scope(Lifecycle.Event.ON_DESTROY))
                         .subscribe { onClick.invoke(items[index]) }
                 }
 
                 if (layout is MaxLineFlexboxLayout && !layout.canAddView(chip)) {
                     layout.showAllEvents
-                        .autoDisposable(viewLifecycleOwner.scope(Lifecycle.Event.ON_DESTROY))
+                        .autoDispose(viewLifecycleOwner.scope(Lifecycle.Event.ON_DESTROY))
                         .subscribe { bindChips(layout, items, mapFunction, onClick) }
 
                     layout.enableShowAllButton()

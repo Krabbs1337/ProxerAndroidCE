@@ -21,7 +21,7 @@ import com.jakewharton.rxbinding3.appcompat.queryTextChangeEvents
 import com.jakewharton.rxbinding3.view.actionViewEvents
 import com.mikepenz.iconics.utils.IconicsMenuInflaterUtil
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import kotterknife.bindView
 import me.proxer.app.GlideApp
 import me.proxer.app.R
@@ -242,7 +242,7 @@ class MediaListFragment :
         }
 
         innerAdapter.clickSubject
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe { (view, entry) ->
                 MediaActivity.navigateTo(requireActivity(), entry.id, entry.name, entry.medium.toCategory(), view)
             }
@@ -301,7 +301,7 @@ class MediaListFragment :
 
             searchItem
                 .actionViewEvents()
-                .autoDisposable(viewLifecycleOwner.scope(Lifecycle.Event.ON_DESTROY))
+                .autoDispose(viewLifecycleOwner.scope(Lifecycle.Event.ON_DESTROY))
                 .subscribe { event ->
                     if (event.menuItem.isActionViewExpanded) {
                         searchQuery = null
@@ -316,7 +316,7 @@ class MediaListFragment :
             searchView
                 .queryTextChangeEvents()
                 .skipInitialValue()
-                .autoDisposable(viewLifecycleOwner.scope(Lifecycle.Event.ON_DESTROY))
+                .autoDispose(viewLifecycleOwner.scope(Lifecycle.Event.ON_DESTROY))
                 .subscribe { event ->
                     searchQuery = event.queryText.toString().trim()
 

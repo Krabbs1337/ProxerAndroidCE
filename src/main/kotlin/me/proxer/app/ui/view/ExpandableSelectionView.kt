@@ -21,7 +21,7 @@ import androidx.core.view.updateLayoutParams
 import com.jakewharton.rxbinding3.view.clicks
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 import com.uber.autodispose.android.ViewScopeProvider
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import io.reactivex.Flowable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -108,12 +108,12 @@ class ExpandableSelectionView
             controlContainer
                 .clicks()
                 .mergeWith(toggleButton.clicks())
-                .autoDisposable(ViewScopeProvider.from(this))
+                .autoDispose(ViewScopeProvider.from(this))
                 .subscribe { isExtended = !isExtended }
 
             resetButton
                 .clicks()
-                .autoDisposable(ViewScopeProvider.from(this))
+                .autoDispose(ViewScopeProvider.from(this))
                 .subscribe {
                     selection = mutableListOf()
 
@@ -223,7 +223,7 @@ class ExpandableSelectionView
 
                 radioButton
                     .clicks()
-                    .autoDisposable(ViewScopeProvider.from(this))
+                    .autoDispose(ViewScopeProvider.from(this))
                     .subscribeAndLogErrors {
                         selection.clear()
                         selection.add(item.value)
@@ -264,7 +264,7 @@ class ExpandableSelectionView
         ) {
             view
                 .clicks()
-                .autoDisposable(ViewScopeProvider.from(this))
+                .autoDispose(ViewScopeProvider.from(this))
                 .subscribeAndLogErrors {
                     selection.clear()
                     selection.add(item)
@@ -283,7 +283,7 @@ class ExpandableSelectionView
         ) {
             view
                 .clicks()
-                .autoDisposable(ViewScopeProvider.from(this))
+                .autoDispose(ViewScopeProvider.from(this))
                 .subscribeAndLogErrors {
                     if (!selection.remove(item)) {
                         selection.add(item)

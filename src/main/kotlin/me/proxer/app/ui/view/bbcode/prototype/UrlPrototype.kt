@@ -5,7 +5,7 @@ import android.view.View
 import android.widget.TextView
 import com.jakewharton.rxbinding3.view.clicks
 import com.uber.autodispose.android.ViewScopeProvider
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import me.proxer.app.ui.view.bbcode.BBArgs
 import me.proxer.app.ui.view.bbcode.BBCodeView
 import me.proxer.app.ui.view.bbcode.BBTree
@@ -57,7 +57,7 @@ object UrlPrototype : ConditionalTextMutatorPrototype, AutoClosingPrototype {
                 else -> {
                     view
                         .clicks()
-                        .autoDisposable(ViewScopeProvider.from(parent))
+                        .autoDispose(ViewScopeProvider.from(parent))
                         .subscribe { BBUtils.findBaseActivity(view.context)?.showPage(url) }
                 }
             }

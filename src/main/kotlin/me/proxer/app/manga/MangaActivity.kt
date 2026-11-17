@@ -31,7 +31,7 @@ import com.jakewharton.rxbinding3.view.clicks
 import com.jakewharton.rxbinding3.view.systemUiVisibilityChanges
 import com.mikepenz.iconics.utils.IconicsMenuInflaterUtil
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import kotterknife.bindView
 import me.proxer.app.R
 import me.proxer.app.base.BaseActivity
@@ -248,7 +248,7 @@ class MangaActivity : BaseActivity() {
 
         window.decorView
             .systemUiVisibilityChanges()
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe {
                 if (it and SYSTEM_UI_FLAG_FULLSCREEN == 0) {
                     setFullscreen(false)
@@ -313,7 +313,7 @@ class MangaActivity : BaseActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         toolbar
             .clicks()
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe {
                 name?.let {
                     MediaActivity.navigateTo(this, id, name, Category.MANGA)

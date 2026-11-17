@@ -8,7 +8,7 @@ import androidx.core.view.ViewCompat
 import com.bumptech.glide.request.target.ImageViewTarget
 import com.jakewharton.rxbinding3.view.clicks
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import kotterknife.bindView
 import me.proxer.app.GlideApp
 import me.proxer.app.R
@@ -71,7 +71,7 @@ class ImageDetailActivity : BaseActivity() {
 
         root
             .clicks()
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe { supportFinishAfterTransition() }
     }
 }

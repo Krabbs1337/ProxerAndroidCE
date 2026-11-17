@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import com.jakewharton.rxbinding3.view.clicks
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import kotterknife.bindView
 import me.proxer.app.R
 import me.proxer.app.base.AutoDisposeViewHolder
@@ -64,7 +64,7 @@ class ThemeAdapter(
             themeButton
                 .clicks()
                 .mapBindingAdapterPosition({ bindingAdapterPosition }) { it }
-                .autoDisposable(this)
+                .autoDispose(this)
                 .subscribe {
                     val previous = selectedIndex
 

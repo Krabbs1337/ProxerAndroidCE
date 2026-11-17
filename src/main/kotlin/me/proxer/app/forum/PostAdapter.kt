@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.jakewharton.rxbinding3.view.clicks
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import kotterknife.bindView
@@ -97,12 +97,12 @@ class PostAdapter : BaseAdapter<ParsedPost, ViewHolder>() {
             userContainer
                 .clicks()
                 .mapBindingAdapterPosition({ bindingAdapterPosition }) { image to data[it] }
-                .autoDisposable(this)
+                .autoDispose(this)
                 .subscribe(profileClickSubject)
 
             Observable
                 .merge(post.heightChanges.map { post }, signature.heightChanges.map { signature })
-                .autoDisposable(this)
+                .autoDispose(this)
                 .subscribe {
                     it.requestLayout()
                     layoutManager?.requestSimpleAnimationsInNextLayout()

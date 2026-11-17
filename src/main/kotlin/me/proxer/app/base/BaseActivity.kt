@@ -12,7 +12,7 @@ import androidx.core.os.bundleOf
 import com.google.android.material.snackbar.Snackbar
 import com.rubengees.rxbus.RxBus
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import kotterknife.bindView
 import me.proxer.app.R
 import me.proxer.app.util.ErrorUtils
@@ -64,7 +64,7 @@ abstract class BaseActivity :
         customTabsHelper = CustomTabsHelperFragment.attachTo(this)
 
         preferenceHelper.themeObservable
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe { ActivityCompat.recreate(this) }
     }
 

@@ -18,7 +18,7 @@ import com.jakewharton.rxbinding3.appcompat.queryTextChangeEvents
 import com.jakewharton.rxbinding3.view.actionViewEvents
 import com.mikepenz.iconics.utils.IconicsMenuInflaterUtil
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import io.reactivex.android.schedulers.AndroidSchedulers
 import me.proxer.app.GlideApp
 import me.proxer.app.R
@@ -103,7 +103,7 @@ class BookmarkFragment : PagedContentFragment<Bookmark>() {
         innerAdapter = BookmarkAdapter()
 
         innerAdapter.clickSubject
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe {
                 when (it.category) {
                     Category.ANIME -> {
@@ -130,13 +130,13 @@ class BookmarkFragment : PagedContentFragment<Bookmark>() {
             }
 
         innerAdapter.longClickSubject
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe { (view, bookmark) ->
                 MediaActivity.navigateTo(requireActivity(), bookmark.entryId, bookmark.name, bookmark.category, view)
             }
 
         innerAdapter.deleteClickSubject
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe {
                 viewModel.addItemToDelete(it)
             }
@@ -214,7 +214,7 @@ class BookmarkFragment : PagedContentFragment<Bookmark>() {
 
             searchItem
                 .actionViewEvents()
-                .autoDisposable(viewLifecycleOwner.scope(Lifecycle.Event.ON_DESTROY))
+                .autoDispose(viewLifecycleOwner.scope(Lifecycle.Event.ON_DESTROY))
                 .subscribe { event ->
                     if (event.menuItem.isActionViewExpanded) {
                         searchQuery = null
@@ -229,7 +229,7 @@ class BookmarkFragment : PagedContentFragment<Bookmark>() {
                 .skipInitialValue()
                 .debounce(500, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .autoDisposable(viewLifecycleOwner.scope(Lifecycle.Event.ON_DESTROY))
+                .autoDispose(viewLifecycleOwner.scope(Lifecycle.Event.ON_DESTROY))
                 .subscribe { event ->
                     if (event.isSubmitted) {
                         searchView.clearFocus()

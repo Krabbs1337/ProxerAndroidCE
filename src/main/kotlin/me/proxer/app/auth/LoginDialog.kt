@@ -22,7 +22,7 @@ import com.mikepenz.iconics.typeface.library.community.material.CommunityMateria
 import com.mikepenz.iconics.utils.colorInt
 import com.mikepenz.iconics.utils.sizeDp
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import kotterknife.bindView
 import me.proxer.app.R
 import me.proxer.app.base.BaseDialog
@@ -102,7 +102,7 @@ class LoginDialog : BaseDialog() {
             it
                 .editorActionEvents { event -> event.actionId == EditorInfo.IME_ACTION_GO }
                 .filter { event -> event.actionId == EditorInfo.IME_ACTION_GO }
-                .autoDisposable(dialogLifecycleOwner.scope())
+                .autoDispose(dialogLifecycleOwner.scope())
                 .subscribe { validateAndLogin() }
         }
 
@@ -110,14 +110,14 @@ class LoginDialog : BaseDialog() {
             input
                 .textChanges()
                 .skipInitialValue()
-                .autoDisposable(dialogLifecycleOwner.scope())
+                .autoDispose(dialogLifecycleOwner.scope())
                 .subscribe { setError(container, null) }
         }
 
         registrationInfo
             .linkClicks()
             .map { ProxerUrls.registerWeb() }
-            .autoDisposable(dialogLifecycleOwner.scope())
+            .autoDispose(dialogLifecycleOwner.scope())
             .subscribe { showPage(it, skipCheck = true) }
     }
 

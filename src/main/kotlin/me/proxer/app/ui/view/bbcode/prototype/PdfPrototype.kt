@@ -19,7 +19,7 @@ import com.mikepenz.iconics.typeface.library.community.material.CommunityMateria
 import com.mikepenz.iconics.utils.colorInt
 import com.mikepenz.iconics.utils.sizeDp
 import com.uber.autodispose.android.ViewScopeProvider
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import de.number42.subsampling_pdf_decoder.PDFDecoder
 import de.number42.subsampling_pdf_decoder.PDFRegionDecoder
 import me.proxer.app.GlideRequests
@@ -97,7 +97,7 @@ object PdfPrototype : AutoClosingPrototype {
                         view
                             .clicks()
                             .filter { view.getTag(R.id.error_tag) == true }
-                            .autoDisposable(ViewScopeProvider.from(parent))
+                            .autoDispose(ViewScopeProvider.from(parent))
                             .subscribe {
                                 view.tag = null
 
@@ -189,12 +189,12 @@ object PdfPrototype : AutoClosingPrototype {
                     .also { observable ->
                         observable
                             .filter { it is SubsamplingScaleImageViewEventObservable.Event.Error }
-                            .autoDisposable(ViewScopeProvider.from(view))
+                            .autoDispose(ViewScopeProvider.from(view))
                             .subscribe { handleLoadError(view) }
 
                         observable
                             .filter { it is SubsamplingScaleImageViewEventObservable.Event.Loaded }
-                            .autoDisposable(ViewScopeProvider.from(view))
+                            .autoDispose(ViewScopeProvider.from(view))
                             .subscribe {
                                 view.setDoubleTapZoomScale(view.scale * 2.5f)
                                 view.maxScale = view.scale * 2.5f

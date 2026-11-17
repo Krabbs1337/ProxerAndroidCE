@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.mikepenz.iconics.utils.IconicsMenuInflaterUtil
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import me.proxer.app.GlideApp
 import me.proxer.app.R
 import me.proxer.app.base.PagedContentFragment
@@ -83,13 +83,13 @@ class ProfileMediaListFragment : PagedContentFragment<LocalUserMediaListEntry>()
         innerAdapter = ProfileMediaAdapter()
 
         innerAdapter.clickSubject
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe { (view, item) ->
                 MediaActivity.navigateTo(requireActivity(), item.id, item.name, item.medium.toCategory(), view)
             }
 
         innerAdapter.deleteClickSubject
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe {
                 viewModel.addItemToDelete(it)
             }

@@ -9,7 +9,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import me.proxer.app.BuildConfig
 import me.proxer.app.MainActivity
 import me.proxer.app.R
@@ -93,17 +93,17 @@ class SettingsFragment :
         super.onViewCreated(view, savedInstanceState)
 
         storageHelper.isLoggedInObservable
-            .autoDisposable(viewLifecycleOwner.scope())
+            .autoDispose(viewLifecycleOwner.scope())
             .subscribe { profile.isEnabled = it }
 
         profile
             .clicks()
-            .autoDisposable(viewLifecycleOwner.scope())
+            .autoDispose(viewLifecycleOwner.scope())
             .subscribe { ProfileSettingsActivity.navigateTo(requireActivity()) }
 
         ageConfirmation
             .clicks()
-            .autoDisposable(viewLifecycleOwner.scope())
+            .autoDispose(viewLifecycleOwner.scope())
             .subscribe {
                 if (ageConfirmation.isChecked) {
                     ageConfirmation.isChecked = false
@@ -114,7 +114,7 @@ class SettingsFragment :
 
         theme
             .clicks()
-            .autoDisposable(viewLifecycleOwner.scope())
+            .autoDispose(viewLifecycleOwner.scope())
             .subscribe {
                 ThemeDialog.show(requireActivity() as AppCompatActivity)
             }

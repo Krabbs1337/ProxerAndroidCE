@@ -15,7 +15,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.customListAdapter
 import com.jakewharton.rxbinding3.view.clicks
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import io.reactivex.subjects.PublishSubject
 import kotterknife.bindView
 import me.proxer.app.R
@@ -56,7 +56,7 @@ class BookmarkLanguageDialog : BaseDialog() {
         val adapter = LanguageAdapter(languages.toList())
 
         adapter.clickSubject
-            .autoDisposable(dialogLifecycleOwner.scope())
+            .autoDispose(dialogLifecycleOwner.scope())
             .subscribe {
                 setFragmentResult(LANGUAGE_RESULT, bundleOf(LANGUAGE_RESULT to ProxerUtils.getSafeApiEnumName(it)))
 
@@ -101,7 +101,7 @@ class BookmarkLanguageDialog : BaseDialog() {
                 container
                     .clicks()
                     .mapBindingAdapterPosition({ bindingAdapterPosition }) { languages[it] }
-                    .autoDisposable(this)
+                    .autoDispose(this)
                     .subscribe(clickSubject)
 
                 image.setImageDrawable(language.toGeneralLanguage().toAppDrawable(image.context))

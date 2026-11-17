@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.rubengees.easyheaderfooteradapter.EasyHeaderFooterAdapter
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotterknife.bindView
 import me.proxer.app.GlideApp
@@ -110,11 +110,11 @@ class AnimeFragment : BaseContentFragment<AnimeStreamInfo>(R.layout.fragment_ani
         innerAdapter.positionResolver = ContainerPositionResolver(adapter)
 
         innerAdapter.uploaderClickSubject
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe { ProfileActivity.navigateTo(requireActivity(), it.uploaderId, it.uploaderName) }
 
         innerAdapter.translatorGroupClickSubject
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe {
                 it.translatorGroupId?.let { id ->
                     it.translatorGroupName?.let { name ->
@@ -124,7 +124,7 @@ class AnimeFragment : BaseContentFragment<AnimeStreamInfo>(R.layout.fragment_ani
             }
 
         innerAdapter.playClickSubject
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe {
                 val connectivityManager = requireNotNull(requireContext().getSystemService<ConnectivityManager>())
 
@@ -136,20 +136,20 @@ class AnimeFragment : BaseContentFragment<AnimeStreamInfo>(R.layout.fragment_ani
             }
 
         innerAdapter.loginClickSubject
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe { LoginDialog.show(hostingActivity) }
 
         innerAdapter.linkClickSubject
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe { showPage(it, skipCheck = true) }
 
         innerAdapter.setAdIntervalClickSubject
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe { ProfileSettingsActivity.navigateTo(requireActivity()) }
 
         storageHelper.isLoggedInObservable
             .observeOn(AndroidSchedulers.mainThread())
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe {
                 if (adapter.itemCount >= 1) {
                     adapter.notifyItemRangeChanged(1, innerAdapter.itemCount + 1)
@@ -183,7 +183,7 @@ class AnimeFragment : BaseContentFragment<AnimeStreamInfo>(R.layout.fragment_ani
             }
 
         header.episodeSwitchSubject
-            .autoDisposable(viewLifecycleOwner.scope())
+            .autoDispose(viewLifecycleOwner.scope())
             .subscribe {
                 if (areBookmarksAutomatic && it > episode && storageHelper.isLoggedIn) {
                     viewModel.bookmark(it)
@@ -193,11 +193,11 @@ class AnimeFragment : BaseContentFragment<AnimeStreamInfo>(R.layout.fragment_ani
             }
 
         header.bookmarkSetSubject
-            .autoDisposable(viewLifecycleOwner.scope())
+            .autoDispose(viewLifecycleOwner.scope())
             .subscribe { viewModel.bookmark(it) }
 
         header.finishClickSubject
-            .autoDisposable(viewLifecycleOwner.scope())
+            .autoDispose(viewLifecycleOwner.scope())
             .subscribe { viewModel.markAsFinished() }
 
         return super.onCreateView(inflater, container, savedInstanceState)

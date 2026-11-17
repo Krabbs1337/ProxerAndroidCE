@@ -20,7 +20,7 @@ import com.gojuno.koptional.rxjava2.filterSome
 import com.gojuno.koptional.toOptional
 import com.jakewharton.rxbinding3.view.clicks
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -188,7 +188,7 @@ class MangaAdapter(
             itemView
                 .clicks()
                 .mapBindingAdapterPosition({ positionResolver.resolve(bindingAdapterPosition) }) { data[it] }
-                .autoDisposable(this)
+                .autoDispose(this)
                 .subscribe(this::bind)
 
             image
@@ -198,7 +198,7 @@ class MangaAdapter(
                     val (viewX, viewY) = IntArray(2).apply { image.getLocationInWindow(this) }
 
                     it.x + viewX to it.y + viewY
-                }.autoDisposable(this)
+                }.autoDispose(this)
                 .subscribe { lastTouchCoordinates = it }
 
             image
@@ -209,7 +209,7 @@ class MangaAdapter(
                         .just(lastTouchCoordinates.toOptional())
                         .filterSome()
                         .map { Triple(image, it, position) }
-                }.autoDisposable(this)
+                }.autoDispose(this)
                 .subscribe(clickSubject)
         }
     }
@@ -262,12 +262,12 @@ class MangaAdapter(
                     observable
                         .filter { it is SubsamplingScaleImageViewEventObservable.Event.Error }
                         .map { it as SubsamplingScaleImageViewEventObservable.Event.Error }
-                        .autoDisposable(this)
+                        .autoDispose(this)
                         .subscribe { event -> handleImageLoadError(event.error) }
 
                     observable
                         .filter { it is SubsamplingScaleImageViewEventObservable.Event.Ready }
-                        .autoDisposable(this)
+                        .autoDispose(this)
                         .subscribe {
                             val newMaxScale = image.minScale * 2.5f
 

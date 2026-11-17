@@ -13,7 +13,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.view.clicks
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import io.reactivex.subjects.PublishSubject
 import kotterknife.bindView
 import me.proxer.app.GlideRequests
@@ -105,7 +105,7 @@ class EpisodeAdapter(
             titleContainer
                 .clicks()
                 .mapBindingAdapterPosition({ bindingAdapterPosition }) { data[it].number.toString() to it }
-                .autoDisposable(this)
+                .autoDispose(this)
                 .subscribe { (number, position) ->
                     expansionMap.putOrRemove(number)
 
@@ -154,7 +154,7 @@ class EpisodeAdapter(
                 languageContainer
                     .clicks()
                     .mapBindingAdapterPosition({ bindingAdapterPosition }) { language to data[it] }
-                    .autoDisposable(this)
+                    .autoDispose(this)
                     .subscribe(languageClickSubject)
 
                 bindHosterImages(hosterImages, hostersView)

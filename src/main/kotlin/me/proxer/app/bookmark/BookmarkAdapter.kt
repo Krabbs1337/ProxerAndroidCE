@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.view.clicks
 import com.jakewharton.rxbinding3.view.longClicks
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import io.reactivex.subjects.PublishSubject
 import kotterknife.bindView
 import me.proxer.app.GlideRequests
@@ -113,19 +113,19 @@ class BookmarkAdapter : BaseAdapter<Bookmark, BookmarkAdapter.ViewHolder>() {
             container
                 .clicks()
                 .mapBindingAdapterPosition({ bindingAdapterPosition }) { data[it] }
-                .autoDisposable(this)
+                .autoDispose(this)
                 .subscribe(clickSubject)
 
             container
                 .longClicks()
                 .mapBindingAdapterPosition({ bindingAdapterPosition }) { image to data[it] }
-                .autoDisposable(this)
+                .autoDispose(this)
                 .subscribe(longClickSubject)
 
             delete
                 .clicks()
                 .mapBindingAdapterPosition({ bindingAdapterPosition }) { data[it] }
-                .autoDisposable(this)
+                .autoDispose(this)
                 .subscribe(deleteClickSubject)
         }
     }

@@ -9,7 +9,7 @@ import cat.ereza.customactivityoncrash.CustomActivityOnCrash
 import cat.ereza.customactivityoncrash.config.CaocConfig
 import com.jakewharton.rxbinding3.view.clicks
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import kotterknife.bindView
 import me.proxer.app.R
 import me.proxer.app.base.BaseActivity
@@ -49,12 +49,12 @@ class CrashActivity : BaseActivity() {
 
         report
             .clicks()
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe { CrashDialog.show(this, errorDetails) }
 
         restart
             .clicks()
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe { CustomActivityOnCrash.restartApplication(this, config) }
 
         text.text = getString(R.string.activity_crash_text).linkify(web = false)

@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import com.uber.autodispose.android.ViewScopeProvider
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import me.proxer.app.base.CustomTabsAware
@@ -44,11 +44,11 @@ object WikiPrototype : AutoClosingPrototype {
             val view = ProxerWebView(parent.context)
 
             view.showPageSubject
-                .autoDisposable(ViewScopeProvider.from(parent))
+                .autoDispose(ViewScopeProvider.from(parent))
                 .subscribe { (parent.context as? CustomTabsAware)?.showPage(it, skipCheck = true) }
 
             view.loadingFinishedSubject
-                .autoDisposable(ViewScopeProvider.from(parent))
+                .autoDispose(ViewScopeProvider.from(parent))
                 .subscribe { heightMap?.put(link, view.height) }
 
             view.layoutParams = ViewGroup.MarginLayoutParams(MATCH_PARENT, height)
@@ -58,7 +58,7 @@ object WikiPrototype : AutoClosingPrototype {
                 .buildSingle()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .autoDisposable(ViewScopeProvider.from(parent))
+                .autoDispose(ViewScopeProvider.from(parent))
                 .subscribeAndLogErrors { view.loadHtml(it.content) }
 
             return listOf(view)

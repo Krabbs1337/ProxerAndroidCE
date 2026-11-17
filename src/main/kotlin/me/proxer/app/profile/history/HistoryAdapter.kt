@@ -9,7 +9,7 @@ import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.view.clicks
 import com.jakewharton.rxbinding3.view.longClicks
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import io.reactivex.subjects.PublishSubject
 import kotterknife.bindView
 import me.proxer.app.GlideRequests
@@ -67,13 +67,13 @@ class HistoryAdapter : BaseAdapter<LocalUserHistoryEntry, ViewHolder>() {
             container
                 .clicks()
                 .mapBindingAdapterPosition({ bindingAdapterPosition }) { image to data[it] }
-                .autoDisposable(this)
+                .autoDispose(this)
                 .subscribe(clickSubject)
 
             container
                 .longClicks()
                 .mapBindingAdapterPosition({ bindingAdapterPosition }) { image to data[it] }
-                .autoDisposable(this)
+                .autoDispose(this)
                 .subscribe(longClickSubject)
 
             ViewCompat.setTransitionName(image, "history_${item.id}")

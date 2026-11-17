@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.mikepenz.iconics.utils.IconicsMenuInflaterUtil
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import me.proxer.app.R
 import me.proxer.app.base.PagedContentFragment
 import me.proxer.app.util.extension.ProxerNotification
@@ -48,11 +48,11 @@ class NotificationFragment : PagedContentFragment<ProxerNotification>() {
         innerAdapter = NotificationAdapter()
 
         innerAdapter.clickSubject
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe { showPage(it.contentLink, skipCheck = true) }
 
         innerAdapter.deleteClickSubject
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe { viewModel.addItemToDelete(it) }
 
         setFragmentResultListener(NotificationDeletionConfirmationDialog.DELETE_ALL_RESULT) { _, _ ->

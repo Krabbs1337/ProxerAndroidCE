@@ -7,7 +7,7 @@ import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import kotterknife.bindView
 import me.proxer.app.R
 import me.proxer.app.base.BaseContentFragment
@@ -53,7 +53,7 @@ class DiscussionFragment : BaseContentFragment<List<ForumDiscussion>>(R.layout.f
         adapter = DiscussionAdapter()
 
         adapter.clickSubject
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe { item ->
                 TopicActivity.navigateTo(requireActivity(), item.id, item.categoryId, item.subject)
             }

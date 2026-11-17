@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.view.clicks
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 import com.mikepenz.iconics.utils.sizeDp
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import io.reactivex.subjects.PublishSubject
 import kotterknife.bindView
 import me.proxer.app.GlideRequests
@@ -83,7 +83,7 @@ class ProfileMediaAdapter : BaseAdapter<LocalUserMediaListEntry, ViewHolder>() {
             container
                 .clicks()
                 .mapBindingAdapterPosition({ bindingAdapterPosition }) { image to data[it] }
-                .autoDisposable(this)
+                .autoDispose(this)
                 .subscribe(clickSubject)
 
             ViewCompat.setTransitionName(image, "user_media_${item.id}")
@@ -106,7 +106,7 @@ class ProfileMediaAdapter : BaseAdapter<LocalUserMediaListEntry, ViewHolder>() {
                 delete
                     .clicks()
                     .mapBindingAdapterPosition({ bindingAdapterPosition }) { data[it] }
-                    .autoDisposable(this)
+                    .autoDispose(this)
                     .subscribe(deleteClickSubject)
             } else {
                 delete.setOnClickListener(null)

@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.rubengees.easyheaderfooteradapter.EasyHeaderFooterAdapter
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import kotterknife.bindView
 import me.proxer.app.R
 import me.proxer.app.base.BaseAdapter.ContainerPositionResolver
@@ -92,7 +92,7 @@ abstract class PagedContentFragment<T>(
         recyclerView
             .endScrolls(pagingThreshold)
             .throttleFirst(300, TimeUnit.MILLISECONDS)
-            .autoDisposable(viewLifecycleOwner.scope())
+            .autoDispose(viewLifecycleOwner.scope())
             .subscribe { viewModel.loadIfPossible() }
 
         viewModel.refreshError.observe(

@@ -10,7 +10,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.appbar.AppBarLayout
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import kotterknife.bindView
 import me.proxer.app.MainActivity
 import me.proxer.app.R
@@ -74,16 +74,16 @@ abstract class DrawerActivity : BaseActivity() {
         drawer =
             MaterialDrawerWrapper(this, toolbar, savedInstanceState, isMainActivity).also {
                 it.itemClickSubject
-                    .autoDisposable(this.scope())
+                    .autoDispose(this.scope())
                     .subscribe { item -> handleDrawerItemClick(item) }
 
                 it.profileClickSubject
-                    .autoDisposable(this.scope())
+                    .autoDispose(this.scope())
                     .subscribe { item -> handleAccountItemClick(item) }
             }
 
         storageHelper.isLoggedInObservable
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe { drawer.refreshHeader(this) }
     }
 

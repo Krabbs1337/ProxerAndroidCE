@@ -21,7 +21,7 @@ import com.mikepenz.iconics.utils.colorInt
 import com.mikepenz.iconics.utils.paddingDp
 import com.mikepenz.iconics.utils.sizeDp
 import com.uber.autodispose.android.ViewScopeProvider
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import kotterknife.bindView
 import me.proxer.app.R
 
@@ -91,7 +91,7 @@ internal class BBSpoilerView
 
             toggle
                 .clicks()
-                .autoDisposable(ViewScopeProvider.from(this))
+                .autoDispose(ViewScopeProvider.from(this))
                 .subscribe { isExpanded = !isExpanded }
         }
 

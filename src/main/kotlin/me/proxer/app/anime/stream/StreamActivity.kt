@@ -59,7 +59,7 @@ import com.mikepenz.iconics.utils.colorRes
 import com.mikepenz.iconics.utils.paddingDp
 import com.mikepenz.iconics.utils.sizeDp
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import kotterknife.bindView
 import me.proxer.app.GlideApp
 import me.proxer.app.R
@@ -205,7 +205,7 @@ class StreamActivity : BaseActivity() {
         )
 
         playerManager.playerReadySubject
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe {
                 toggleStableControls(it is CastPlayer)
 
@@ -213,13 +213,13 @@ class StreamActivity : BaseActivity() {
             }
 
         playerManager.playerStateSubject
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe {
                 handlePlayerState(it)
             }
 
         playerManager.errorSubject
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe {
                 MaterialDialog(this@StreamActivity)
                     .message(it.message)
@@ -230,21 +230,21 @@ class StreamActivity : BaseActivity() {
             }
 
         playerView.rewindSubject
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe {
                 resetIndicator(fastForwardIndicator)
                 updateIndicator(rewindIndicator)
             }
 
         playerView.fastForwardSubject
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe {
                 resetIndicator(rewindIndicator)
                 updateIndicator(fastForwardIndicator)
             }
 
         playerView.volumeChangeSubject
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe {
                 val icon =
                     when {
@@ -258,7 +258,7 @@ class StreamActivity : BaseActivity() {
             }
 
         playerView.brightnessChangeSubject
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe {
                 val icon =
                     when {
@@ -272,12 +272,12 @@ class StreamActivity : BaseActivity() {
 
         play
             .clicks()
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe { playerManager.toggle() }
 
         rewindIndicator
             .clicks()
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe {
                 playerView.rewind()
 
@@ -286,7 +286,7 @@ class StreamActivity : BaseActivity() {
 
         fastForwardIndicator
             .clicks()
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe {
                 playerView.fastForward()
 
@@ -295,7 +295,7 @@ class StreamActivity : BaseActivity() {
 
         fullscreen
             .clicks()
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe { toggleOrientation() }
 
         if (mimeType == PREVIEW_MIME_TYPE) {
@@ -304,7 +304,7 @@ class StreamActivity : BaseActivity() {
                     progress.loadRequests(),
                     { Size(preview.width, preview.height) },
                     PreviewLoader.PreviewMetaData(uri, referer, isProxerStream),
-                ).autoDisposable(this.scope())
+                ).autoDispose(this.scope())
                 .subscribeAndLogErrors { preview.setImageBitmap(it) }
         }
 
@@ -468,7 +468,7 @@ class StreamActivity : BaseActivity() {
 
         window.decorView
             .systemUiVisibilityChanges()
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe { handleUIChange() }
 
         window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)

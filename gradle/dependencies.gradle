@@ -1,6 +1,6 @@
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
-    implementation "io.insert-koin:koin-androidx-viewmodel:$koinVersion"
+    implementation "io.insert-koin:koin-android:$koinVersion"
 
     implementation "com.google.android.play:core:$playCoreVersion"
     implementation "com.google.android.gms:play-services-cast-framework:$castVersion"
@@ -31,8 +31,8 @@ dependencies {
     implementation "com.jakewharton.rxbinding3:rxbinding-material:$rxBindingVersion"
     implementation "com.f2prateek.rx.preferences2:rx-preferences:$rxPreferencesVersion"
     implementation "com.github.rubengees:rxbus:$rxBusVersion"
-    implementation "com.uber.autodispose:autodispose-ktx:$autoDisposeVersion"
-    implementation "com.uber.autodispose:autodispose-android-archcomponents-ktx:$autoDisposeVersion"
+    implementation "com.uber.autodispose:autodispose:$autoDisposeVersion"
+    implementation "com.uber.autodispose:autodispose-android-archcomponents:$autoDisposeVersion"
 
     implementation "androidx.recyclerview:recyclerview:$recyclerviewVersion"
     implementation "androidx.cardview:cardview:$cardviewVersion"
@@ -75,7 +75,6 @@ dependencies {
     implementation "com.squareup.okhttp3:logging-interceptor:$okHttpVersion"
     implementation "com.squareup.moshi:moshi:$moshiVersion"
     implementation "com.squareup.moshi:moshi-adapters:$moshiVersion"
-    implementation "com.github.rubengees:kotterknife:$kotterknifeVersion"
     implementation "com.github.seven332.Image:core:$imageDecoderVersion"
     implementation "com.github.seven332.Image:jpeg:$imageDecoderVersion"
     implementation "com.github.seven332.Image:png:$imageDecoderVersion"

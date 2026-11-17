@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.jakewharton.rxbinding3.view.clicks
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import io.reactivex.subjects.PublishSubject
 import kotterknife.bindView
 import me.proxer.app.GlideRequests
@@ -129,19 +129,19 @@ class NewsAdapter(
             container
                 .clicks()
                 .mapBindingAdapterPosition({ bindingAdapterPosition }) { data[it] }
-                .autoDisposable(this)
+                .autoDispose(this)
                 .subscribe(clickSubject)
 
             image
                 .clicks()
                 .mapBindingAdapterPosition({ bindingAdapterPosition }) { image to data[it] }
-                .autoDisposable(this)
+                .autoDispose(this)
                 .subscribe(imageClickSubject)
 
             expand
                 .clicks()
                 .mapBindingAdapterPosition({ bindingAdapterPosition }) { data[it].id }
-                .autoDisposable(this)
+                .autoDispose(this)
                 .subscribe {
                     expansionMap.putOrRemove(it)
 

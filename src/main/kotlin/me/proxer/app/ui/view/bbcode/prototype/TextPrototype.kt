@@ -15,7 +15,7 @@ import androidx.core.content.getSystemService
 import androidx.core.util.PatternsCompat
 import androidx.core.widget.TextViewCompat
 import com.uber.autodispose.android.ViewScopeProvider
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import me.proxer.app.R
 import me.proxer.app.profile.ProfileActivity
 import me.proxer.app.ui.view.BetterLinkGifAwareEmojiTextView
@@ -113,7 +113,7 @@ object TextPrototype : BBPrototype, ContentPrototype {
     ) {
         view
             .linkClicks(validLinkPredicate)
-            .autoDisposable(ViewScopeProvider.from(parent))
+            .autoDispose(ViewScopeProvider.from(parent))
             .subscribe {
                 val baseActivity = BBUtils.findBaseActivity(parent.context) ?: return@subscribe
 
@@ -125,7 +125,7 @@ object TextPrototype : BBPrototype, ContentPrototype {
 
         view
             .linkLongClicks { webUrlRegex.matches(it) }
-            .autoDisposable(ViewScopeProvider.from(parent))
+            .autoDispose(ViewScopeProvider.from(parent))
             .subscribe {
                 val title = view.context.getString(R.string.clipboard_title)
 

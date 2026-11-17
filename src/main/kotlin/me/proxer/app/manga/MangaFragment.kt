@@ -26,7 +26,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.mikepenz.iconics.utils.IconicsMenuInflaterUtil
 import com.rubengees.easyheaderfooteradapter.EasyHeaderFooterAdapter
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import io.reactivex.Observable
 import kotterknife.bindView
 import me.proxer.app.GlideApp
@@ -50,7 +50,7 @@ import me.proxer.app.util.extension.toLocalDateTimeBP
 import me.proxer.app.util.extension.unsafeLazy
 import me.proxer.library.entity.info.EntryCore
 import me.proxer.library.enums.Language
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.properties.Delegates
 
@@ -68,7 +68,7 @@ class MangaFragment : BaseContentFragment<MangaChapterInfo>(R.layout.fragment_ma
             }
     }
 
-    override val viewModel by sharedViewModel<MangaViewModel> { parametersOf(id, language, episode) }
+    override val viewModel by activityViewModel<MangaViewModel> { parametersOf(id, language, episode) }
 
     override val hostingActivity: MangaActivity
         get() = activity as MangaActivity
@@ -164,7 +164,7 @@ class MangaFragment : BaseContentFragment<MangaChapterInfo>(R.layout.fragment_ma
         innerAdapter.positionResolver = ContainerPositionResolver(adapter)
 
         innerAdapter.clickSubject
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribeAndLogErrors { (_, coordinates, position) ->
                 val (xCoordinate, yCoordinate) = coordinates
                 val parentHeight = recyclerView.height
@@ -230,7 +230,7 @@ class MangaFragment : BaseContentFragment<MangaChapterInfo>(R.layout.fragment_ma
             }
 
         innerAdapter.lowMemorySubject
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe {
                 if (!hasLowMemory) {
                     hostingActivity.multilineSnackbar(R.string.fragment_manga_low_memory)
@@ -509,17 +509,17 @@ class MangaFragment : BaseContentFragment<MangaChapterInfo>(R.layout.fragment_ma
 
         Observable
             .merge(header.uploaderClickSubject, footer.uploaderClickSubject)
-            .autoDisposable(viewLifecycleOwner.scope())
+            .autoDispose(viewLifecycleOwner.scope())
             .subscribe { ProfileActivity.navigateTo(requireActivity(), it.id, it.name) }
 
         Observable
             .merge(header.translatorGroupClickSubject, footer.translatorGroupClickSubject)
-            .autoDisposable(viewLifecycleOwner.scope())
+            .autoDispose(viewLifecycleOwner.scope())
             .subscribe { TranslatorGroupActivity.navigateTo(requireActivity(), it.id, it.name) }
 
         Observable
             .merge(header.episodeSwitchSubject, footer.episodeSwitchSubject)
-            .autoDisposable(viewLifecycleOwner.scope())
+            .autoDispose(viewLifecycleOwner.scope())
             .subscribe {
                 if (areBookmarksAutomatic && it > episode && storageHelper.isLoggedIn) {
                     viewModel.bookmark(it)
@@ -530,12 +530,12 @@ class MangaFragment : BaseContentFragment<MangaChapterInfo>(R.layout.fragment_ma
 
         Observable
             .merge(header.bookmarkSetSubject, footer.bookmarkSetSubject)
-            .autoDisposable(viewLifecycleOwner.scope())
+            .autoDispose(viewLifecycleOwner.scope())
             .subscribe { viewModel.bookmark(it) }
 
         Observable
             .merge(header.finishClickSubject, footer.finishClickSubject)
-            .autoDisposable(viewLifecycleOwner.scope())
+            .autoDispose(viewLifecycleOwner.scope())
             .subscribe { viewModel.markAsFinished() }
     }
 

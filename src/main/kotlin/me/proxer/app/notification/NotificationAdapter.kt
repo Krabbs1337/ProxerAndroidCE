@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.core.text.parseAsHtml
 import com.jakewharton.rxbinding3.view.clicks
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import io.reactivex.subjects.PublishSubject
 import kotterknife.bindView
 import me.proxer.app.R
@@ -58,13 +58,13 @@ class NotificationAdapter : BaseAdapter<ProxerNotification, ViewHolder>() {
             container
                 .clicks()
                 .mapBindingAdapterPosition({ bindingAdapterPosition }) { data[it] }
-                .autoDisposable(this)
+                .autoDispose(this)
                 .subscribe(clickSubject)
 
             delete
                 .clicks()
                 .mapBindingAdapterPosition({ bindingAdapterPosition }) { data[it] }
-                .autoDisposable(this)
+                .autoDispose(this)
                 .subscribe(deleteClickSubject)
 
             text.text = item.text.parseAsHtml()

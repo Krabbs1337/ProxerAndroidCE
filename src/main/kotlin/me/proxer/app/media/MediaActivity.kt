@@ -14,7 +14,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.mikepenz.iconics.utils.IconicsMenuInflaterUtil
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import me.proxer.app.R
 import me.proxer.app.base.ImageTabsActivity
 import me.proxer.app.media.comments.CommentsFragment
@@ -141,7 +141,7 @@ class MediaActivity : ImageTabsActivity() {
         )
 
         preferenceHelper.isAgeRestrictedMediaAllowedObservable
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe { sectionsPagerAdapter.notifyDataSetChanged() }
     }
 

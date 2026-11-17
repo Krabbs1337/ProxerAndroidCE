@@ -14,7 +14,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.jakewharton.rxbinding3.material.offsetChanges
 import com.jakewharton.rxbinding3.view.clicks
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import io.reactivex.Observable
 import kotterknife.bindView
 import me.proxer.app.GlideApp
@@ -112,7 +112,7 @@ abstract class ImageTabsActivity : DrawerActivity() {
 
         headerImage
             .clicks()
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe {
                 val safeHeaderImageUrl = headerImageUrl
 
@@ -164,7 +164,7 @@ abstract class ImageTabsActivity : DrawerActivity() {
 
         appbar
             .offsetChanges()
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe {
                 isHeaderImageVisible = collapsingToolbar.height + it > collapsingToolbar.scrimVisibleHeightTrigger
             }

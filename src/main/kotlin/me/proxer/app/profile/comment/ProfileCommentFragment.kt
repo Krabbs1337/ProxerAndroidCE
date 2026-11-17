@@ -13,7 +13,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.google.android.material.snackbar.Snackbar
 import com.mikepenz.iconics.utils.IconicsMenuInflaterUtil
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -78,7 +78,7 @@ class ProfileCommentFragment : PagedContentFragment<ParsedUserComment>() {
                     .fromCallable { comment }
                     .subscribeOn(Schedulers.computation())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .autoDisposable(this.scope())
+                    .autoDispose(this.scope())
                     .subscribeAndLogErrors { viewModel.updateComment(it) }
             }
         }
@@ -89,19 +89,19 @@ class ProfileCommentFragment : PagedContentFragment<ParsedUserComment>() {
         innerAdapter = ProfileCommentAdapter(savedInstanceState, storageHelper)
 
         innerAdapter.titleClickSubject
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe {
                 MediaActivity.navigateTo(requireActivity(), it.entryId, it.entryName, it.category)
             }
 
         innerAdapter.editClickSubject
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe {
                 editComment.launch(EditCommentActivity.Contract.Input(it.id, it.entryId, it.entryName))
             }
 
         innerAdapter.deleteClickSubject
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe { comment ->
                 MaterialDialog(requireContext())
                     .message(text = getString(R.string.dialog_comment_delete_message, comment.entryName).parseAsHtml())

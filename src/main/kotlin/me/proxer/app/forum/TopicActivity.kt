@@ -11,7 +11,7 @@ import androidx.fragment.app.commitNow
 import com.jakewharton.rxbinding3.view.clicks
 import com.mikepenz.iconics.utils.IconicsMenuInflaterUtil
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import me.proxer.app.R
 import me.proxer.app.base.DrawerActivity
 import me.proxer.app.util.extension.getSafeStringExtra
@@ -146,7 +146,7 @@ class TopicActivity : DrawerActivity() {
 
         toolbar
             .clicks()
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribeAndLogErrors {
                 topic?.also { topic ->
                     multilineSnackbar(topic)

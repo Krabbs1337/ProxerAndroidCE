@@ -15,7 +15,7 @@ import androidx.lifecycle.Lifecycle
 import com.gojuno.koptional.rxjava2.filterSome
 import com.gojuno.koptional.toOptional
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import kotterknife.bindView
 import me.proxer.app.R
 import me.proxer.app.base.BaseContentFragment
@@ -73,7 +73,7 @@ class ProfileAboutFragment : BaseContentFragment<UserAbout>(R.layout.fragment_ab
         super.onViewCreated(view, savedInstanceState)
 
         about.showPageSubject
-            .autoDisposable(viewLifecycleOwner.scope())
+            .autoDispose(viewLifecycleOwner.scope())
             .subscribe { showPage(it) }
     }
 
@@ -183,12 +183,12 @@ class ProfileAboutFragment : BaseContentFragment<UserAbout>(R.layout.fragment_ab
             .linkClicks()
             .map { it.toPrefixedUrlOrNull().toOptional() }
             .filterSome()
-            .autoDisposable(viewLifecycleOwner.scope(Lifecycle.Event.ON_DESTROY))
+            .autoDispose(viewLifecycleOwner.scope(Lifecycle.Event.ON_DESTROY))
             .subscribe { showPage(it) }
 
         contentView
             .linkLongClicks()
-            .autoDisposable(viewLifecycleOwner.scope())
+            .autoDispose(viewLifecycleOwner.scope())
             .subscribe {
                 val clipboardTitle = getString(R.string.clipboard_title)
 

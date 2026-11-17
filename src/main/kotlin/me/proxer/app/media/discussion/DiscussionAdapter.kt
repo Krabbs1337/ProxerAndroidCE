@@ -10,7 +10,7 @@ import android.widget.TextView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.text.set
 import com.jakewharton.rxbinding3.view.clicks
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import io.reactivex.subjects.PublishSubject
 import kotterknife.bindView
 import me.proxer.app.R
@@ -52,7 +52,7 @@ class DiscussionAdapter : BaseAdapter<ForumDiscussion, ViewHolder>() {
             container
                 .clicks()
                 .mapBindingAdapterPosition({ bindingAdapterPosition }) { data[it] }
-                .autoDisposable(this)
+                .autoDispose(this)
                 .subscribe(clickSubject)
 
             val metaInfoText =

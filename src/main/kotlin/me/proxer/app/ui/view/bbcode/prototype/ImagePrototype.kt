@@ -20,7 +20,7 @@ import com.mikepenz.iconics.typeface.library.community.material.CommunityMateria
 import com.mikepenz.iconics.utils.colorInt
 import com.mikepenz.iconics.utils.sizeDp
 import com.uber.autodispose.android.ViewScopeProvider
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import me.proxer.app.GlideRequests
 import me.proxer.app.R
 import me.proxer.app.ui.ImageDetailActivity
@@ -85,7 +85,7 @@ object ImagePrototype : AutoClosingPrototype {
                 (parent.context as? Activity)?.let { context ->
                     view
                         .clicks()
-                        .autoDisposable(ViewScopeProvider.from(parent))
+                        .autoDispose(ViewScopeProvider.from(parent))
                         .subscribe {
                             if (view.getTag(R.id.error_tag) == true) {
                                 view.tag = null

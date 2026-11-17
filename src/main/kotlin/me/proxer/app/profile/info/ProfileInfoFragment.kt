@@ -10,7 +10,7 @@ import androidx.core.view.isVisible
 import com.gojuno.koptional.rxjava2.filterSome
 import com.gojuno.koptional.toOptional
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import kotterknife.bindView
 import me.proxer.app.R
 import me.proxer.app.base.BaseContentFragment
@@ -22,7 +22,7 @@ import me.proxer.app.util.extension.distanceInWordsToNow
 import me.proxer.app.util.extension.linkClicks
 import me.proxer.app.util.extension.linkify
 import me.proxer.app.util.extension.toPrefixedUrlOrNull
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.core.parameter.parametersOf
 
 /**
@@ -46,7 +46,7 @@ class ProfileInfoFragment : BaseContentFragment<UserInfoWrapper>(R.layout.fragme
     override val hostingActivity: ProfileActivity
         get() = activity as ProfileActivity
 
-    override val viewModel by sharedViewModel<ProfileViewModel> {
+    override val viewModel by activityViewModel<ProfileViewModel> {
         parametersOf(userId, username)
     }
 
@@ -84,12 +84,12 @@ class ProfileInfoFragment : BaseContentFragment<UserInfoWrapper>(R.layout.fragme
             .linkClicks()
             .map { it.toPrefixedUrlOrNull().toOptional() }
             .filterSome()
-            .autoDisposable(viewLifecycleOwner.scope())
+            .autoDispose(viewLifecycleOwner.scope())
             .subscribe { showPage(it) }
 
         rank
             .linkClicks()
-            .autoDisposable(viewLifecycleOwner.scope())
+            .autoDispose(viewLifecycleOwner.scope())
             .subscribe {
                 TopicActivity.navigateTo(requireActivity(), RANK_FORUM_ID, RANK_FORUM_CATEGORY_ID, RANK_FORUM_TOPIC)
             }

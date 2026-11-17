@@ -13,7 +13,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
 import com.jakewharton.rxbinding3.view.clicks
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import kotterknife.bindView
 import me.proxer.app.R
 import me.proxer.app.util.ErrorUtils.ErrorAction
@@ -66,7 +66,7 @@ abstract class BaseContentFragment<T>(
 
         progress
             .refreshes()
-            .autoDisposable(viewLifecycleOwner.scope())
+            .autoDispose(viewLifecycleOwner.scope())
             .subscribe { viewModel.refresh() }
 
         viewModel.error.observe(
@@ -134,7 +134,7 @@ abstract class BaseContentFragment<T>(
 
         errorButton
             .clicks()
-            .autoDisposable(viewLifecycleOwner.scope(Lifecycle.Event.ON_DESTROY))
+            .autoDispose(viewLifecycleOwner.scope(Lifecycle.Event.ON_DESTROY))
             .subscribe {
                 when (action.buttonAction) {
                     ErrorAction.ButtonAction.CAPTCHA -> {

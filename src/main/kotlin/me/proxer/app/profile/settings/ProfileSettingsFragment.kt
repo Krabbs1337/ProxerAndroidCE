@@ -6,7 +6,7 @@ import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.preference.Preference
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import me.proxer.app.R
 import me.proxer.app.util.KotterKnifePreference
 import me.proxer.app.util.bindPreference
@@ -16,7 +16,7 @@ import me.proxer.library.util.ProxerUtils
 import androidx.preference.ListPreference
 import androidx.preference.SwitchPreference
 import androidx.preference.PreferenceFragmentCompat
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import java.util.Locale
 
 /**
@@ -30,7 +30,7 @@ class ProfileSettingsFragment : PreferenceFragmentCompat() {
             }
     }
 
-    private val viewModel by sharedViewModel<ProfileSettingsViewModel>()
+    private val viewModel by activityViewModel<ProfileSettingsViewModel>()
 
     private val bannerAdsEnabled by bindPreference<SwitchPreference>("banner_ads_enabled")
     private val videoAdsInterval by bindPreference<ListPreference>("video_ads_interval")
@@ -74,7 +74,7 @@ class ProfileSettingsFragment : PreferenceFragmentCompat() {
 
         bannerAdsEnabled
             .changes<Boolean>()
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe {
                 val currentSettings = viewModel.data.value
 
@@ -87,7 +87,7 @@ class ProfileSettingsFragment : PreferenceFragmentCompat() {
 
         videoAdsInterval
             .changes<String>()
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe {
                 val currentSettings = viewModel.data.value
 
@@ -150,7 +150,7 @@ class ProfileSettingsFragment : PreferenceFragmentCompat() {
         copyCallback: (LocalProfileSettings, UcpSettingConstraint) -> LocalProfileSettings,
     ) = preference
         .changes<String>()
-        .autoDisposable(this.scope())
+        .autoDispose(this.scope())
         .subscribe {
             val currentSettings = viewModel.data.value
 

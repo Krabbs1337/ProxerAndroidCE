@@ -6,7 +6,7 @@ import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager.VERTICAL
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import me.proxer.app.GlideApp
 import me.proxer.app.R
 import me.proxer.app.base.PagedContentFragment
@@ -53,7 +53,7 @@ class TranslatorGroupProjectFragment : PagedContentFragment<TranslatorGroupProje
         innerAdapter = TranslatorGroupProjectAdapter()
 
         innerAdapter.clickSubject
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe { (view, translatorGroup) ->
                 MediaActivity.navigateTo(
                     requireActivity(),

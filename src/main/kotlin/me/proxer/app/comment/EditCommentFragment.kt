@@ -37,7 +37,7 @@ import com.mikepenz.iconics.utils.IconicsMenuInflaterUtil
 import com.mikepenz.iconics.utils.colorInt
 import com.mikepenz.iconics.utils.sizeDp
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import kotterknife.bindView
 import me.proxer.app.R
 import me.proxer.app.base.BaseContentFragment
@@ -46,7 +46,7 @@ import me.proxer.app.util.compat.MenuPopupCompat
 import me.proxer.app.util.extension.dip
 import me.proxer.app.util.extension.resolveColor
 import me.proxer.app.util.extension.setIconicsImage
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.core.parameter.parametersOf
 
 /**
@@ -63,7 +63,7 @@ class EditCommentFragment : BaseContentFragment<LocalComment>(R.layout.fragment_
     override val hostingActivity: EditCommentActivity
         get() = activity as EditCommentActivity
 
-    override val viewModel by sharedViewModel<EditCommentViewModel> {
+    override val viewModel by activityViewModel<EditCommentViewModel> {
         parametersOf(id, entryId)
     }
 
@@ -219,7 +219,7 @@ class EditCommentFragment : BaseContentFragment<LocalComment>(R.layout.fragment_
         rulesContainer
             .clicks()
             .mergeWith(expandRules.clicks())
-            .autoDisposable(viewLifecycleOwner.scope())
+            .autoDispose(viewLifecycleOwner.scope())
             .subscribe {
                 editor.clearFocus()
                 rules.isVisible = !rules.isVisible
@@ -232,18 +232,18 @@ class EditCommentFragment : BaseContentFragment<LocalComment>(R.layout.fragment_
         rating
             .ratingChanges()
             .skipInitialValue()
-            .autoDisposable(viewLifecycleOwner.scope())
+            .autoDispose(viewLifecycleOwner.scope())
             .subscribe { viewModel.updateRating(it) }
 
         editor
             .textChanges()
             .skipInitialValue()
-            .autoDisposable(viewLifecycleOwner.scope())
+            .autoDispose(viewLifecycleOwner.scope())
             .subscribe { viewModel.updateContent(it.toString()) }
 
         editor
             .textChanges()
-            .autoDisposable(viewLifecycleOwner.scope())
+            .autoDispose(viewLifecycleOwner.scope())
             .subscribe {
                 editor.requestFocus()
                 counter.text = "${it.length} / 20000"
@@ -261,18 +261,18 @@ class EditCommentFragment : BaseContentFragment<LocalComment>(R.layout.fragment_
         ).forEach { (button, tag) ->
             button
                 .clicks()
-                .autoDisposable(viewLifecycleOwner.scope())
+                .autoDispose(viewLifecycleOwner.scope())
                 .subscribe { insertTag(tag) }
         }
 
         ratingClear
             .clicks()
-            .autoDisposable(viewLifecycleOwner.scope())
+            .autoDispose(viewLifecycleOwner.scope())
             .subscribe { viewModel.updateRating(0f) }
 
         size
             .clicks()
-            .autoDisposable(viewLifecycleOwner.scope())
+            .autoDispose(viewLifecycleOwner.scope())
             .subscribe {
                 PopupMenu(requireContext(), size, Gravity.TOP)
                     .apply {
@@ -284,7 +284,7 @@ class EditCommentFragment : BaseContentFragment<LocalComment>(R.layout.fragment_
                         )
                     }.apply {
                         itemClicks()
-                            .autoDisposable(viewLifecycleOwner.scope())
+                            .autoDispose(viewLifecycleOwner.scope())
                             .subscribe {
                                 when (it.itemId) {
                                     R.id.tiny -> insertTag("size", "1")
@@ -300,7 +300,7 @@ class EditCommentFragment : BaseContentFragment<LocalComment>(R.layout.fragment_
 
         color
             .clicks()
-            .autoDisposable(viewLifecycleOwner.scope())
+            .autoDispose(viewLifecycleOwner.scope())
             .subscribe {
                 PopupMenu(requireContext(), color, Gravity.TOP)
                     .apply {
@@ -312,7 +312,7 @@ class EditCommentFragment : BaseContentFragment<LocalComment>(R.layout.fragment_
                         )
                     }.apply {
                         itemClicks()
-                            .autoDisposable(viewLifecycleOwner.scope())
+                            .autoDispose(viewLifecycleOwner.scope())
                             .subscribe {
                                 when (it.itemId) {
                                     R.id.red -> insertTag("color", getColorString(R.color.red_600))
@@ -332,7 +332,7 @@ class EditCommentFragment : BaseContentFragment<LocalComment>(R.layout.fragment_
 
         commentPreviewTitle
             .clicks()
-            .autoDisposable(viewLifecycleOwner.scope())
+            .autoDispose(viewLifecycleOwner.scope())
             .subscribe {
                 editor.clearFocus()
                 commentBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN

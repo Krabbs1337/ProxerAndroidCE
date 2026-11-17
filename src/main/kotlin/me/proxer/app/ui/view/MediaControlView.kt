@@ -11,7 +11,7 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import com.jakewharton.rxbinding3.view.clicks
 import com.uber.autodispose.android.ViewScopeProvider
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import io.reactivex.subjects.PublishSubject
 import kotterknife.bindView
 import me.proxer.app.R
@@ -119,32 +119,32 @@ class MediaControlView(
             .clicks()
             .filter { uploader != null }
             .map { uploader }
-            .autoDisposable(ViewScopeProvider.from(this))
+            .autoDispose(ViewScopeProvider.from(this))
             .subscribe(uploaderClickSubject)
 
         translatorGroupText
             .clicks()
             .filter { translatorGroup != null }
             .map { translatorGroup }
-            .autoDisposable(ViewScopeProvider.from(this))
+            .autoDispose(ViewScopeProvider.from(this))
             .subscribe(translatorGroupClickSubject)
 
         previous
             .clicks()
             .map { episodeInfo.current - 1 }
-            .autoDisposable(ViewScopeProvider.from(this))
+            .autoDispose(ViewScopeProvider.from(this))
             .subscribe(episodeSwitchSubject)
 
         next
             .clicks()
             .map { episodeInfo.current + 1 }
-            .autoDisposable(ViewScopeProvider.from(this))
+            .autoDispose(ViewScopeProvider.from(this))
             .subscribe(episodeSwitchSubject)
 
         bookmarkThis
             .clicks()
             .map { episodeInfo.current }
-            .autoDisposable(ViewScopeProvider.from(this))
+            .autoDispose(ViewScopeProvider.from(this))
             .subscribe(bookmarkSetSubject)
 
         bookmarkNext
@@ -155,13 +155,13 @@ class MediaControlView(
                 observable
                     .filter { (current, amount) -> current < amount }
                     .map { (current, _) -> current + 1 }
-                    .autoDisposable(ViewScopeProvider.from(this))
+                    .autoDispose(ViewScopeProvider.from(this))
                     .subscribe(bookmarkSetSubject)
 
                 observable
                     .filter { (current, amount) -> current >= amount }
                     .map { (current, _) -> current }
-                    .autoDisposable(ViewScopeProvider.from(this))
+                    .autoDispose(ViewScopeProvider.from(this))
                     .subscribe(finishClickSubject)
             }.connect()
     }

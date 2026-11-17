@@ -15,7 +15,7 @@ import androidx.core.content.withStyledAttributes
 import com.google.android.flexbox.FlexboxLayout
 import com.jakewharton.rxbinding3.view.clicks
 import com.uber.autodispose.android.ViewScopeProvider
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import io.reactivex.subjects.PublishSubject
 import me.proxer.app.R
 import me.proxer.app.util.extension.resolveColor
@@ -90,7 +90,7 @@ class MaxLineFlexboxLayout
             button
                 .clicks()
                 .doOnNext { maxLines = Int.MAX_VALUE }
-                .autoDisposable(ViewScopeProvider.from(this))
+                .autoDispose(ViewScopeProvider.from(this))
                 .subscribe(showAllEvents)
 
             container.layoutParams =

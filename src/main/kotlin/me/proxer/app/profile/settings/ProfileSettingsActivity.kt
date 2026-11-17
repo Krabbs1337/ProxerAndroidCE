@@ -7,7 +7,7 @@ import androidx.fragment.app.commitNow
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import me.proxer.app.R
 import me.proxer.app.base.DrawerActivity
 import me.proxer.app.util.extension.multilineSnackbar
@@ -62,7 +62,7 @@ class ProfileSettingsActivity : DrawerActivity() {
 
         storageHelper.isLoggedInObservable
             .filter { it.not() }
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe { finish() }
 
         if (savedInstanceState == null) {

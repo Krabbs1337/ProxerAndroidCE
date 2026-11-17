@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import io.reactivex.Observable
 import kotterknife.bindView
 import me.proxer.app.GlideApp
@@ -69,7 +69,7 @@ class TopTenFragment : BaseContentFragment<ZippedTopTenResult>(R.layout.fragment
 
         Observable
             .merge(animeAdapter.clickSubject, mangaAdapter.clickSubject)
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe { (view, item) ->
                 if (item is LocalTopTenEntry.Ucp) {
                     MediaActivity.navigateTo(requireActivity(), item.entryId, item.name, item.category, view)
@@ -80,7 +80,7 @@ class TopTenFragment : BaseContentFragment<ZippedTopTenResult>(R.layout.fragment
 
         Observable
             .merge(animeAdapter.deleteSubject, mangaAdapter.deleteSubject)
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe { viewModel.addItemToDelete(it) }
     }
 

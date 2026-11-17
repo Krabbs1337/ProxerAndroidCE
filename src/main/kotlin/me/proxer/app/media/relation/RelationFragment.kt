@@ -7,7 +7,7 @@ import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import kotterknife.bindView
 import me.proxer.app.GlideApp
 import me.proxer.app.R
@@ -54,7 +54,7 @@ class RelationFragment : BaseContentFragment<List<Relation>>(R.layout.fragment_r
         adapter = RelationAdapter()
 
         adapter.clickSubject
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe { (view, relation) ->
                 MediaActivity.navigateTo(requireActivity(), relation.id, relation.name, relation.category, view)
             }

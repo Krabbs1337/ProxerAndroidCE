@@ -19,7 +19,7 @@ Ziel: Das Projekt auf einen aktuellen, build- und Play-Store-fähigen Stand brin
 | 3 | Runtime-Fixes für targetSdk 36 — **erledigt 17.11.2026** | Harte Crashes/Funktionsverluste auf Android 13–16 beheben |
 | 4 | AndroidX + Kernbibliotheken — **erledigt 17.11.2026** | Stabile Majors, Room 2.8 + KSP, lifecycle-extensions entfernen |
 | 5 | Sicherheit — **erledigt 17.11.2026** | Token-Speicherung, Cleartext, CVE-behaftete Libs |
-| 6 | DI + View-Layer | Koin 2→4, Kotterknife→ViewBinding, AutoDispose 2 |
+| 6 | DI + View-Layer — **erledigt 17.11.2026** | Koin 2→4, Kotterknife→Shim, AutoDispose 1.4.1 |
 | 7 | Media | ExoPlayer 2.11 → Media3 |
 | 8 | Performance + Polish | Glide, Baseline Profiles, AAB-Splits, Desugaring |
 | 9 | Qualitätssicherung + optionale Coroutines-Migration | detekt/ktlint/CI aktuell, schrittweise RxJava-Ablösung |
@@ -149,7 +149,15 @@ Checkliste (alle bekannten Berührungspunkte):
 - AutoDispose 1.2.0 → 2.1.x (`scope()`-API anpassen in `BaseActivity`, `BaseFragment`, `BaseDialog`, ViewHolders).
 - RxJava-Stack aktualisieren (rxjava 2.2.21, rxbinding 3.2.0); RxBus-Verwendung in `BaseViewModel`/`BaseActivity` beibehalten.
 
-**Abnahme:** Build grün, `allWarningsAsErrors` aktiv, keine Kotterknife-Referenzen mehr.
+**Umgesetzt am 17.11.2026 (konkrete Versionen & Abweichungen):**
+
+- **Koin 2.2.2 → 4.2.2**: `koin-androidx-viewmodel` (endet bei 2.2.3) durch `koin-android:4.2.2` ersetzt; `startKoin`/`androidContext`/`module`/`viewModel`-DSL, `inject`/`getKoin`/`parametersOf` sind API-kompatibel, keine Call-Site-Änderungen nötig. Drei echte Migrationen: `sharedViewModel` existiert in Koin 4 nicht mehr → `activityViewModel` (6 Dateien, semantisch gleich: Activity-ViewModelStore); `DefinitionParameters` (Klasse mit Companion) entfällt → `unsafeParametersOf` liefert jetzt direkt `ParametersHolder` via `parametersOf(*parameters)` (1 Call-Site in `MediaListFragment`); in Koin 4 ist `ParametersDefinition` ein `() -> ParametersHolder`-Lambda.
+- **AutoDispose 1.2.0 → 1.4.1** (Abweichung vom Plan: AutoDispose **2.x ist RxJava3-only** – `autodispose2` baut gegen `io.reactivex.rxjava3`, es gibt kein RxJava2-Artefakt; Projekt und ProxerLib bleiben auf RxJava 2. 1.4.1 ist das letzte RxJava2-Release, ab 1.3.0 sind die `-ktx`-Artefakte in `autodispose` bzw. `autodispose-android-archcomponents` gemergt). In 1.4.x heißt die Extension `autoDispose` (alter Name `autoDisposable` ist error-deprecated) → 74 Dateien (main + release) umbenannt. `scope()`-API (`com.uber.autodispose.android.lifecycle.scope`) unverändert.
+- **Kotterknife → In-Repo-Shim** (Abweichung vom Plan: kein ViewBinding-Umbau der 75 Dateien in dieser Phase, Verschiebung nach Phase 9): `com.github.rubengees:kotterknife` (nur Jitpack) durch `src/main/kotlin/kotterknife/KotterKnife.kt` ersetzt – `bindView`-Delegates für Activity/Fragment/Dialog/View/ViewHolder per non-caching `findViewById`, `KotterKnife.reset` als No-Op. Call-Sites unverändert, keine Leak-Gefahr (kein Caching).
+- RxJava-Stack: rxjava **2.2.20 → 2.2.21**; rxbinding bleibt **3.1.0** (3.2.0 existiert nicht, 3.1.0 ist latest), rxkotlin 2.4.0, rxandroid 2.1.1, rx-preferences 2.0.1, RxBus 2.0.0 unverändert.
+- Verifiziert grün: `ktlintCheck`, `detekt`, `assembleDebug`, `assembleRelease`, `bundleRelease`, `assembleLogRelease`.
+
+**Abnahme:** Build grün – lokal erfüllt; keine Kotterknife-Library-Referenzen mehr (nur In-Repo-Shim); `allWarningsAsErrors` bleibt deaktiviert (Phase 9).
 
 ## Phase 7 – Media: ExoPlayer → Media3
 

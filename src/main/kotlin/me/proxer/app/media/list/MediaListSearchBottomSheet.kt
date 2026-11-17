@@ -10,7 +10,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDE
 import com.jakewharton.rxbinding3.view.clicks
 import com.jakewharton.rxbinding3.widget.checkedChanges
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import me.proxer.app.R
 import me.proxer.app.ui.view.ExpandableSelectionView
 import me.proxer.app.util.extension.ProxerLibExtensions
@@ -55,19 +55,19 @@ class MediaListSearchBottomSheet private constructor(
         fragment.includeUnratedTags
             .checkedChanges()
             .skipInitialValue()
-            .autoDisposable(fragment.viewLifecycleOwner.scope())
+            .autoDispose(fragment.viewLifecycleOwner.scope())
             .subscribe { fragment.tagRateFilter = if (it) TagRateFilter.ALL else TagRateFilter.RATED_ONLY }
 
         fragment.includeSpoilerTags
             .checkedChanges()
             .skipInitialValue()
-            .autoDisposable(fragment.viewLifecycleOwner.scope())
+            .autoDispose(fragment.viewLifecycleOwner.scope())
             .subscribe { fragment.tagSpoilerFilter = if (it) TagSpoilerFilter.ALL else TagSpoilerFilter.NO_SPOILERS }
 
         fragment.hideFinishedCheckBox
             .checkedChanges()
             .skipInitialValue()
-            .autoDisposable(fragment.viewLifecycleOwner.scope())
+            .autoDispose(fragment.viewLifecycleOwner.scope())
             .subscribe { fragment.hideFinished = it }
 
         val fskItems =
@@ -131,7 +131,7 @@ class MediaListSearchBottomSheet private constructor(
     private fun initClickSubscriptions() {
         fragment.searchBottomSheetTitle
             .clicks()
-            .autoDisposable(fragment.viewLifecycleOwner.scope())
+            .autoDispose(fragment.viewLifecycleOwner.scope())
             .subscribe {
                 bottomSheetBehaviour.state =
                     when (bottomSheetBehaviour.state) {
@@ -142,7 +142,7 @@ class MediaListSearchBottomSheet private constructor(
 
         fragment.search
             .clicks()
-            .autoDisposable(fragment.viewLifecycleOwner.scope())
+            .autoDispose(fragment.viewLifecycleOwner.scope())
             .subscribe {
                 fragment.searchView.clearFocus()
 
@@ -154,7 +154,7 @@ class MediaListSearchBottomSheet private constructor(
 
     private fun initSelectionSubscriptions() {
         fragment.languageSelector.selectionChangeSubject
-            .autoDisposable(fragment.viewLifecycleOwner.scope())
+            .autoDispose(fragment.viewLifecycleOwner.scope())
             .subscribeAndLogErrors {
                 fragment.language =
                     when {
@@ -165,7 +165,7 @@ class MediaListSearchBottomSheet private constructor(
             }
 
         fragment.genreSelector.selectionChangeSubject
-            .autoDisposable(fragment.viewLifecycleOwner.scope())
+            .autoDispose(fragment.viewLifecycleOwner.scope())
             .subscribeAndLogErrors { selections ->
                 viewModel.genreData.value?.let { genreData ->
                     fragment.genres = selections.mapNotNull { selection -> genreData.find { it.name == selection } }
@@ -173,7 +173,7 @@ class MediaListSearchBottomSheet private constructor(
             }
 
         fragment.excludedGenreSelector.selectionChangeSubject
-            .autoDisposable(fragment.viewLifecycleOwner.scope())
+            .autoDispose(fragment.viewLifecycleOwner.scope())
             .subscribeAndLogErrors { selections ->
                 viewModel.genreData.value?.let { genreData ->
                     fragment.excludedGenres =
@@ -184,7 +184,7 @@ class MediaListSearchBottomSheet private constructor(
             }
 
         fragment.fskSelector.selectionChangeSubject
-            .autoDisposable(fragment.viewLifecycleOwner.scope())
+            .autoDispose(fragment.viewLifecycleOwner.scope())
             .subscribeAndLogErrors { selections ->
                 fragment.fskConstraints =
                     enumSetOf(
@@ -195,7 +195,7 @@ class MediaListSearchBottomSheet private constructor(
             }
 
         fragment.tagSelector.selectionChangeSubject
-            .autoDisposable(fragment.viewLifecycleOwner.scope())
+            .autoDispose(fragment.viewLifecycleOwner.scope())
             .subscribeAndLogErrors { selections ->
                 viewModel.tagData.value?.let { tagData ->
                     fragment.tags = selections.mapNotNull { selection -> tagData.find { it.name == selection } }
@@ -203,7 +203,7 @@ class MediaListSearchBottomSheet private constructor(
             }
 
         fragment.excludedTagSelector.selectionChangeSubject
-            .autoDisposable(fragment.viewLifecycleOwner.scope())
+            .autoDispose(fragment.viewLifecycleOwner.scope())
             .subscribeAndLogErrors { selections ->
                 viewModel.tagData.value?.let { tagData ->
                     fragment.excludedTags = selections.mapNotNull { selection -> tagData.find { it.name == selection } }

@@ -5,7 +5,7 @@ import android.view.View
 import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import me.proxer.app.GlideApp
 import me.proxer.app.R
 import me.proxer.app.anime.AnimeActivity
@@ -61,7 +61,7 @@ class HistoryFragment : PagedContentFragment<LocalUserHistoryEntry>() {
         innerAdapter = HistoryAdapter()
 
         innerAdapter.clickSubject
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe { (_, entry) ->
                 when (entry.category) {
                     Category.ANIME -> {
@@ -88,7 +88,7 @@ class HistoryFragment : PagedContentFragment<LocalUserHistoryEntry>() {
             }
 
         innerAdapter.longClickSubject
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe { (view, entry) ->
                 MediaActivity.navigateTo(requireActivity(), entry.entryId, entry.name, entry.category, view)
             }

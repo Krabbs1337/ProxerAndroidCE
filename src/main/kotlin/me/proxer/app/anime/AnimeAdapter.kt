@@ -18,7 +18,7 @@ import com.mikepenz.iconics.typeface.library.community.material.CommunityMateria
 import com.mikepenz.iconics.utils.colorInt
 import com.mikepenz.iconics.utils.paddingDp
 import com.mikepenz.iconics.utils.sizeDp
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import io.reactivex.subjects.PublishSubject
 import kotterknife.bindView
 import me.proxer.app.GlideRequests
@@ -193,7 +193,7 @@ class AnimeAdapter(
                     val resolvedPosition = positionResolver.resolve(it)
 
                     Triple(expandedItemId, data[resolvedPosition].id, resolvedPosition)
-                }.autoDisposable(this)
+                }.autoDispose(this)
                 .subscribe { (previousItemId, newItemId, position) ->
                     if (newItemId == previousItemId) {
                         expandedItemId = null
@@ -211,13 +211,13 @@ class AnimeAdapter(
             uploaderText
                 .clicks()
                 .mapBindingAdapterPosition({ bindingAdapterPosition }) { data[positionResolver.resolve(it)] }
-                .autoDisposable(this)
+                .autoDispose(this)
                 .subscribe(uploaderClickSubject)
 
             translatorGroup
                 .clicks()
                 .mapBindingAdapterPosition({ bindingAdapterPosition }) { data[positionResolver.resolve(it)] }
-                .autoDisposable(this)
+                .autoDispose(this)
                 .subscribe(translatorGroupClickSubject)
 
             dismissAdAlert
@@ -225,7 +225,7 @@ class AnimeAdapter(
                 .mapBindingAdapterPosition({ bindingAdapterPosition }) { positionResolver.resolve(it) }
                 .doOnNext { storageHelper.lastAdAlertDate = Instant.now() }
                 .doAfterNext { notifyItemChanged(it) }
-                .autoDisposable(this)
+                .autoDispose(this)
                 .subscribe()
 
             setAdInterval
@@ -233,13 +233,13 @@ class AnimeAdapter(
                 .mapBindingAdapterPosition({ bindingAdapterPosition }) { positionResolver.resolve(it) }
                 .doOnNext { storageHelper.lastAdAlertDate = Instant.now() }
                 .doAfterNext { notifyItemChanged(it) }
-                .autoDisposable(this)
+                .autoDispose(this)
                 .subscribe(setAdIntervalClickSubject)
 
             play
                 .clicks()
                 .mapBindingAdapterPosition({ bindingAdapterPosition }) { data[positionResolver.resolve(it)] }
-                .autoDisposable(this)
+                .autoDispose(this)
                 .apply { if (loginRequired) subscribe(loginClickSubject) else subscribe(playClickSubject) }
         }
 
@@ -345,7 +345,7 @@ class AnimeAdapter(
                 .linkClicks()
                 .map { it.toHttpUrlOrNull().toOptional() }
                 .filterSome()
-                .autoDisposable(this)
+                .autoDispose(this)
                 .subscribe(linkClickSubject)
 
             message.text = messageText

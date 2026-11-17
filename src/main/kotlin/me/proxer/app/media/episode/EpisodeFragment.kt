@@ -16,7 +16,7 @@ import com.jakewharton.rxbinding3.recyclerview.scrollEvents
 import com.jakewharton.rxbinding3.view.clicks
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotterknife.bindView
 import me.proxer.app.GlideApp
@@ -39,7 +39,7 @@ import me.proxer.app.util.extension.toGeneralLanguage
 import me.proxer.library.enums.Category
 import me.proxer.library.enums.MediaLanguage
 import me.proxer.library.util.ProxerUtils
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import java.util.concurrent.TimeUnit
@@ -61,7 +61,7 @@ class EpisodeFragment : BaseContentFragment<List<EpisodeRow>>(R.layout.fragment_
     override val isSwipeToRefreshEnabled = false
 
     override val viewModel by viewModel<EpisodeViewModel> { parametersOf(id) }
-    private val mediaInfoViewModel by sharedViewModel<MediaInfoViewModel>()
+    private val mediaInfoViewModel by activityViewModel<MediaInfoViewModel>()
 
     override val hostingActivity: MediaActivity
         get() = activity as MediaActivity
@@ -105,7 +105,7 @@ class EpisodeFragment : BaseContentFragment<List<EpisodeRow>>(R.layout.fragment_
         adapter = EpisodeAdapter(savedInstanceState)
 
         adapter.languageClickSubject
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe { (language, episode) ->
                 when (episode.category) {
                     Category.ANIME -> {
@@ -154,17 +154,17 @@ class EpisodeFragment : BaseContentFragment<List<EpisodeRow>>(R.layout.fragment_
             .skip(1)
             .debounce(10, TimeUnit.MILLISECONDS)
             .observeOn(AndroidSchedulers.mainThread())
-            .autoDisposable(viewLifecycleOwner.scope())
+            .autoDispose(viewLifecycleOwner.scope())
             .subscribe { updateScrollToBottomVisibility() }
 
         hostingActivity
             .headerHeightChanges()
-            .autoDisposable(viewLifecycleOwner.scope())
+            .autoDispose(viewLifecycleOwner.scope())
             .subscribe { scrollToBottom.translationY = it }
 
         scrollToBottom
             .clicks()
-            .autoDisposable(viewLifecycleOwner.scope())
+            .autoDispose(viewLifecycleOwner.scope())
             .subscribe {
                 val indexBasedUserProgress =
                     viewModel.data.value
@@ -219,7 +219,7 @@ class EpisodeFragment : BaseContentFragment<List<EpisodeRow>>(R.layout.fragment_
         )
 
         storageHelper.isLoggedInObservable
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe { updateBookmarkErrorButton() }
 
         setFragmentResultListener(LANGUAGE_RESULT) { _, bundle ->
@@ -286,7 +286,7 @@ class EpisodeFragment : BaseContentFragment<List<EpisodeRow>>(R.layout.fragment_
 
                 errorButton
                     .clicks()
-                    .autoDisposable(viewLifecycleOwner.scope(Lifecycle.Event.ON_DESTROY))
+                    .autoDispose(viewLifecycleOwner.scope(Lifecycle.Event.ON_DESTROY))
                     .subscribe {
                         if (safeLanguages.size == 1) {
                             viewModel.bookmark(1, safeLanguages.first(), safeCategory)

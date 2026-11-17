@@ -21,7 +21,7 @@ import com.mikepenz.iconics.utils.colorInt
 import com.mikepenz.iconics.utils.paddingDp
 import com.mikepenz.iconics.utils.sizeDp
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -96,7 +96,7 @@ class CommentsFragment : PagedContentFragment<ParsedComment>(R.layout.fragment_c
                     .fromCallable { comment }
                     .subscribeOn(Schedulers.computation())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .autoDisposable(this.scope())
+                    .autoDispose(this.scope())
                     .subscribeAndLogErrors { viewModel.updateComment(it) }
             }
         }
@@ -107,7 +107,7 @@ class CommentsFragment : PagedContentFragment<ParsedComment>(R.layout.fragment_c
         innerAdapter = CommentsAdapter(savedInstanceState, storageHelper)
 
         innerAdapter.profileClickSubject
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe { (view, comment) ->
                 ProfileActivity.navigateTo(
                     requireActivity(),
@@ -119,13 +119,13 @@ class CommentsFragment : PagedContentFragment<ParsedComment>(R.layout.fragment_c
             }
 
         innerAdapter.editClickSubject
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe {
                 editComment.launch(EditCommentActivity.Contract.Input(it.id, it.entryId, name))
             }
 
         innerAdapter.deleteClickSubject
-            .autoDisposable(this.scope())
+            .autoDispose(this.scope())
             .subscribe { comment ->
                 MaterialDialog(requireContext())
                     .message(text = getString(R.string.dialog_comment_delete_message, comment.author).parseAsHtml())
@@ -149,7 +149,7 @@ class CommentsFragment : PagedContentFragment<ParsedComment>(R.layout.fragment_c
 
         hostingActivity
             .headerHeightChanges()
-            .autoDisposable(viewLifecycleOwner.scope())
+            .autoDispose(viewLifecycleOwner.scope())
             .subscribe { create.translationY = it }
 
         viewModel.itemDeletionError.observe(
@@ -176,7 +176,7 @@ class CommentsFragment : PagedContentFragment<ParsedComment>(R.layout.fragment_c
 
         create
             .clicks()
-            .autoDisposable(viewLifecycleOwner.scope())
+            .autoDispose(viewLifecycleOwner.scope())
             .subscribe { editComment.launch(EditCommentActivity.Contract.Input(entryId = id, name = name)) }
 
         TooltipCompat.setTooltipText(create, getString(R.string.action_write_comment))

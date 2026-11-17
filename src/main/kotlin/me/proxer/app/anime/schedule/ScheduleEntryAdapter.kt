@@ -23,7 +23,7 @@ import androidx.core.view.marginTop
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.view.clicks
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -172,7 +172,7 @@ class ScheduleEntryAdapter : BaseAdapter<CalendarEntry, ViewHolder>() {
             container
                 .clicks()
                 .mapBindingAdapterPosition({ bindingAdapterPosition }) { image to data[it] }
-                .autoDisposable(this)
+                .autoDispose(this)
                 .subscribe(clickSubject)
 
             ViewCompat.setTransitionName(image, "schedule_${item.id}")
@@ -191,7 +191,7 @@ class ScheduleEntryAdapter : BaseAdapter<CalendarEntry, ViewHolder>() {
                 Observable
                     .interval(0, 1, TimeUnit.SECONDS)
                     .observeOn(AndroidSchedulers.mainThread())
-                    .autoDisposable(this)
+                    .autoDispose(this)
                     .subscribe(AiringInfoUpdateConsumer(item))
 
             glide?.defaultLoad(image, ProxerUrls.entryImage(item.entryId))

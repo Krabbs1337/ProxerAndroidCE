@@ -18,19 +18,6 @@
     </shortcut>
     <shortcut
         android:enabled="true"
-        android:icon="@drawable/ic_shortcut_chat"
-        android:shortcutDisabledMessage="@string/shortcut_disabled_message"
-        android:shortcutId="chat"
-        android:shortcutLongLabel="@string/section_chat"
-        android:shortcutShortLabel="@string/section_chat">
-        <intent
-            android:action="android.intent.action.VIEW"
-            android:data="chat"
-            android:targetClass="me.proxer.app.MainActivity"
-            android:targetPackage="me.proxer.app" />
-    </shortcut>
-    <shortcut
-        android:enabled="true"
         android:icon="@drawable/ic_shortcut_bookmarks"
         android:shortcutDisabledMessage="@string/shortcut_disabled_message"
         android:shortcutId="bookmarks"
@@ -42,9 +29,4 @@
             android:targetClass="me.proxer.app.MainActivity"
             android:targetPackage="me.proxer.app" />
     </shortcut>
-
-    <share-target android:targetClass="me.proxer.app.chat.prv.PrvMessengerActivity">
-        <data android:mimeType="text/plain" />
-        <category android:name="me.proxer.app.sharingshortcuts.category.TEXT_SHARE_TARGET" />
-    </share-target>
 </shortcuts>

@@ -13,19 +13,12 @@ import com.uber.autodispose.autoDisposable
 import kotterknife.bindView
 import me.proxer.app.R
 import me.proxer.app.base.BaseActivity
-import me.proxer.app.chat.prv.Participant
-import me.proxer.app.chat.prv.create.CreateConferenceActivity
-import me.proxer.app.util.extension.linkClicks
 import me.proxer.app.util.extension.linkify
 
 /**
  * @author Ruben Gees
  */
 class CrashActivity : BaseActivity() {
-    private companion object {
-        private const val DEVELOPER_PROXER_NAME = "RubyGee"
-    }
-
     private val config: CaocConfig
         get() =
             try {
@@ -63,17 +56,6 @@ class CrashActivity : BaseActivity() {
             .clicks()
             .autoDisposable(this.scope())
             .subscribe { CustomActivityOnCrash.restartApplication(this, config) }
-
-        text
-            .linkClicks()
-            .autoDisposable(this.scope())
-            .subscribe {
-                CustomActivityOnCrash.restartApplicationWithIntent(
-                    this,
-                    CreateConferenceActivity.getIntent(this, false, Participant(DEVELOPER_PROXER_NAME)),
-                    config,
-                )
-            }
 
         text.text = getString(R.string.activity_crash_text).linkify(web = false)
     }

@@ -14,7 +14,6 @@ import me.proxer.app.BuildConfig
 import me.proxer.app.MainActivity
 import me.proxer.app.R
 import me.proxer.app.base.BaseActivity
-import me.proxer.app.chat.prv.sync.MessengerWorker
 import me.proxer.app.notification.NotificationWorker
 import me.proxer.app.profile.settings.ProfileSettingsActivity
 import me.proxer.app.settings.theme.ThemeDialog
@@ -27,7 +26,6 @@ import me.proxer.app.util.data.PreferenceHelper.Companion.HTTP_LOG_LEVEL
 import me.proxer.app.util.data.PreferenceHelper.Companion.HTTP_REDACT_TOKEN
 import me.proxer.app.util.data.PreferenceHelper.Companion.HTTP_VERBOSE
 import me.proxer.app.util.data.PreferenceHelper.Companion.NOTIFICATIONS_ACCOUNT
-import me.proxer.app.util.data.PreferenceHelper.Companion.NOTIFICATIONS_CHAT
 import me.proxer.app.util.data.PreferenceHelper.Companion.NOTIFICATIONS_INTERVAL
 import me.proxer.app.util.data.PreferenceHelper.Companion.NOTIFICATIONS_NEWS
 import me.proxer.app.util.data.PreferenceHelper.Companion.THEME
@@ -170,13 +168,8 @@ class SettingsFragment :
                 NotificationWorker.enqueueIfPossible()
             }
 
-            NOTIFICATIONS_CHAT -> {
-                MessengerWorker.enqueueSynchronizationIfPossible()
-            }
-
             NOTIFICATIONS_INTERVAL -> {
                 NotificationWorker.enqueueIfPossible()
-                MessengerWorker.enqueueSynchronizationIfPossible()
             }
 
             EXTERNAL_CACHE, HTTP_LOG_LEVEL, HTTP_VERBOSE, HTTP_REDACT_TOKEN -> {

@@ -130,7 +130,7 @@ internal class BBSpoilerView
 
             toggleText.requestLayout()
 
-            // Ugly workaround to fix issues with dynamic sized TextViews (e.g. in the chat).
+            // Ugly workaround to fix issues with dynamic sized TextViews.
             if (isExpanded && children.all { it is TextView }) {
                 decoration.layoutParams.width = WRAP_CONTENT
                 container.layoutParams.width = WRAP_CONTENT

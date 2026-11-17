@@ -73,26 +73,6 @@
 
                 <data
                     android:host="proxer.me"
-                    android:pathPattern="/chat"
-                    android:scheme="http" />
-
-                <data
-                    android:host="proxer.me"
-                    android:pathPattern="/chat"
-                    android:scheme="https" />
-
-                <data
-                    android:host="proxer.me"
-                    android:pathPattern="/messages"
-                    android:scheme="http" />
-
-                <data
-                    android:host="proxer.me"
-                    android:pathPattern="/messages"
-                    android:scheme="https" />
-
-                <data
-                    android:host="proxer.me"
                     android:pathPattern="/anime"
                     android:scheme="http" />
 
@@ -168,29 +148,6 @@
         </activity>
 
         <activity android:name=".notification.NotificationActivity" />
-
-        <activity android:name=".chat.pub.message.ChatActivity" />
-
-        <activity
-            android:name=".chat.prv.PrvMessengerActivity"
-            android:label="@string/activity_prv_messenger_send_to"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.SEND" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="text/plain" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.service.chooser.chooser_target_service"
-                android:value="androidx.sharetarget.ChooserTargetServiceCompat" />
-        </activity>
-
-        <activity android:name=".chat.prv.create.CreateConferenceActivity" />
-
-        <activity android:name=".chat.prv.conference.info.ConferenceInfoActivity" />
-
-        <activity android:name=".chat.pub.room.info.ChatRoomInfoActivity" />
 
         <activity android:name=".profile.settings.ProfileSettingsActivity" />
 
@@ -412,14 +369,6 @@
 
         <receiver
             android:name=".notification.AccountNotificationReadReceiver"
-            android:exported="false" />
-
-        <receiver
-            android:name=".chat.prv.sync.MessengerNotificationReadReceiver"
-            android:exported="false" />
-
-        <receiver
-            android:name=".chat.prv.sync.DirectReplyReceiver"
             android:exported="false" />
 
         <provider

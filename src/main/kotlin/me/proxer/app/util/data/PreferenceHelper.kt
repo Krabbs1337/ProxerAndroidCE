@@ -29,14 +29,12 @@ class PreferenceHelper(
         const val LAST_NEWS_DATE = "last_news_date"
 
         const val AGE_CONFIRMATION = "age_confirmation"
-        const val LINK_CHECK = "check_links"
         const val AUTO_BOOKMARK = "auto_bookmark"
         const val CHECK_CELLULAR = "check_cellular"
         const val START_PAGE = "start_page"
         const val THEME = "theme"
         const val NOTIFICATIONS_NEWS = "notifications_news"
         const val NOTIFICATIONS_ACCOUNT = "notifications_account"
-        const val NOTIFICATIONS_CHAT = "notifications_chat"
         const val NOTIFICATIONS_INTERVAL = "notifications_interval"
         const val MANGA_READER_ORIENTATION = "manga_reader_orientation"
         const val EXTERNAL_CACHE = "external_cache"
@@ -91,12 +89,6 @@ class PreferenceHelper(
             sharedPreferences.edit { putBoolean(AGE_CONFIRMATION, value) }
         }
 
-    var shouldCheckLinks
-        get() = sharedPreferences.getBoolean(LINK_CHECK, true)
-        set(value) {
-            sharedPreferences.edit { putBoolean(LINK_CHECK, value) }
-        }
-
     val isAgeRestrictedMediaAllowedObservable =
         rxSharedPreferences
             .getBoolean(AGE_CONFIRMATION, false)
@@ -132,9 +124,6 @@ class PreferenceHelper(
         set(value) {
             sharedPreferences.edit { putBoolean(NOTIFICATIONS_ACCOUNT, value) }
         }
-
-    val areChatNotificationsEnabled
-        get() = sharedPreferences.getBoolean(NOTIFICATIONS_CHAT, true)
 
     val notificationsInterval
         get() = sharedPreferences.getSafeString(NOTIFICATIONS_INTERVAL, "30").toLong()

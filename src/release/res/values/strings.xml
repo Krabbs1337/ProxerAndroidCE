@@ -2,8 +2,8 @@
 <resources>
     <string name="section_crash">Absturz</string>
 
-    <string name="activity_crash_text">Die App ist leider abgestürzt. Sende den Fehler bitte an @RubyGee oder einen
-        anderen Techniker um bei der Beseitigung zu helfen!
+    <string name="activity_crash_text">Die App ist leider abgestürzt. Melde den Fehler bitte über GitHub
+        (github.com/proxer/ProxerAndroid) oder den Discord-Server, damit er beseitigt werden kann!
     </string>
     <string name="activity_crash_report">Fehlerbericht</string>
     <string name="activity_crash_restart">Neustart</string>

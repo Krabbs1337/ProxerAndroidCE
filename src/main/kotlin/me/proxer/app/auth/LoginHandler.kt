@@ -5,9 +5,6 @@ import android.content.Context
 import androidx.core.content.pm.ShortcutManagerCompat
 import io.reactivex.Completable
 import io.reactivex.schedulers.Schedulers
-import me.proxer.app.chat.prv.sync.MessengerDao
-import me.proxer.app.chat.prv.sync.MessengerNotifications
-import me.proxer.app.chat.prv.sync.MessengerWorker
 import me.proxer.app.notification.AccountNotifications
 import me.proxer.app.notification.NotificationWorker
 import me.proxer.app.util.data.PreferenceHelper
@@ -22,7 +19,6 @@ class LoginHandler(
     private val api: ProxerApi,
     private val storageHelper: StorageHelper,
     private val preferenceHelper: PreferenceHelper,
-    private val messengerDao: MessengerDao,
 ) {
     @SuppressLint("CheckResult")
     fun listen(context: Context) {
@@ -37,7 +33,6 @@ class LoginHandler(
     }
 
     private fun onLogin() {
-        MessengerWorker.enqueueSynchronizationIfPossible()
         NotificationWorker.enqueueIfPossible()
     }
 
@@ -45,9 +40,6 @@ class LoginHandler(
         ShortcutManagerCompat.removeAllDynamicShortcuts(context)
 
         AccountNotifications.cancel(context)
-        MessengerNotifications.cancel(context)
-
-        MessengerWorker.cancel()
 
         if (!preferenceHelper.areNewsNotificationsEnabled) {
             NotificationWorker.cancel()
@@ -56,7 +48,6 @@ class LoginHandler(
         Completable
             .fromAction {
                 storageHelper.reset()
-                messengerDao.clear()
             }.subscribeOn(Schedulers.io())
             .subscribeAndLogErrors()
     }

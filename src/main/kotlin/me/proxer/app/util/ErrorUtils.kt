@@ -13,7 +13,6 @@ import me.proxer.app.base.BaseActivity
 import me.proxer.app.comment.CommentInvalidProgressException
 import me.proxer.app.comment.CommentTooLongException
 import me.proxer.app.exception.AgeConfirmationRequiredException
-import me.proxer.app.exception.ChatException
 import me.proxer.app.exception.NotConnectedException
 import me.proxer.app.exception.NotLoggedInException
 import me.proxer.app.exception.PartialException
@@ -51,15 +50,6 @@ import me.proxer.library.ProxerException.ServerErrorType.AUTH_CODE_INVALID_NAME
 import me.proxer.library.ProxerException.ServerErrorType.AUTH_CODE_PENDING
 import me.proxer.library.ProxerException.ServerErrorType.AUTH_CODE_REJECTED
 import me.proxer.library.ProxerException.ServerErrorType.AUTH_INVALID_USER
-import me.proxer.library.ProxerException.ServerErrorType.CHAT_INVALID_INPUT
-import me.proxer.library.ProxerException.ServerErrorType.CHAT_INVALID_MESSAGE
-import me.proxer.library.ProxerException.ServerErrorType.CHAT_INVALID_PERMISSIONS
-import me.proxer.library.ProxerException.ServerErrorType.CHAT_INVALID_ROOM
-import me.proxer.library.ProxerException.ServerErrorType.CHAT_INVALID_THANK_YOU
-import me.proxer.library.ProxerException.ServerErrorType.CHAT_LOGIN_REQUIRED
-import me.proxer.library.ProxerException.ServerErrorType.CHAT_NO_PERMISSIONS
-import me.proxer.library.ProxerException.ServerErrorType.CHAT_SEVEN_DAY_PROTECTION
-import me.proxer.library.ProxerException.ServerErrorType.CHAT_USER_ON_BLACKLIST
 import me.proxer.library.ProxerException.ServerErrorType.COMMENT_ALREADY_EXISTS
 import me.proxer.library.ProxerException.ServerErrorType.COMMENT_INSUFFICIENT_PERMISSIONS
 import me.proxer.library.ProxerException.ServerErrorType.COMMENT_INVALID_COMMENT
@@ -105,14 +95,6 @@ import me.proxer.library.ProxerException.ServerErrorType.MANGA_INVALID_CHAPTER
 import me.proxer.library.ProxerException.ServerErrorType.MEDIA_INVALID_ENTRY
 import me.proxer.library.ProxerException.ServerErrorType.MEDIA_INVALID_STYLE
 import me.proxer.library.ProxerException.ServerErrorType.MEDIA_REMOVED_DUE_TO_COPYRIGHT
-import me.proxer.library.ProxerException.ServerErrorType.MESSAGES_EXCEEDED_MAXIMUM_USERS
-import me.proxer.library.ProxerException.ServerErrorType.MESSAGES_INVALID_CONFERENCE
-import me.proxer.library.ProxerException.ServerErrorType.MESSAGES_INVALID_MESSAGE
-import me.proxer.library.ProxerException.ServerErrorType.MESSAGES_INVALID_REPORT_INPUT
-import me.proxer.library.ProxerException.ServerErrorType.MESSAGES_INVALID_TOPIC
-import me.proxer.library.ProxerException.ServerErrorType.MESSAGES_INVALID_USER
-import me.proxer.library.ProxerException.ServerErrorType.MESSAGES_LOGIN_REQUIRED
-import me.proxer.library.ProxerException.ServerErrorType.MESSAGES_MISSING_USER
 import me.proxer.library.ProxerException.ServerErrorType.NEWS
 import me.proxer.library.ProxerException.ServerErrorType.NOTIFICATIONS_LOGIN_REQUIRED
 import me.proxer.library.ProxerException.ServerErrorType.RATE_LIMIT
@@ -165,7 +147,6 @@ object ErrorUtils {
             NOTIFICATIONS_LOGIN_REQUIRED,
             UCP_LOGIN_REQUIRED,
             INFO_LOGIN_REQUIRED,
-            MESSAGES_LOGIN_REQUIRED,
             USER_2FA_SECRET_REQUIRED,
             ANIME_LOGIN_REQUIRED,
             IP_AUTHENTICATION_REQUIRED,
@@ -188,11 +169,6 @@ object ErrorUtils {
             LIST_INVALID_TYPE,
             ERRORLOG_INVALID_INPUT,
             LIST_INVALID_SUBJECT,
-            CHAT_INVALID_ROOM,
-            CHAT_INVALID_MESSAGE,
-            CHAT_LOGIN_REQUIRED,
-            CHAT_INVALID_THANK_YOU,
-            CHAT_INVALID_INPUT,
             INFO_DELETE_COMMENT_INVALID_INPUT,
             UCP_INVALID_SETTINGS,
             COMMENT_INVALID_ID,
@@ -213,7 +189,6 @@ object ErrorUtils {
             INFO_INVALID_ID,
             MEDIA_INVALID_ENTRY,
             UCP_INVALID_EPISODE,
-            MESSAGES_INVALID_CONFERENCE,
             LIST_INVALID_ID,
             FORUM_INVALID_ID,
             APPS_INVALID_ID,
@@ -420,30 +395,6 @@ object ErrorUtils {
                         R.string.error_invalid_episode
                     }
 
-                    MESSAGES_INVALID_REPORT_INPUT -> {
-                        R.string.error_invalid_input
-                    }
-
-                    MESSAGES_INVALID_MESSAGE -> {
-                        R.string.error_invalid_input
-                    }
-
-                    MESSAGES_INVALID_USER -> {
-                        R.string.error_cant_add_user_to_conference
-                    }
-
-                    MESSAGES_MISSING_USER -> {
-                        R.string.error_invalid_users_for_conference
-                    }
-
-                    MESSAGES_EXCEEDED_MAXIMUM_USERS -> {
-                        R.string.error_conference_full
-                    }
-
-                    MESSAGES_INVALID_TOPIC -> {
-                        R.string.error_invalid_topic
-                    }
-
                     LIST_TOP_ACCESS_RESET -> {
                         R.string.error_list_top_access_reset
                     }
@@ -465,18 +416,6 @@ object ErrorUtils {
                             true -> R.string.error_insufficient_permissions_logged_in
                             false -> R.string.error_insufficient_permissions
                         }
-                    }
-
-                    CHAT_SEVEN_DAY_PROTECTION -> {
-                        R.string.error_chat_seven_days
-                    }
-
-                    CHAT_USER_ON_BLACKLIST -> {
-                        R.string.error_chat_blacklist
-                    }
-
-                    CHAT_INVALID_PERMISSIONS, CHAT_NO_PERMISSIONS -> {
-                        R.string.error_chat_no_permissions
                     }
 
                     FORUM_INVALID_PERMISSIONS -> {
@@ -565,10 +504,6 @@ object ErrorUtils {
             }
 
             is PartialException -> {
-                error.innerError
-            }
-
-            is ChatException -> {
                 error.innerError
             }
 

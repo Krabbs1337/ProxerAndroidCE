@@ -17,17 +17,6 @@ import me.proxer.app.auth.LoginViewModel
 import me.proxer.app.auth.LogoutViewModel
 import me.proxer.app.auth.ProxerLoginTokenManager
 import me.proxer.app.bookmark.BookmarkViewModel
-import me.proxer.app.chat.prv.LocalConference
-import me.proxer.app.chat.prv.conference.ConferenceViewModel
-import me.proxer.app.chat.prv.conference.info.ConferenceInfoViewModel
-import me.proxer.app.chat.prv.create.CreateConferenceViewModel
-import me.proxer.app.chat.prv.message.MessengerReportViewModel
-import me.proxer.app.chat.prv.message.MessengerViewModel
-import me.proxer.app.chat.prv.sync.MessengerDatabase
-import me.proxer.app.chat.pub.message.ChatReportViewModel
-import me.proxer.app.chat.pub.message.ChatViewModel
-import me.proxer.app.chat.pub.room.ChatRoomViewModel
-import me.proxer.app.chat.pub.room.info.ChatRoomInfoViewModel
 import me.proxer.app.comment.EditCommentViewModel
 import me.proxer.app.forum.TopicViewModel
 import me.proxer.app.info.industry.IndustryInfoViewModel
@@ -53,7 +42,6 @@ import me.proxer.app.profile.media.ProfileMediaListViewModel
 import me.proxer.app.profile.settings.ProfileSettingsViewModel
 import me.proxer.app.profile.topten.TopTenViewModel
 import me.proxer.app.settings.status.ServerStatusViewModel
-import me.proxer.app.ui.LinkCheckViewModel
 import me.proxer.app.util.Mp4UploadTrustManagerWorkaround
 import me.proxer.app.util.Validators
 import me.proxer.app.util.data.HawkMoshiParser
@@ -99,7 +87,6 @@ private const val STORAGE_RX_PREFERENCES = "storageRxPreferences"
 
 private const val STORAGE_PREFERENCES_NAME = "me.proxer.encrypted_preferences"
 
-private const val CHAT_DATABASE_NAME = "chat.db"
 private const val TAG_DATABASE_NAME = "tag.db"
 
 private const val HTTP_CACHE_SIZE = 1_024L * 1_024L * 10L
@@ -221,19 +208,11 @@ private val applicationModules =
 
         single {
             Room
-                .databaseBuilder(androidContext(), MessengerDatabase::class.java, CHAT_DATABASE_NAME)
-                .addMigrations(MessengerDatabase.MIGRATION_1_2)
-                .build()
-        }
-
-        single {
-            Room
                 .databaseBuilder(androidContext(), TagDatabase::class.java, TAG_DATABASE_NAME)
                 .addMigrations(TagDatabase.MIGRATION_1_2)
                 .build()
         }
 
-        single { get<MessengerDatabase>().dao() }
         single { get<TagDatabase>().dao() }
 
         single { HawkMoshiParser(get()) }
@@ -248,7 +227,7 @@ private val applicationModules =
         }
 
         single<LoginTokenManager> { ProxerLoginTokenManager(get()) }
-        single { LoginHandler(get(), get(), get(), get()) }
+        single { LoginHandler(get(), get(), get()) }
     }
 
 private val viewModelModule =
@@ -258,16 +237,6 @@ private val viewModelModule =
 
         viewModel { NewsViewModel() }
         viewModel { NotificationViewModel() }
-
-        viewModel { CreateConferenceViewModel() }
-        viewModel { (searchQuery: String) -> ConferenceViewModel(searchQuery) }
-        viewModel { (conferenceId: String) -> ConferenceInfoViewModel(conferenceId) }
-        viewModel { (initialConference: LocalConference) -> MessengerViewModel(initialConference) }
-        viewModel { ChatRoomViewModel() }
-        viewModel { (chatRoomId: String) -> ChatViewModel(chatRoomId) }
-        viewModel { (chatRoomId: String) -> ChatRoomInfoViewModel(chatRoomId) }
-        viewModel { MessengerReportViewModel() }
-        viewModel { ChatReportViewModel() }
 
         viewModel { (searchQuery: String?, category: Category, filterAvailable: Boolean) ->
             BookmarkViewModel(searchQuery, category, filterAvailable)
@@ -328,8 +297,6 @@ private val viewModelModule =
         viewModel { (id: String?, entryId: String?) -> EditCommentViewModel(id, entryId) }
 
         viewModel { ServerStatusViewModel() }
-
-        viewModel { LinkCheckViewModel() }
     }
 
 val koinModules = listOf(applicationModules, viewModelModule)

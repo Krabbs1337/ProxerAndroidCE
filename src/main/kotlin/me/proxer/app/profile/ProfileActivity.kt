@@ -3,8 +3,6 @@ package me.proxer.app.profile
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import android.widget.ImageView
 import androidx.lifecycle.Observer
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -12,19 +10,12 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.mikepenz.iconics.IconicsDrawable
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
-import com.mikepenz.iconics.utils.IconicsMenuInflaterUtil
 import com.mikepenz.iconics.utils.backgroundColorInt
 import com.mikepenz.iconics.utils.colorInt
 import com.mikepenz.iconics.utils.paddingDp
 import com.mikepenz.iconics.utils.sizeDp
-import io.reactivex.Completable
-import io.reactivex.schedulers.Schedulers
 import me.proxer.app.R
 import me.proxer.app.base.ImageTabsActivity
-import me.proxer.app.chat.prv.Participant
-import me.proxer.app.chat.prv.PrvMessengerActivity
-import me.proxer.app.chat.prv.create.CreateConferenceActivity
-import me.proxer.app.chat.prv.sync.MessengerDao
 import me.proxer.app.profile.about.ProfileAboutFragment
 import me.proxer.app.profile.comment.ProfileCommentFragment
 import me.proxer.app.profile.history.HistoryFragment
@@ -35,8 +26,6 @@ import me.proxer.app.util.ActivityUtils
 import me.proxer.app.util.DeviceUtils
 import me.proxer.app.util.extension.intentFor
 import me.proxer.app.util.extension.resolveColor
-import me.proxer.app.util.extension.safeInject
-import me.proxer.app.util.extension.subscribeAndLogErrors
 import me.proxer.app.util.extension.unsafeLazy
 import me.proxer.library.enums.Category
 import me.proxer.library.util.ProxerUrls
@@ -109,11 +98,6 @@ class ProfileActivity : ImageTabsActivity() {
 
     private val viewModel by viewModel<ProfileViewModel> { parametersOf(userId, username) }
 
-    private val messengerDao by safeInject<MessengerDao>()
-
-    private var createChatMenuItem: MenuItem? = null
-    private var newGroupMenuItem: MenuItem? = null
-
     override val headerImageUrl: HttpUrl?
         get() =
             image.let { image ->
@@ -149,8 +133,6 @@ class ProfileActivity : ImageTabsActivity() {
                     username = userInfo.username
                     image = userInfo.image
 
-                    updateMenuItems()
-
                     if (viewPager.currentItem == 0) {
                         viewPager.currentItem = customItemToDisplay
 
@@ -159,57 +141,6 @@ class ProfileActivity : ImageTabsActivity() {
                 }
             },
         )
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        IconicsMenuInflaterUtil.inflate(menuInflater, this, R.menu.activity_profile, menu, true)
-
-        this.createChatMenuItem = menu.findItem(R.id.create_chat)
-        this.newGroupMenuItem = menu.findItem(R.id.new_group)
-
-        updateMenuItems()
-
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.create_chat -> {
-                username?.let { safeUsername ->
-                    image?.let { safeImage ->
-                        Completable
-                            .fromAction {
-                                messengerDao.findConferenceForUser(safeUsername).let { existingChat ->
-                                    when (existingChat) {
-                                        null -> {
-                                            CreateConferenceActivity.navigateTo(
-                                                this,
-                                                false,
-                                                Participant(safeUsername, safeImage),
-                                            )
-                                        }
-
-                                        else -> {
-                                            PrvMessengerActivity.navigateTo(this, existingChat)
-                                        }
-                                    }
-                                }
-                            }.subscribeOn(Schedulers.io())
-                            .subscribeAndLogErrors()
-                    }
-                }
-            }
-
-            R.id.new_group -> {
-                username?.let { safeUsername ->
-                    image?.let { safeImage ->
-                        CreateConferenceActivity.navigateTo(this, true, Participant(safeUsername, safeImage))
-                    }
-                }
-            }
-        }
-
-        return super.onOptionsItemSelected(item)
     }
 
     override fun setupToolbar() {
@@ -231,18 +162,6 @@ class ProfileActivity : ImageTabsActivity() {
                     paddingDp = 32
                 },
             )
-        }
-    }
-
-    private fun updateMenuItems() {
-        storageHelper.user.let {
-            if (it == null || (it.id != userId && !it.name.equals(username, true))) {
-                this.createChatMenuItem?.isVisible = true
-                this.newGroupMenuItem?.isVisible = true
-            } else {
-                this.createChatMenuItem?.isVisible = false
-                this.newGroupMenuItem?.isVisible = false
-            }
         }
     }
 

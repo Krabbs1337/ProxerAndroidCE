@@ -31,13 +31,6 @@
             android:title="@string/preference_check_wifi_title" />
 
         <SwitchPreference
-            android:defaultValue="true"
-            android:key="check_links"
-            android:summaryOff="@string/preference_check_links_summary_off"
-            android:summaryOn="@string/preference_check_links_summary_on"
-            android:title="@string/preference_check_links_title" />
-
-        <SwitchPreference
             android:key="external_cache"
             android:summaryOff="@string/preference_external_cache_summary_off"
             android:summaryOn="@string/preference_external_cache_summary_on"
@@ -77,13 +70,6 @@
             android:summaryOff="@string/preference_notifications_summary_off"
             android:summaryOn="@string/preference_notifications_summary_on"
             android:title="@string/preference_notifications_account_title" />
-
-        <SwitchPreference
-            android:defaultValue="true"
-            android:key="notifications_chat"
-            android:summaryOff="@string/preference_notifications_summary_off"
-            android:summaryOn="@string/preference_notifications_summary_on"
-            android:title="@string/preference_notifications_chat_title" />
 
         <!--suppress AndroidUnknownAttribute -->
         <ListPreference

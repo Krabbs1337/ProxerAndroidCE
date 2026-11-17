@@ -13,9 +13,6 @@ import me.proxer.app.R.id.description
 import me.proxer.app.R.id.post
 import me.proxer.app.anime.AnimeStream
 import me.proxer.app.anime.resolver.StreamResolutionResult
-import me.proxer.app.chat.prv.LocalConference
-import me.proxer.app.chat.prv.LocalMessage
-import me.proxer.app.chat.pub.message.ParsedChatMessage
 import me.proxer.app.comment.LocalComment
 import me.proxer.app.forum.ParsedPost
 import me.proxer.app.forum.TopicMetaData
@@ -30,7 +27,6 @@ import me.proxer.app.ui.view.bbcode.BBArgs
 import me.proxer.app.ui.view.bbcode.toBBTree
 import me.proxer.app.ui.view.bbcode.toSimpleBBTree
 import me.proxer.library.entity.anime.Stream
-import me.proxer.library.entity.chat.ChatMessage
 import me.proxer.library.entity.forum.Post
 import me.proxer.library.entity.forum.Topic
 import me.proxer.library.entity.info.Comment
@@ -41,8 +37,6 @@ import me.proxer.library.entity.info.Synonym
 import me.proxer.library.entity.list.Tag
 import me.proxer.library.entity.manga.Chapter
 import me.proxer.library.entity.manga.Page
-import me.proxer.library.entity.messenger.Conference
-import me.proxer.library.entity.messenger.Message
 import me.proxer.library.entity.ucp.UcpHistoryEntry
 import me.proxer.library.entity.ucp.UcpSettings
 import me.proxer.library.entity.ucp.UcpTopTenEntry
@@ -63,7 +57,6 @@ import me.proxer.library.enums.MediaLanguage
 import me.proxer.library.enums.MediaState
 import me.proxer.library.enums.MediaType
 import me.proxer.library.enums.Medium
-import me.proxer.library.enums.MessageAction
 import me.proxer.library.enums.RelationshipStatus
 import me.proxer.library.enums.Season
 import me.proxer.library.enums.SynonymType
@@ -417,41 +410,6 @@ fun RelationshipStatus.toAppString(context: Context): String =
         },
     )
 
-fun MessageAction.toAppString(
-    context: Context,
-    username: String,
-    message: String,
-): String =
-    when (this) {
-        MessageAction.ADD_USER -> {
-            context.getString(R.string.action_conference_add_user, "@$username", "@$message")
-        }
-
-        MessageAction.REMOVE_USER -> {
-            context.getString(
-                R.string.action_conference_delete_user,
-                "@$username",
-                "@$message",
-            )
-        }
-
-        MessageAction.SET_LEADER -> {
-            context.getString(R.string.action_conference_set_leader, "@$username", "@$message")
-        }
-
-        MessageAction.SET_TOPIC -> {
-            context.getString(R.string.action_conference_set_topic, "@$username", message)
-        }
-
-        MessageAction.EXIT -> {
-            context.getString(R.string.action_conference_exit, "@$message")
-        }
-
-        MessageAction.NONE -> {
-            message
-        }
-    }
-
 fun MediaType.isAgeRestricted(): Boolean =
     this == MediaType.ALL_WITH_HENTAI || this == MediaType.HENTAI || this == MediaType.HMANGA
 
@@ -500,23 +458,6 @@ fun Stream.toAnimeStream(
     resolutionResult,
 )
 
-fun Conference.toLocalConference(isFullyLoaded: Boolean) =
-    LocalConference(
-        id.toLong(),
-        topic,
-        customTopic,
-        participantAmount,
-        image,
-        imageType,
-        isGroup,
-        isRead,
-        isRead,
-        date.toInstantBP(),
-        unreadMessageAmount,
-        lastReadMessageId,
-        isFullyLoaded,
-    )
-
 fun UcpSettings.toLocalSettings() =
     LocalProfileSettings(
         profileVisibility,
@@ -536,18 +477,6 @@ fun UcpSettings.toLocalSettings() =
         isHideTags,
         isShowAds,
         adInterval,
-    )
-
-fun Message.toLocalMessage() =
-    LocalMessage(
-        id.toLong(),
-        conferenceId.toLong(),
-        userId,
-        username,
-        message,
-        action,
-        date.toInstantBP(),
-        device,
     )
 
 fun Comment.toParsedComment() =
@@ -632,8 +561,6 @@ fun Post.toParsedPost(resources: Resources): ParsedPost {
 }
 
 fun Tag.toParcelableTag() = LocalTag(id, type, name, description, subType, isSpoiler)
-
-fun ChatMessage.toParsedMessage() = ParsedChatMessage(id, userId, username, image, message, action, date.toInstantBP())
 
 fun UserMediaListEntry.toLocalEntry() =
     LocalUserMediaListEntry(

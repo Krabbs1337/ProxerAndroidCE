@@ -15,7 +15,7 @@ Ziel: Das Projekt auf einen aktuellen, build- und Play-Store-fähigen Stand brin
 | Phase | Inhalt | Warum diese Reihenfolge |
 |---|---|---|
 | 1 | Build-Toolchain + SDK-Anhebung — **erledigt 17.11.2026** | Ohne grünen Build auf aktueller Toolchain ist nichts anderes sicher änderbar |
-| 2 | **Chat und Messenger entfernen** | Verkleinert die Fläche für alle folgenden Migrationen und eliminiert eigene Problemstellen (Receiver, PendingIntents, eigene Datenbank, Deep-Link) |
+| 2 | **Chat und Messenger entfernen** — **erledigt 17.11.2026** | Verkleinert die Fläche für alle folgenden Migrationen und eliminiert eigene Problemstellen (Receiver, PendingIntents, eigene Datenbank, Deep-Link) |
 | 3 | Runtime-Fixes für targetSdk 36 | Harte Crashes/Funktionsverluste auf Android 13–16 beheben |
 | 4 | AndroidX + Kernbibliotheken | Stabile Majors, Room 2.8 + KSP, lifecycle-extensions entfernen |
 | 5 | Sicherheit | Token-Speicherung, Cleartext, CVE-behaftete Libs |
@@ -69,7 +69,15 @@ Checkliste (alle bekannten Berührungspunkte):
 - Ressourcen: nur für Chat genutzte Strings, Drawables, Layouts, `BBSpoilerView`-Sonderlocken prüfen und entfernen.
 - README/Doku-Hinweise auf Chat aktualisieren.
 
-**Abnahme:** Build grün ohne Chat-Code, keine toten Chat-Referenzen mehr (`grep -ri messenger src/main` leer), App startet, Login/News/Forum/Manga/Anime funktionieren, keine Chat-Benachrichtigungen/-Shortcuts mehr im System.
+**Umgesetzt am 17.11.2026 (Ergänzungen & Abweichungen):**
+
+- Zusätzlich entfernt: Link-Check-Feature (`api.messenger.checkLink` → `LinkCheckDialog`/`LinkCheckViewModel`, `check_links`-Preference + Strings, `fallbackHandleLink` öffnet externe Links direkt), Share-Target `SEND text/plain` auf `PrvMessengerActivity` (Manifest + `shortcuts.xml`), Messenger-Report-Link in der release-`CrashActivity` (Crash-Text verweist jetzt auf GitHub/Discord), `MESSAGES_*`/`CHAT_*`-Serverfehler-Mappings in `ErrorUtils.kt`, Message-Drafts/Conference-Sync/Chat-Intervall-Keys in `StorageHelper`, `notifications_chat` in `PreferenceHelper`/`preferences.xml`, `CHAT_CHANNEL` in `NotificationUtils`, `chat.db`-Exclude in `backup_config.xml`, Chat-Eintrag in `start_page`-Arrays, 53 Chat-only Strings, 20 Chat-Layouts, 6 Chat-Menüs, 15 Shortcut-Drawables, Room-Schemas `MessengerDatabase/{1,2}.json`.
+- `Aliases.kt` nach Entfernung des `LocalConferenceMap`-Typealias in `ProxerNotification.kt` umbenannt (ktlint-Dateinamen-Regel).
+- Bewusst **beibehalten**: Profilfeld „Chatango" (`fragment_about_chatango`) – API-Feld des Nutzerprofils, kein Messenger-Feature.
+- Ergebnis: 97 Dateien gelöscht, 386 → 338 Kotlin-Dateien, Release-APK 9,9 → 9,7 MB, AAB 13,2 → 12,7 MB.
+- Verifiziert grün: `ktlintCheck`, `detekt`, `assembleDebug`, `assembleRelease`, `bundleRelease`, `assembleLogRelease`; `grep -ri messenger src/main` und `grep -ri chat src/main` (ohne Chatango) leer.
+
+**Abnahme:** Build grün ohne Chat-Code, keine toten Chat-Referenzen mehr (`grep -ri messenger src/main` leer), App startet, Login/News/Forum/Manga/Anime funktionieren, keine Chat-Benachrichtigungen/-Shortcuts mehr im System – lokal erfüllt (siehe oben); App-Start/Laufzeit-Test auf Gerät folgt mit Phase 3.
 
 ## Phase 3 – Runtime-Fixes für targetSdk 36
 

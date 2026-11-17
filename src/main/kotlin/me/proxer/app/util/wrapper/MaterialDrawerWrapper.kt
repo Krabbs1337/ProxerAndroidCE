@@ -271,12 +271,6 @@ class MaterialDrawerWrapper(
                 isSelectable = isMain
             },
             PrimaryDrawerItem().apply {
-                nameRes = R.string.section_chat
-                iconicsIcon = CommunityMaterial.Icon3.cmd_message_text
-                identifier = DrawerItem.CHAT.id
-                isSelectable = isMain
-            },
-            PrimaryDrawerItem().apply {
                 nameRes = R.string.section_bookmarks
                 iconicsIcon = CommunityMaterial.Icon.cmd_bookmark
                 identifier = DrawerItem.BOOKMARKS.id
@@ -322,8 +316,6 @@ class MaterialDrawerWrapper(
         val id: Long,
     ) {
         NEWS(0L),
-        CHAT(1L),
-        MESSENGER(1L),
         BOOKMARKS(2L),
         ANIME(3L),
         SCHEDULE(4L),

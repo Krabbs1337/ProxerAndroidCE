@@ -28,7 +28,6 @@ import me.proxer.app.GlideRequest
 import me.proxer.app.GlideRequests
 import me.proxer.app.R
 import me.proxer.app.settings.theme.ThemeVariant
-import me.proxer.app.ui.LinkCheckDialog
 import me.proxer.app.ui.WebViewActivity
 import me.proxer.app.util.Utils
 import me.proxer.app.util.data.PreferenceHelper
@@ -38,7 +37,6 @@ import me.proxer.library.util.ProxerUrls.hasProxerHost
 import me.zhanghai.android.customtabshelper.CustomTabsHelperFragment
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
-import org.koin.android.ext.android.get
 import org.koin.android.ext.android.getKoin
 import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.DefinitionParameters
@@ -189,10 +187,10 @@ fun CustomTabsHelperFragment.fallbackHandleLink(
                     try {
                         activity.startActivity(intent.addReferer())
                     } catch (ignored: ActivityNotFoundException) {
-                        fallbackHandleLink(activity, url, skipCheck)
+                        fallbackHandleLink(activity, url)
                     }
                 } else {
-                    fallbackHandleLink(activity, url, skipCheck)
+                    fallbackHandleLink(activity, url)
                 }
             }
 
@@ -221,15 +219,7 @@ fun CustomTabsHelperFragment.fallbackHandleLink(
 private fun CustomTabsHelperFragment.fallbackHandleLink(
     activity: FragmentActivity,
     url: HttpUrl,
-    skipCheck: Boolean = false,
-) {
-    val preferenceHelper = activity.get<PreferenceHelper>()
-
-    when (!skipCheck && !url.hasProxerHost && preferenceHelper.shouldCheckLinks) {
-        true -> LinkCheckDialog.show(activity, url)
-        false -> openHttpPage(activity, url)
-    }
-}
+) = openHttpPage(activity, url)
 
 fun CustomTabsHelperFragment.openHttpPage(
     activity: Activity,

@@ -5,7 +5,6 @@
 
     <string name="section_anime">Anime</string>
     <string name="section_schedule">Anime-Wochenplan</string>
-    <string name="section_chat">Chat</string>
     <string name="section_manga">Manga</string>
     <string name="section_news">News</string>
     <string name="section_bookmarks">Lesezeichen</string>
@@ -85,14 +84,6 @@
     <string name="error_invalid_chapter">Dieses Kapitel wurde noch nicht hochgeladen :/</string>
     <string name="error_invalid_episode">Diese Episode wurde noch nicht hochgeladen :/</string>
     <string name="error_invalid_input">Ungültige Eingabe</string>
-    <string name="error_cant_add_user_to_conference">Dieser Nutzer existiert nicht oder kann der Konferenz nicht
-        hinzugefügt werden
-    </string>
-    <string name="error_invalid_users_for_conference">Es muss mindestens ein existierender Teilnehmer angegeben werden
-    </string>
-    <string name="error_conference_full">Es können keine weiteren Nutzer zur Konferenz hinzugefügt werden, da sie voll
-        ist
-    </string>
     <string name="error_invalid_topic">Ungültiges Thema</string>
     <string name="error_account_expired">Der Account ist abgelaufen</string>
     <string name="error_account_blocked">Der Account wurde geblockt</string>
@@ -105,11 +96,6 @@
     <string name="error_unsupported_code">
         Dieser Fehler wird nicht unterstützt. Bitte informiere einen Techniker
     </string>
-    <string name="error_chat_seven_days">
-        Du musst mindestens sieben Tage angemeldet sein, bevor du Nachrichten senden kannst
-    </string>
-    <string name="error_chat_blacklist">Du bist aktuell vom Chat ausgeschlossen</string>
-    <string name="error_chat_no_permissions">Du hast nicht die nötigen Berechtigungen für diesen Chat</string>
 
     <string name="error_forum_no_permissions">Du hast nicht die nötigen Berechtigungen für diesen Thread</string>
 
@@ -174,8 +160,6 @@
     <string name="error_no_data_comments">Es gibt noch keine Kommentare</string>
     <string name="error_no_data_user_media_list">Es gibt noch keine Einträge</string>
     <string name="error_no_data_search">Es wurde nichts gefunden, das den Kriterien entspricht</string>
-    <string name="error_no_data_conferences">Du hast noch keine Chats</string>
-    <string name="error_no_data_chat">Diese Konferenz hat noch keine Nachrichten</string>
     <string name="error_no_data_discussions">Für dieses Werk gibt es noch keine Diskussionen</string>
     <string name="error_no_data_profile_about">Es wurde noch nichts eingetragen</string>
 
@@ -194,7 +178,6 @@
     <string name="error_bookmark_deletion">Das Lesezeichen konnte nicht entfernt werden: %s</string>
     <string name="error_media_entry_deletion">Der Eintrag konnte nicht entfernt werden: %s</string>
     <string name="error_topten_entry_removal">Der Eintrag konnte nicht entfernt werden: %s</string>
-    <string name="error_chat_send_message">Die Nachricht konnte nicht versandt werden: %s</string>
     <string name="error_undo">Dia Aktion konnte nicht rückgängig gemacht werden: %s</string>
 
     <string name="medium_anime_series">Animeserie</string>
@@ -334,7 +317,6 @@
     <string name="activity_update_ready">Update ist bereit</string>
     <string name="activity_update_action_install">Installieren</string>
 
-    <string name="activity_prv_messenger_send_to">Senden an…</string>
 
     <string name="activity_stream_cast_introduction">Tippe hier, um auf dein Google Cast Gerät zu streamen</string>
     <string name="activity_stream_open_no_app">Es ist keine App installiert die dieses Video abspielen kann</string>
@@ -388,13 +370,6 @@
     <string name="dialog_rating_neutral">Später erinnern</string>
     <string name="dialog_rating_negative">Nicht mehr fragen</string>
 
-    <string name="dialog_chat_report_title">Nachricht melden</string>
-    <string name="dialog_chat_report_positive">Senden</string>
-    <string name="dialog_chat_report_message_hint">
-        Mobbing, Extremismus, Beleidigungen usw. haben auf Proxer nichts zu suchen.
-        Trage eine kurze Erklärung für den Moderator ein
-    </string>
-    <string name="dialog_chat_error_message">Bitte gib eine Nachricht an</string>
 
     <!-- language=HTML -->
     <string name="dialog_comment_delete_message">
@@ -670,30 +645,11 @@
 
     <string name="fragment_discussion_meta_info">Von %1$s in %2$s</string>
 
-    <string name="fragment_messenger_clip_title">Chatverlauf</string>
-    <string name="fragment_messenger_message">Tippe eine Nachricht</string>
-    <string name="fragment_messenger_reply">"@%s "</string>
 
-    <string name="fragment_conference_info_info_title">Info</string>
-    <string name="fragment_conference_info_participants_title">Teilnehmer</string>
-    <string name="fragment_conference_info_time">Erstellt am %1$s um %2$s</string>
 
-    <string name="fragment_create_conference_participants">Teilnehmer</string>
-    <string name="fragment_create_conference_topic_hint">Thema</string>
-    <string name="fragment_create_conference_add_participant">Teilnehmer hinzufügen</string>
-    <string name="fragment_create_conference_add_participant_hint">Nutzername</string>
-    <string name="fragment_create_conference_delete_description">Entfernen</string>
-    <string name="fragment_create_conference_cancel_content_description">Abbrechen</string>
-    <string name="fragment_create_conference_accept_description">Akzeptieren</string>
 
-    <string name="fragment_chat_container_public">Öffentlich</string>
-    <string name="fragment_chat_container_private">Privat</string>
 
-    <string name="fragment_chat_loading_message">Chat wird geladen…</string>
-    <string name="fragment_chat_read_only_message">In diesen Chat kann nicht geschrieben werden</string>
-    <string name="fragment_chat_login_required_message">Du musst dich anmelden um schreiben zu können</string>
 
-    <string name="fragment_chat_room_active_users_title">Aktive Benutzer</string>
 
     <string name="fragment_notification_delete_content_description">Löschen</string>
 
@@ -726,8 +682,6 @@
 
     <string name="view_web_iframe_link">Zum Inhalt</string>
 
-    <string name="layout_chat_bar_emoji_content_description">Emoji Auswahl</string>
-    <string name="layout_chat_bar_send_content_description">Senden</string>
 
     <string name="exoplayer_play_description">Abspielen</string>
     <string name="exoplayer_pause_description">Anhalten</string>
@@ -742,11 +696,9 @@
 
     <string name="notification_channel_news">News</string>
     <string name="notification_channel_profile">Profil</string>
-    <string name="notification_channel_chat">Chat</string>
 
     <string name="notification_channel_news_description">Aktuelle News</string>
     <string name="notification_channel_profile_description">Alles zu deinem Profil</string>
-    <string name="notification_channel_chat_description">Private Chat-Nachrichten und Konferenzen</string>
 
     <string name="notification_news_title">News</string>
     <string name="notification_news_read_action">Gelesen</string>
@@ -754,15 +706,6 @@
         <item quantity="other">%d News</item>
     </plurals>
 
-    <string name="notification_chat_read_action">Gelesen</string>
-    <plurals name="notification_chat_conference_amount">
-        <item quantity="one">in einem Chat</item>
-        <item quantity="other">in %d Chats</item>
-    </plurals>
-    <plurals name="notification_chat_message_amount">
-        <item quantity="one">Eine Nachricht</item>
-        <item quantity="other">%d Nachrichten</item>
-    </plurals>
 
     <string name="notification_account_title">Account Benachrichtigung</string>
     <string name="notification_account_read_action">Gelesen</string>
@@ -796,13 +739,6 @@
     <string name="preference_check_wifi_summary_off">
         Es wird keine Warnung bei der Nutzung von mobilen Daten für Streams angezeigt
     </string>
-    <string name="preference_check_links_title">Externe Links überprüfen</string>
-    <string name="preference_check_links_summary_on">
-        Externe Links werden überprüft
-    </string>
-    <string name="preference_check_links_summary_off">
-        Externe Links werden nicht überprüft
-    </string>
     <string name="preference_external_cache_title">Bilder extern speichern</string>
     <string name="preference_external_cache_summary_off">
         Bilder werden auf dem internen Speicher zwischengespeichert
@@ -817,7 +753,6 @@
     <string name="preference_category_notifications_title">Benachrichtigungen</string>
     <string name="preference_notifications_news_title">News</string>
     <string name="preference_notifications_account_title">Account</string>
-    <string name="preference_notifications_chat_title">Chat</string>
     <string name="preference_notifications_summary_off">Benachrichtigungen sind nicht aktiviert</string>
     <string name="preference_notifications_summary_on">Benachrichtigungen sind aktiviert</string>
     <string name="preference_notifications_interval_title">Aktualisierungshäufigkeit</string>
@@ -940,16 +875,8 @@
     <string name="action_create_comment">Neuer Kommentar</string>
     <string name="action_update_comment">Kommentar bearbeiten</string>
 
-    <string name="action_send_message">Nachricht schreiben</string>
-    <string name="action_create_chat">Neuer Chat</string>
-    <string name="action_new_group_with_user">Neue Gruppe mit diesem Nutzer</string>
     <string name="action_create_group">Neue Gruppe</string>
 
-    <string name="action_conference_add_user">%1$s hat %2$s zur Konferenz hinzugefügt</string>
-    <string name="action_conference_delete_user">%1$s hat %2$s aus der Konferenz entfernt</string>
-    <string name="action_conference_set_leader">%1$s hat %2$s als neuen Konferenzleiter bestimmt</string>
-    <string name="action_conference_set_topic">%1$s hat den Konferenztitel in %2$s geändert</string>
-    <string name="action_conference_exit">%1$s hat die Konferenz verlassen</string>
 
     <string name="action_filter_available">Nur verfügbare anzeigen</string>
 

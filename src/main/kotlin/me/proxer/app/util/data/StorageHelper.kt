@@ -26,18 +26,11 @@ class StorageHelper(
         const val TEMPORARY_TOKEN = "temporary_token"
         const val PROFILE_SETTINGS = "ucp_settings"
         const val LAST_NOTIFICATIONS_DATE = "last_notifications_date"
-        const val LAST_CHAT_MESSAGE_DATE = "last_chat_date"
-        const val CHAT_INTERVAL = "chat_interval"
-        const val CONFERENCES_SYNCHRONIZED = "conferences_synchronized"
         const val LAST_PROFILE_SETTINGS_UPDATE_DATE = "last_ucp_settings_update_date"
         const val LAST_AD_ALERT_DATE = "last_ad_alert_date"
-        const val MESSAGE_DRAFT_PREFIX = "message_draft_"
         const val COMMENT_DRAFT_PREFIX = "comment_draft_"
         const val LAST_MANGA_PAGE_PREFIX = "last_manga_page_"
         const val LAST_ANIME_POSITION_PREFIX = "last_anime_time_"
-
-        private const val DEFAULT_CHAT_INTERVAL = 10_000L
-        private const val MAX_CHAT_INTERVAL = 850_000L
     }
 
     init {
@@ -116,21 +109,6 @@ class StorageHelper(
             sharedPreferences.edit { putLong(LAST_NOTIFICATIONS_DATE, value.toEpochMilli()) }
         }
 
-    var lastChatMessageDate: Instant
-        get() = Instant.ofEpochMilli(sharedPreferences.getLong(LAST_CHAT_MESSAGE_DATE, 0L))
-        set(value) {
-            sharedPreferences.edit { putLong(LAST_CHAT_MESSAGE_DATE, value.toEpochMilli()) }
-        }
-
-    val chatInterval: Long
-        get() = sharedPreferences.getLong(CHAT_INTERVAL, DEFAULT_CHAT_INTERVAL)
-
-    var areConferencesSynchronized: Boolean
-        get() = sharedPreferences.getBoolean(CONFERENCES_SYNCHRONIZED, false)
-        set(value) {
-            sharedPreferences.edit { putBoolean(CONFERENCES_SYNCHRONIZED, value) }
-        }
-
     val lastUcpSettingsUpdateDate: Instant
         get() = Instant.ofEpochMilli(sharedPreferences.getLong(LAST_PROFILE_SETTINGS_UPDATE_DATE, 0L))
 
@@ -140,35 +118,9 @@ class StorageHelper(
             sharedPreferences.edit { putLong(LAST_AD_ALERT_DATE, value.toEpochMilli()) }
         }
 
-    fun incrementChatInterval() =
-        chatInterval.let {
-            if (it < MAX_CHAT_INTERVAL) {
-                sharedPreferences.edit { putLong(CHAT_INTERVAL, (it * 1.5f).toLong()) }
-            }
-        }
-
     fun reset() =
         sharedPreferences.edit {
             sharedPreferences.all.forEach { (key) -> remove(key) }
-        }
-
-    fun resetChatInterval() =
-        sharedPreferences.edit {
-            putLong(CHAT_INTERVAL, DEFAULT_CHAT_INTERVAL)
-        }
-
-    fun putMessageDraft(
-        id: String,
-        draft: String,
-    ) = sharedPreferences.edit {
-        putString("$MESSAGE_DRAFT_PREFIX$id", draft)
-    }
-
-    fun getMessageDraft(id: String): String? = sharedPreferences.getString("$MESSAGE_DRAFT_PREFIX$id", null)
-
-    fun deleteMessageDraft(id: String) =
-        sharedPreferences.edit {
-            remove("$MESSAGE_DRAFT_PREFIX$id")
         }
 
     fun putCommentDraft(

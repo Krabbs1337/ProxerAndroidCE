@@ -33,11 +33,6 @@
 # Fix for Community-Material-Typeface
 -keepclassmembers,allowoptimization enum com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial$Icon* { *; }
 
-# Keep constructor of keychain class.
--keepclasseswithmembers class com.facebook.android.crypto.keychain.SecureRandomFix$LinuxPRNGSecureRandom {
-    public <init>(...);
-}
-
 # TODO: Remove once it works without.
 # Workaround crash in Google Cast.
 -keep,allowoptimization class com.google.android.gms.internal.cast.** { *; }
@@ -83,7 +78,3 @@
     <init>(...);
     <fields>;
 }
-
-# Hawk references Gson, but the app uses the Moshi parser (HawkMoshiParser), so gson is
-# excluded on purpose. Suppress the resulting R8 missing-class errors.
--dontwarn com.google.gson.**

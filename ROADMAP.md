@@ -18,7 +18,7 @@ Ziel: Das Projekt auf einen aktuellen, build- und Play-Store-fähigen Stand brin
 | 2 | **Chat und Messenger entfernen** — **erledigt 17.11.2026** | Verkleinert die Fläche für alle folgenden Migrationen und eliminiert eigene Problemstellen (Receiver, PendingIntents, eigene Datenbank, Deep-Link) |
 | 3 | Runtime-Fixes für targetSdk 36 — **erledigt 17.11.2026** | Harte Crashes/Funktionsverluste auf Android 13–16 beheben |
 | 4 | AndroidX + Kernbibliotheken — **erledigt 17.11.2026** | Stabile Majors, Room 2.8 + KSP, lifecycle-extensions entfernen |
-| 5 | Sicherheit | Token-Speicherung, Cleartext, CVE-behaftete Libs |
+| 5 | Sicherheit — **erledigt 17.11.2026** | Token-Speicherung, Cleartext, CVE-behaftete Libs |
 | 6 | DI + View-Layer | Koin 2→4, Kotterknife→ViewBinding, AutoDispose 2 |
 | 7 | Media | ExoPlayer 2.11 → Media3 |
 | 8 | Performance + Polish | Glide, Baseline Profiles, AAB-Splits, Desugaring |
@@ -131,7 +131,16 @@ Checkliste (alle bekannten Berührungspunkte):
 - jsoup 1.13.1 → 1.2x (CVE-Fixes).
 - Cleartext-Policy siehe Phase 3.
 
-**Abnahme:** Login-Token liegt verschlüsselt in EncryptedSharedPreferences, Altbestand wird migriert; `dependencyUpdates` meldet keine RC/Alpha/jitpack-Commit-Deps mehr.
+**Umgesetzt am 17.11.2026 (konkrete Versionen & Abweichungen):**
+
+- **Hawk + Facebook Conceal entfernt** (Dependency, `HawkMoshiParser`, R8-Regeln für conceal/gson). `LocalDataInitializer` auf Schema **v8** gehoben: Die eigentliche Hawk→EncryptedSharedPreferences-Migration lief bereits in den Release-Versionen 1.11.x (Schema v6/v7); v8 löscht nur noch die übrigen Hawk-Dateien (`Hawk2`, `crypto.KEY_256`). **Abweichung:** Nutzer, die seit vor 1.11.x (Apr 2024) nicht aktualisiert haben, werden einmalig ausgeloggt, da deren Hawk-Token ohne die Hawk-Lib nicht mehr entschlüsselt werden kann. Login-Token liegt regulär längst in `EncryptedSharedPreferences` (`me.proxer.encrypted_preferences`, AES256-GCM).
+- Moshi-Substitution auf jitpack-Commit war in Phase 1 bereits entfallen; Moshi **1.15.2** stable + KSP-Codegen bestätigt.
+- OkHttp **4.10.0-RC1 → 4.12.0** (okhttp, okhttp-brotli, logging-interceptor), okio-Pin war in Phase 1 bereits entfernt (okio 3.x transitiv). OkHttp 5.x bewusst zurückgestellt (Platform-/SSLSocketFactory-API-Umbau, Phase 7). Retrofit **2.9.0 → 2.12.0** (2.x-Linie; 3.0.0 existiert, bleibt aber ProxerLib-Kompatibilitätsgründen außen vor). jsoup **1.13.1 → 1.24.1** (CVE-Fixes).
+- `ConnectionSpec.CLEARTEXT` aus dem OkHttpClient entfernt (network_security_config blockiert Cleartext bereits seit Phase 3).
+- Verifiziert grün: `ktlintCheck`, `detekt`, `assembleDebug`, `assembleRelease`, `bundleRelease`, `assembleLogRelease`.
+- Offen (Warnungen, Phase 9): security-crypto 1.1.0 deprecates `MasterKey`/`EncryptedSharedPreferences` (neue API migrieren).
+
+**Abnahme:** Login-Token liegt verschlüsselt in EncryptedSharedPreferences – erfüllt (seit v6/v7, Hawk ab v8 komplett entfernt); keine RC/Alpha/jitpack-Commit-Deps mehr in diesem Umfang (okhttp/retrofit/moshi/jsoup/hawk/conceal gegen Maven Central geprüft).
 
 ## Phase 6 – DI + View-Layer
 

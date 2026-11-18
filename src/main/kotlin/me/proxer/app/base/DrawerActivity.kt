@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.WindowManager
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
@@ -60,7 +61,7 @@ abstract class DrawerActivity : BaseActivity() {
                 com.mikepenz.materialdrawer.R.string.material_drawer_open,
                 com.mikepenz.materialdrawer.R.string.material_drawer_close,
             ).apply {
-                setToolbarNavigationClickListener { onBackPressed() }
+                setToolbarNavigationClickListener { onBackPressedDispatcher.onBackPressed() }
                 drawerLayout.addDrawerListener(this)
                 syncState()
             }
@@ -85,18 +86,25 @@ abstract class DrawerActivity : BaseActivity() {
         storageHelper.isLoggedInObservable
             .autoDispose(this.scope())
             .subscribe { drawer.refreshHeader(this) }
+
+        // Gesture back (Android 13+) goes through the dispatcher, not onBackPressed().
+        onBackPressedDispatcher.addCallback(
+            this,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    if (!drawer.onBackPressed()) {
+                        isEnabled = false
+                        onBackPressedDispatcher.onBackPressed()
+                    }
+                }
+            },
+        )
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
         drawer.saveInstanceState(outState)
-    }
-
-    override fun onBackPressed() {
-        if (!drawer.onBackPressed()) {
-            super.onBackPressed()
-        }
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {

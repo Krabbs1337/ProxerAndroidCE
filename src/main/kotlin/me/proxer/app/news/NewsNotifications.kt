@@ -29,9 +29,13 @@ object NewsNotifications {
         context: Context,
         news: Collection<NewsArticle>,
     ) {
+        val manager = NotificationManagerCompat.from(context)
+
         when (val notification = buildNewsNotification(context, news)) {
-            null -> NotificationManagerCompat.from(context).cancel(ID)
-            else -> NotificationManagerCompat.from(context).notify(ID, notification)
+            null -> manager.cancel(ID)
+
+            // POST_NOTIFICATIONS may not be granted on Android 13+; notify() would be a silent no-op.
+            else -> if (manager.areNotificationsEnabled()) manager.notify(ID, notification)
         }
     }
 

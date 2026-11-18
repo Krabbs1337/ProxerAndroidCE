@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.postDelayed
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commitNow
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import com.google.android.material.tabs.TabLayout
 import kotterknife.bindView
@@ -112,6 +113,32 @@ class MainActivity : DrawerActivity() {
                 }
             }
         }
+
+        // Gesture back (Android 13+) goes through the dispatcher, not onBackPressed().
+        onBackPressedDispatcher.addCallback(
+            this,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    val fragmentList = supportFragmentManager.fragments
+
+                    if (!drawer.onBackPressed() && fragmentList.none { it is BackPressAware && it.onBackPressed() }) {
+                        if (isRootActivity) {
+                            val startPage = preferenceHelper.startPage
+
+                            if (startPage != drawer.currentItem) {
+                                drawer.select(startPage)
+                            } else {
+                                isEnabled = false
+                                onBackPressedDispatcher.onBackPressed()
+                            }
+                        } else {
+                            isEnabled = false
+                            onBackPressedDispatcher.onBackPressed()
+                        }
+                    }
+                }
+            },
+        )
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -130,24 +157,6 @@ class MainActivity : DrawerActivity() {
         inAppUpdateFlow.stop()
 
         super.onDestroy()
-    }
-
-    override fun onBackPressed() {
-        val fragmentList = supportFragmentManager.fragments
-
-        if (!drawer.onBackPressed() && fragmentList.none { it is BackPressAware && it.onBackPressed() }) {
-            if (isRootActivity) {
-                val startPage = preferenceHelper.startPage
-
-                if (startPage != drawer.currentItem) {
-                    drawer.select(startPage)
-                } else {
-                    super.onBackPressed()
-                }
-            } else {
-                super.onBackPressed()
-            }
-        }
     }
 
     override fun onNewIntent(intent: Intent) {

@@ -174,7 +174,6 @@ class MainApplication : Application() {
                     .detectLeakedSqlLiteObjects()
                     .detectLeakedClosableObjects()
                     .detectFileUriExposure()
-                    .detectImplicitDirectBoot()
                     .penaltyLog()
 
             if (Build.VERSION.SDK_INT >= 26) {
@@ -188,6 +187,11 @@ class MainApplication : Application() {
                 vmPolicyBuilder
                     .detectCleartextNetwork()
                     .detectNonSdkApiUsage()
+            }
+
+            if (Build.VERSION.SDK_INT >= 29) {
+                vmPolicyBuilder
+                    .detectImplicitDirectBoot()
                     .detectCredentialProtectedWhileLocked()
             }
 

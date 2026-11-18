@@ -30,6 +30,7 @@
         android:name=".MainApplication"
         android:allowBackup="true"
         android:appCategory="social"
+        android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_config"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -371,11 +372,5 @@
         <receiver
             android:name=".notification.AccountNotificationReadReceiver"
             android:exported="false" />
-
-        <provider
-            android:name="androidx.work.impl.WorkManagerInitializer"
-            android:authorities="${applicationId}.workmanager-init"
-            android:exported="false"
-            tools:node="remove" />
     </application>
 </manifest>

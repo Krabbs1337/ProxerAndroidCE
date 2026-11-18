@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.ImageView
+import androidx.activity.OnBackPressedCallback
 import androidx.core.view.ViewCompat
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
@@ -31,6 +32,9 @@ import okhttp3.HttpUrl
 abstract class ImageTabsActivity : DrawerActivity() {
     override val contentView
         get() = R.layout.activity_image_tabs
+
+    // Handles insets itself via fitsSystemWindows on the root.
+    override val applyEdgeToEdgeInsets = false
 
     protected abstract val headerImageUrl: HttpUrl?
     protected abstract val sectionsPagerAdapter: FragmentStateAdapter
@@ -60,6 +64,25 @@ abstract class ImageTabsActivity : DrawerActivity() {
 
         setupContent(savedInstanceState)
         loadImage()
+
+        // Gesture back (Android 13+) goes through the dispatcher, not onBackPressed().
+        onBackPressedDispatcher.addCallback(
+            this,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    when (isHeaderImageVisible && headerImage.drawable != null) {
+                        true -> {
+                            isEnabled = false
+                            onBackPressedDispatcher.onBackPressed()
+                        }
+
+                        false -> {
+                            finish()
+                        }
+                    }
+                }
+            },
+        )
     }
 
     override fun onDestroy() {
@@ -69,12 +92,6 @@ abstract class ImageTabsActivity : DrawerActivity() {
 
         super.onDestroy()
     }
-
-    override fun onBackPressed() =
-        when (isHeaderImageVisible && headerImage.drawable != null) {
-            true -> super.onBackPressed()
-            false -> finish()
-        }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {

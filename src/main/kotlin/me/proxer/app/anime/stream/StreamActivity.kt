@@ -98,6 +98,9 @@ import timber.log.Timber
  */
 @Suppress("DEPRECATION") // TODO: Wait for androidx fullscreen support library.
 class StreamActivity : BaseActivity() {
+    // Fullscreen player handles window insets itself.
+    override val applyEdgeToEdgeInsets = false
+
     companion object {
         private const val PREVIEW_MIME_TYPE = "video/mp4"
         private const val CLOUDFLARE_HOST = "videodelivery.net"

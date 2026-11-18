@@ -24,7 +24,7 @@ Ziel: Das Projekt auf einen aktuellen, build- und Play-Store-fähigen Stand brin
 | 8 | Performance + Polish — **erledigt 17.11.2026** | Glide, Baseline Profiles, AAB-Splits, Desugaring |
 | 9 | Qualitätssicherung + optionale Coroutines-Migration — **erledigt 17.11.2026** | detekt/ktlint/CI aktuell, schrittweise RxJava-Ablösung |
 | 10 | 16 KB Page Size + Abhängigkeits-Aufräumung — **erledigt 17.11.2026** | APK nativ-frei, jitpack-/unmaintained-Deps durch Shims ersetzt |
-| 11 | Runtime-Bugs, Lint-Cleanup + strukturelle Follow-ups — **offen** | Aus `lintDebug` (262 Issues) + Code-Scan abgeleitet, siehe unten |
+| 11 | Runtime-Bugs, Lint-Cleanup + strukturelle Follow-ups — **11.1 erledigt 17.11.2026**, 11.2–11.4 offen | Aus `lintDebug` (262 Issues) + Code-Scan abgeleitet, siehe unten |
 
 ---
 
@@ -257,11 +257,11 @@ Checkliste (alle bekannten Berührungspunkte):
 
 ---
 
-## Phase 11 – Runtime-Bugs, Lint-Cleanup + strukturelle Follow-ups (offen)
+## Phase 11 – Runtime-Bugs, Lint-Cleanup + strukturelle Follow-ups (11.1 erledigt, 11.2–11.4 offen)
 
 **Quelle:** `./gradlew lintDebug` (262 Issues: 89 Error, 6 Fatal, 166 Warning) + Compiler-Warnungen (162 in 42 Dateien) + Code-Scan, Stand 17.11.2026.
 
-### 11.1 Echte Bugs / Runtime-Risiken (höchste Priorität)
+### 11.1 Echte Bugs / Runtime-Risiken — **erledigt 17.11.2026**
 
 - **StrictMode-NewApi (eigener Fehler aus Phase 10):** `MainApplication.kt` – `VmPolicy.Builder.detectImplicitDirectBoot()` braucht **API 29** (Guard `>= 26` ist falsch → NoSuchMethodError auf API 24–28 in Debug); `detectCredentialProtectedWhileLocked()` braucht API 28 (Guard ok). Lint: `NewApi` ×2.
 - **GestureBackNavigation ×4 (Error):** `onBackPressed` in `BaseActivity:87`, `DrawerActivity:96`, `ImageTabsActivity:73`, `MainActivity:135` wird bei Gesten-Back (Android 13+, targetSdk 36) nicht aufgerufen. Fix: Migration auf `OnBackPressedDispatcher` (bevorzugt) oder `android:enableOnBackInvokedCallback="true"` im Manifest.
@@ -270,6 +270,19 @@ Checkliste (alle bekannten Berührungspunkte):
 - **Edge-to-Edge:** bei targetSdk 36 erzwingt Android 15+ Edge-to-Edge; nur `StreamActivity`/`ImageTabsActivity` behandeln Insets. Fix: `enableEdgeToEdge()` + zentrales Insets-Handling in `BaseActivity`.
 - **CustomX509TrustManager ×2:** `util/Mp4UploadTrustManagerWorkaround.kt` – Workaround-TrustManager security-relevant reviewen, idealerweise entfernen.
 - **DataExtractionRules:** Manifest nutzt nur deprecated `fullBackupContent` → `android:dataExtractionRules`-XML für API 31+ ergänzen.
+
+**Umgesetzt am 17.11.2026 (alle Punkte aus 11.1):**
+
+- **StrictMode-NewApi:** `detectImplicitDirectBoot()` + `detectCredentialProtectedWhileLocked()` in `MainApplication` hinter `Build.VERSION.SDK_INT >= 29`-Guard verschoben (Lint `NewApi` 2 → 0).
+- **GestureBackNavigation ×4:** `onBackPressed`-Overrides in `BaseActivity`, `DrawerActivity`, `ImageTabsActivity`, `MainActivity` auf `OnBackPressedDispatcher` migriert (`object : OnBackPressedCallback(true)`; Fallthrough via `isEnabled = false; onBackPressedDispatcher.onBackPressed()`). Home-Button in `BaseActivity` und Toolbar-Navigation in `DrawerActivity` rufen jetzt `onBackPressedDispatcher.onBackPressed()`.
+- **MissingClass:** toter Provider `androidx.work.impl.WorkManagerInitializer` aus dem Manifest entfernt (Auto-Init via androidx.startup reicht, siehe Phase 3).
+- **MissingPermission ×2:** `NewsNotifications.notify()` und `AccountNotifications.notify()` mit `NotificationManagerCompat.from(context).areNotificationsEnabled()` guarded.
+- **Edge-to-Edge:** `BaseActivity.onCreate` ruft `enableEdgeToEdge()` + `ViewCompat.setOnApplyWindowInsetsListener` auf `android.R.id.content` (Padding = systemBars), gesteuert über `protected open val applyEdgeToEdgeInsets = true`; in `StreamActivity` und `ImageTabsActivity` auf `false` (eigene Insets-Behandlung). Emulator: Toolbar bei y=126, Statusleiste 63 px → keine Überlappung.
+- **CustomX509TrustManager ×2:** `Mp4UploadTrustManagerWorkaround.kt` gelöscht; Zertifikatskette von mp4upload.com verifiziert (Google Trust Services WE1, gültig 2026-11→2027-02, `curl --cacert` verify=0) → Workaround sicher entfernbar; OkHttpClient in `MainModules.kt` ohne custom `sslSocketFactory`.
+- **DataExtractionRules:** neues `res/xml/data_extraction_rules.xml` (Cloud-Backup + Device-Transfer excludes gespiegelt aus `backup_config.xml`: workdb ×3, encrypted_preferences) + `android:dataExtractionRules` im Manifest.
+- **Lint nach Fixes:** `GestureBackNavigation`, `MissingClass`, `MissingPermission`, `NewApi`, `DataExtractionRules`, `CustomX509TrustManager` alle **0** (Gesamt 262 → 248 Issues; Rest siehe 11.2/11.3).
+- **Emulator-Verifikation (Medium_Phone, API 37):** App startet ohne Crash (News/ANMELDEN), 0 `FATAL EXCEPTION`, `KEYCODE_BACK` beendet Root-Activity über Dispatcher, Screenshot bestätigt Statusleiste über rotem App-Bar.
+- Verifiziert grün: `ktlintCheck`, `detekt`, `lintDebug`, `assembleDebug`, `assembleRelease`, `bundleRelease`, `assembleLogRelease`, `:baselineprofile:assembleAndroidTest`.
 
 ### 11.2 Lint-Cleanup (Voraussetzung für `lint { abortOnError = true }`)
 

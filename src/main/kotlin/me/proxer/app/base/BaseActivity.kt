@@ -5,10 +5,14 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.enableEdgeToEdge
 import androidx.annotation.StyleRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.os.bundleOf
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.snackbar.Snackbar
 import com.rubengees.rxbus.RxBus
 import com.uber.autodispose.android.lifecycle.scope
@@ -41,6 +45,11 @@ abstract class BaseActivity :
     protected open val theme
         @StyleRes get() = preferenceHelper.themeContainer.theme.main
 
+    // Activities with their own fullscreen/insets handling (StreamActivity, ImageTabsActivity)
+    // opt out of the base system-bar padding.
+    protected open val applyEdgeToEdgeInsets
+        get() = true
+
     protected open val root: ViewGroup by bindView(R.id.root)
 
     protected val bus by safeInject<RxBus>()
@@ -61,7 +70,37 @@ abstract class BaseActivity :
 
         super.onCreate(savedInstanceState)
 
+        // Edge-to-edge is enforced from Android 15 (targetSdk 35+); pad the content frame with
+        // the system bar insets so toolbars don't slide under the status bar.
+        enableEdgeToEdge()
+
+        if (applyEdgeToEdgeInsets) {
+            ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content)) { view, insets ->
+                val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+                view.setPadding(bars.left, bars.top, bars.right, bars.bottom)
+                insets
+            }
+        }
+
         customTabsHelper = CustomTabsHelperFragment.attachTo(this)
+
+        // Gesture back (Android 13+) no longer calls onBackPressed(); register with the
+        // dispatcher instead. Subclasses add their own callbacks in onCreate afterwards and
+        // fall through via isEnabled = false, preserving the old override chain.
+        onBackPressedDispatcher.addCallback(
+            this,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    // Workaround for memory leak on Android 10: https://twitter.com/Piwai/status/1169274624749658112
+                    if (isTaskRoot && supportFragmentManager.backStackEntryCount == 0) {
+                        finishAfterTransition()
+                    } else {
+                        isEnabled = false
+                        onBackPressedDispatcher.onBackPressed()
+                    }
+                }
+            },
+        )
 
         preferenceHelper.themeObservable
             .autoDispose(this.scope())
@@ -70,7 +109,7 @@ abstract class BaseActivity :
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            android.R.id.home -> onBackPressed()
+            android.R.id.home -> onBackPressedDispatcher.onBackPressed()
         }
 
         return super.onOptionsItemSelected(item)
@@ -81,15 +120,6 @@ abstract class BaseActivity :
 
         intent.extras?.let { state ->
             outState.putBundle(STATE, state)
-        }
-    }
-
-    override fun onBackPressed() {
-        // Workaround for memory leak on Android 10: https://twitter.com/Piwai/status/1169274624749658112
-        if (isTaskRoot && supportFragmentManager.backStackEntryCount == 0) {
-            finishAfterTransition()
-        } else {
-            super.onBackPressed()
         }
     }
 

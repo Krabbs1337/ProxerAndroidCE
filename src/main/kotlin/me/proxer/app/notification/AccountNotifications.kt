@@ -29,9 +29,13 @@ object AccountNotifications {
         context: Context,
         notifications: Collection<ProxerNotification>,
     ) {
+        val manager = NotificationManagerCompat.from(context)
+
         when (val notification = buildNotification(context, notifications)) {
-            null -> NotificationManagerCompat.from(context).cancel(ID)
-            else -> NotificationManagerCompat.from(context).notify(ID, notification)
+            null -> manager.cancel(ID)
+
+            // POST_NOTIFICATIONS may not be granted on Android 13+; notify() would be a silent no-op.
+            else -> if (manager.areNotificationsEnabled()) manager.notify(ID, notification)
         }
     }
 

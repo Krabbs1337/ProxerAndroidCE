@@ -7,8 +7,10 @@ import android.graphics.Bitmap
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
+import android.os.Build
 import android.os.Environment
 import android.os.Looper
+import android.os.StrictMode
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.getSystemService
 import androidx.work.Logger
@@ -17,7 +19,6 @@ import com.github.anrwatchdog.ANRWatchDog
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.common.GooglePlayServicesUtil
 import com.google.android.gms.security.ProviderInstaller
-import com.kirillr.strictmodehelper.StrictModeCompat
 import com.mikepenz.materialdrawer.util.DrawerImageLoader
 import com.rubengees.rxbus.RxBus
 import com.vanniktech.emoji.EmojiManager
@@ -154,8 +155,10 @@ class MainApplication : Application() {
 
     private fun enableStrictModeForDebug() {
         if (BuildConfig.DEBUG) {
+            // Platform StrictMode (replaces the jitpack-only StrictModeCompat shim); detectors
+            // added after minSdk 24 are guarded by version checks.
             val threadPolicy =
-                StrictModeCompat.ThreadPolicy
+                StrictMode.ThreadPolicy
                     .Builder()
                     .detectAll()
                     .permitCustomSlowCalls()
@@ -165,23 +168,31 @@ class MainApplication : Application() {
                     .penaltyLog()
                     .build()
 
-            val vmPolicy =
-                StrictModeCompat.VmPolicy
+            val vmPolicyBuilder =
+                StrictMode.VmPolicy
                     .Builder()
-                    .detectActivityLeaks()
-                    .detectCleartextNetwork()
-                    .detectFileUriExposure()
-                    .detectLeakedClosableObjects()
-                    .detectLeakedRegistrationObjects()
                     .detectLeakedSqlLiteObjects()
-                    .detectContentUriWithoutPermission()
-                    .detectNonSdkApiUsage()
+                    .detectLeakedClosableObjects()
+                    .detectFileUriExposure()
                     .detectImplicitDirectBoot()
-                    .detectCredentialProtectedWhileLocked()
                     .penaltyLog()
-                    .build()
 
-            StrictModeCompat.setPolicies(threadPolicy, vmPolicy)
+            if (Build.VERSION.SDK_INT >= 26) {
+                vmPolicyBuilder
+                    .detectActivityLeaks()
+                    .detectLeakedRegistrationObjects()
+                    .detectContentUriWithoutPermission()
+            }
+
+            if (Build.VERSION.SDK_INT >= 28) {
+                vmPolicyBuilder
+                    .detectCleartextNetwork()
+                    .detectNonSdkApiUsage()
+                    .detectCredentialProtectedWhileLocked()
+            }
+
+            StrictMode.setThreadPolicy(threadPolicy)
+            StrictMode.setVmPolicy(vmPolicyBuilder.build())
         }
     }
 

@@ -47,7 +47,6 @@ ext {
     rxAndroidVersion = "2.1.1"
     rxBindingVersion = "3.1.0"
     rxPreferencesVersion = "2.0.1"
-    rxBusVersion = "2.0.0"
     autoDisposeVersion = "1.4.1"
 
     // UI components
@@ -74,7 +73,6 @@ ext {
     previewSeekbarVersion = "09eec85551"
     materialProgressBarVersion = "1.6.1"
     materialRatingBarVersion = "1.4.0"
-    aspectRatioImageViewVersion = "1.0.9"
     gravitySnapHelperVersion = "2.2.1"
 
     // Utils
@@ -92,7 +90,5 @@ ext {
 
     // Debugging
     customActivityOnCrashVersion = "2.4.0"
-    strictModeCompatVersion = "30.1.1"
-    anrWatchdogVersion = "1.4.0"
     timberVersion = "5.0.1"
 }

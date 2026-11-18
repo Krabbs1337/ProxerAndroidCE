@@ -36,4 +36,9 @@
 
     <!-- Workaround for missing style. -->
     <attr name="ringtonePreferenceStyle" tools:ignore="PrivateResource" />
+
+    <!-- In-repo AspectRatioImageView (replaces com.github.santalu:aspect-ratio-imageview). -->
+    <declare-styleable name="AspectRatioImageView">
+        <attr name="ari_ratio" format="float" />
+    </declare-styleable>
 </resources>

@@ -32,7 +32,6 @@ dependencies {
     implementation "com.jakewharton.rxbinding3:rxbinding-swiperefreshlayout:$rxBindingVersion"
     implementation "com.jakewharton.rxbinding3:rxbinding-material:$rxBindingVersion"
     implementation "com.f2prateek.rx.preferences2:rx-preferences:$rxPreferencesVersion"
-    implementation "com.github.rubengees:rxbus:$rxBusVersion"
     implementation "com.uber.autodispose:autodispose:$autoDisposeVersion"
     implementation "com.uber.autodispose:autodispose-android-archcomponents:$autoDisposeVersion"
 
@@ -59,7 +58,6 @@ dependencies {
     implementation "com.github.vanniktech.Emoji:emoji-ios:$emojiIosVersion"
     implementation "me.zhanghai.android.materialprogressbar:library:$materialProgressBarVersion"
     implementation "me.zhanghai.android.materialratingbar:library:$materialRatingBarVersion"
-    implementation "com.github.santalu:aspect-ratio-imageview:$aspectRatioImageViewVersion"
     implementation "com.github.rubensousa:gravitysnaphelper:$gravitySnapHelperVersion"
     implementation "androidx.media3:media3-exoplayer:$media3Version"
     implementation "androidx.media3:media3-exoplayer-hls:$media3Version"
@@ -89,9 +87,7 @@ dependencies {
     implementation "me.saket:better-link-movement-method:$betterLinkMovementMethodVersion"
     implementation "org.jsoup:jsoup:$jsoupVersion"
 
-    implementation "com.github.kirich1409:StrictModeCompat:$strictModeCompatVersion"
     implementation "com.jakewharton.timber:timber:$timberVersion"
-    implementation "com.github.anrwatchdog:anrwatchdog:$anrWatchdogVersion"
 
 
     releaseImplementation "cat.ereza:customactivityoncrash:$customActivityOnCrashVersion"

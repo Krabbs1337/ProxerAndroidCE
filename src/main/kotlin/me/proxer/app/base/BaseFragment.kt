@@ -22,11 +22,11 @@ abstract class BaseFragment(
     @LayoutRes contentLayoutId: Int,
 ) : Fragment(contentLayoutId),
     CustomTabsAware {
-    protected val bus by safeInject<RxBus>()
-    protected val storageHelper by safeInject<StorageHelper>()
-    protected val preferenceHelper by safeInject<PreferenceHelper>()
+    val bus by safeInject<RxBus>()
+    val storageHelper by safeInject<StorageHelper>()
+    val preferenceHelper by safeInject<PreferenceHelper>()
 
-    protected open val hostingActivity: BaseActivity
+    open val hostingActivity: BaseActivity
         get() = requireActivity() as BaseActivity
 
     private var customTabsHelper by Delegates.notNull<CustomTabsHelperFragment>()

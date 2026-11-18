@@ -128,87 +128,6 @@ object ErrorUtils {
     const val CHAPTER_TITLE_DATA_KEY = "chapterTitle"
     const val LINK_DATA_KEY = "link"
 
-    private val apiErrors =
-        arrayOf(
-            UNKNOWN_API,
-            API_REMOVED,
-            INVALID_API_CLASS,
-            INVALID_API_FUNCTION,
-            INSUFFICIENT_PERMISSIONS,
-            FUNCTION_BLOCKED,
-            COMMENT_SAVE_ERROR,
-        )
-
-    private val maintenanceErrors = arrayOf(SERVER_MAINTENANCE, API_MAINTENANCE)
-
-    private val loginErrors =
-        arrayOf(
-            INVALID_TOKEN,
-            NOTIFICATIONS_LOGIN_REQUIRED,
-            UCP_LOGIN_REQUIRED,
-            INFO_LOGIN_REQUIRED,
-            USER_2FA_SECRET_REQUIRED,
-            ANIME_LOGIN_REQUIRED,
-            IP_AUTHENTICATION_REQUIRED,
-            COMMENT_LOGIN_REQUIRED,
-        )
-
-    private val clientErrors =
-        arrayOf(
-            NEWS,
-            LOGIN_MISSING_CREDENTIALS,
-            UCP_INVALID_CATEGORY,
-            INFO_INVALID_TYPE,
-            LOGIN_ALREADY_LOGGED_IN,
-            LOGIN_DIFFERENT_USER_ALREADY_LOGGED_IN,
-            LIST_INVALID_CATEGORY,
-            LIST_INVALID_MEDIUM,
-            MEDIA_INVALID_STYLE,
-            ANIME_INVALID_STREAM,
-            LIST_INVALID_LANGUAGE,
-            LIST_INVALID_TYPE,
-            ERRORLOG_INVALID_INPUT,
-            LIST_INVALID_SUBJECT,
-            INFO_DELETE_COMMENT_INVALID_INPUT,
-            UCP_INVALID_SETTINGS,
-            COMMENT_INVALID_ID,
-            COMMENT_INVALID_COMMENT,
-            COMMENT_INVALID_RATING,
-            COMMENT_INVALID_EPISODE,
-            COMMENT_INVALID_STATUS,
-            COMMENT_INVALID_ENTRY_ID,
-            COMMENT_INVALID_CONTENT,
-            COMMENT_ALREADY_EXISTS,
-            WIKI_INVALID_TITLE,
-        )
-
-    private val invalidIdErrors =
-        arrayOf(
-            USERINFO_INVALID_ID,
-            UCP_INVALID_ID,
-            INFO_INVALID_ID,
-            MEDIA_INVALID_ENTRY,
-            UCP_INVALID_EPISODE,
-            LIST_INVALID_ID,
-            FORUM_INVALID_ID,
-            APPS_INVALID_ID,
-        )
-
-    private val unsupportedErrors =
-        arrayOf(
-            USER,
-            AUTH_INVALID_USER,
-            AUTH_CODE_ALREADY_EXISTS,
-            AUTH_CODE_DOES_NOT_EXIST,
-            AUTH_CODE_REJECTED,
-            AUTH_CODE_PENDING,
-            AUTH_CODE_INVALID_NAME,
-            AUTH_CODE_DUPLICATE,
-            LIST_NO_ENTRIES_LEFT,
-        )
-
-    private val storageHelper by safeInject<StorageHelper>()
-
     fun getMessage(error: Throwable): Int =
         when (val innermostError = getInnermostError(error)) {
             is ProxerException -> {
@@ -288,7 +207,7 @@ object ErrorUtils {
                     when (innermostError.serverErrorType) {
                         IP_BLOCKED -> R.string.error_action_captcha
                         MEDIA_REMOVED_DUE_TO_COPYRIGHT -> ACTION_MESSAGE_HIDE
-                        in loginErrors -> R.string.error_action_login
+                        in ErrorCategories.loginErrors -> R.string.error_action_login
                         else -> ACTION_MESSAGE_DEFAULT
                     }
                 }
@@ -319,7 +238,7 @@ object ErrorUtils {
                 is ProxerException -> {
                     when (innermostError.serverErrorType) {
                         IP_BLOCKED -> CAPTCHA
-                        in loginErrors -> LOGIN
+                        in ErrorCategories.loginErrors -> LOGIN
                         else -> null
                     }
                 }
@@ -358,140 +277,6 @@ object ErrorUtils {
 
         return ErrorAction(errorMessage, buttonMessage, buttonAction, data)
     }
-
-    private fun getMessageForProxerException(error: ProxerException) =
-        when (error.errorType) {
-            SERVER -> {
-                when (error.serverErrorType) {
-                    IP_BLOCKED -> {
-                        R.string.error_captcha
-                    }
-
-                    RATE_LIMIT -> {
-                        R.string.error_rate_limit
-                    }
-
-                    INVALID_TOKEN -> {
-                        R.string.error_invalid_token
-                    }
-
-                    LOGIN_INVALID_CREDENTIALS -> {
-                        R.string.error_login_credentials
-                    }
-
-                    INFO_ENTRY_ALREADY_IN_LIST -> {
-                        R.string.error_already_in_list
-                    }
-
-                    INFO_EXCEEDED_MAXIMUM_ENTRIES -> {
-                        R.string.error_list_full
-                    }
-
-                    MANGA_INVALID_CHAPTER -> {
-                        R.string.error_invalid_chapter
-                    }
-
-                    ANIME_INVALID_EPISODE -> {
-                        R.string.error_invalid_episode
-                    }
-
-                    LIST_TOP_ACCESS_RESET -> {
-                        R.string.error_list_top_access_reset
-                    }
-
-                    USER_2FA_SECRET_REQUIRED -> {
-                        R.string.error_login_two_factor_authentication
-                    }
-
-                    USER_ACCOUNT_EXPIRED -> {
-                        R.string.error_account_expired
-                    }
-
-                    USER_ACCOUNT_BLOCKED -> {
-                        R.string.error_account_blocked
-                    }
-
-                    USER_INSUFFICIENT_PERMISSIONS -> {
-                        when (storageHelper.isLoggedIn) {
-                            true -> R.string.error_insufficient_permissions_logged_in
-                            false -> R.string.error_insufficient_permissions
-                        }
-                    }
-
-                    FORUM_INVALID_PERMISSIONS -> {
-                        R.string.error_forum_no_permissions
-                    }
-
-                    COMMENT_INSUFFICIENT_PERMISSIONS -> {
-                        R.string.error_comment_no_permissions
-                    }
-
-                    WIKI_INVALID_PERMISSIONS -> {
-                        R.string.error_wiki_no_permissions
-                    }
-
-                    COMMENT_NOT_ACTIVE_YET -> {
-                        R.string.error_comment_not_active_yet
-                    }
-
-                    IP_AUTHENTICATION_REQUIRED -> {
-                        R.string.error_login_ip_authentication
-                    }
-
-                    MEDIA_REMOVED_DUE_TO_COPYRIGHT -> {
-                        R.string.error_media_removed_due_to_copyright
-                    }
-
-                    INTERNAL -> {
-                        R.string.error_internal
-                    }
-
-                    in apiErrors -> {
-                        R.string.error_api
-                    }
-
-                    in maintenanceErrors -> {
-                        R.string.error_maintenance
-                    }
-
-                    in loginErrors -> {
-                        R.string.error_login
-                    }
-
-                    in clientErrors -> {
-                        R.string.error_client
-                    }
-
-                    in invalidIdErrors -> {
-                        R.string.error_invalid_id
-                    }
-
-                    in unsupportedErrors -> {
-                        R.string.error_unsupported_code
-                    }
-
-                    else -> {
-                        R.string.error_unknown
-                    }
-                }
-            }
-
-            IO -> {
-                R.string.error_io
-            }
-
-            TIMEOUT -> {
-                R.string.error_timeout
-            }
-
-            PARSING -> {
-                R.string.error_parsing
-            }
-
-            UNKNOWN, CANCELLED -> {
-                R.string.error_unknown
-            }
-        }
 
     private fun getInnermostError(error: Throwable): Throwable =
         when (error) {

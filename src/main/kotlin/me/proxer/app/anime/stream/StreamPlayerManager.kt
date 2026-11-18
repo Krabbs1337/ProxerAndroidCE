@@ -45,16 +45,16 @@ import kotlin.properties.Delegates
 class StreamPlayerManager(
     context: StreamActivity,
     rawClient: OkHttpClient,
-    private val adTag: Uri?,
+    internal val adTag: Uri?,
 ) {
     private companion object {
         private const val WAS_PLAYING_EXTRA = "was_playing"
         private const val LAST_POSITION_EXTRA = "last_position"
     }
 
-    private val weakContext = WeakReference(context)
+    internal val weakContext = WeakReference(context)
 
-    private val castSessionAvailabilityListener =
+    internal val castSessionAvailabilityListener =
         object : SessionAvailabilityListener {
             override fun onCastSessionAvailable() {
                 if (castPlayer != null) {
@@ -152,12 +152,12 @@ class StreamPlayerManager(
             }
         }
 
-    private val client = buildClient(rawClient)
+    internal val client = buildClient(rawClient)
 
-    private val localPlayer = buildLocalPlayer(context)
-    private val castPlayer = buildCastPlayer(context)
+    internal val localPlayer = buildLocalPlayer(context)
+    internal val castPlayer = buildCastPlayer(context)
 
-    private var adsLoader: ImaAdsLoader? =
+    internal var adsLoader: ImaAdsLoader? =
         when {
             adTag != null -> {
                 ImaAdsLoader.Builder(context).build().apply {
@@ -170,29 +170,29 @@ class StreamPlayerManager(
             }
         }
 
-    private var localMediaSource = buildLocalMediaSourceWithAds(client, uri)
-    private var castMediaItem = buildCastMediaItem(name, episode, coverUri, uri)
+    internal var localMediaSource = buildLocalMediaSourceWithAds(client, uri)
+    internal var castMediaItem = buildCastMediaItem(name, episode, coverUri, uri)
 
-    private val uri get() = requireNotNull(weakContext.get()?.uri)
-    private val name: String? get() = weakContext.get()?.name
-    private val episode: Int? get() = weakContext.get()?.episode
-    private val coverUri: Uri? get() = weakContext.get()?.coverUri
-    private val referer: String? get() = weakContext.get()?.referer
+    internal val uri get() = requireNotNull(weakContext.get()?.uri)
+    internal val name: String? get() = weakContext.get()?.name
+    internal val episode: Int? get() = weakContext.get()?.episode
+    internal val coverUri: Uri? get() = weakContext.get()?.coverUri
+    internal val referer: String? get() = weakContext.get()?.referer
 
-    private var lastPosition: Long
+    internal var lastPosition: Long
         get() = weakContext.get()?.intent?.getLongExtra(LAST_POSITION_EXTRA, -1) ?: -1
         set(value) {
             weakContext.get()?.intent?.putExtra(LAST_POSITION_EXTRA, value)
         }
 
-    private var wasPlaying: Boolean
+    internal var wasPlaying: Boolean
         get() = weakContext.get()?.intent?.getBooleanExtra(WAS_PLAYING_EXTRA, false) ?: false
         set(value) {
             weakContext.get()?.intent?.putExtra(WAS_PLAYING_EXTRA, value)
         }
 
-    private var isResumed = false
-    private var isFirstStart = true
+    internal var isResumed = false
+    internal var isFirstStart = true
 
     var currentPlayer by Delegates.observable<Player>(localPlayer) { _, old, new ->
         old.playWhenReady = false
@@ -221,206 +221,9 @@ class StreamPlayerManager(
         context.application.registerActivityLifecycleCallbacks(lifecycleCallbacks)
     }
 
-    fun play(position: Long? = null) {
-        if (isFirstStart && position != null) {
-            lastPosition = position
-        }
-
-        if (currentPlayer.currentPosition <= 0 && lastPosition > 0) {
-            currentPlayer.seekTo(lastPosition)
-        }
-
-        if (isFirstStart || wasPlaying) {
-            currentPlayer.playWhenReady = true
-        }
-    }
-
-    fun pause() {
-        wasPlaying = currentPlayer.playWhenReady == true && currentPlayer.playbackState == Player.STATE_READY
-        lastPosition = currentPlayer.currentPosition
-
-        localPlayer.playWhenReady = false
-    }
-
-    fun toggle() {
-        currentPlayer.playWhenReady = currentPlayer.playWhenReady.not()
-    }
-
-    fun retry() {
-        if (currentPlayer == localPlayer) {
-            localPlayer.setMediaSource(localMediaSource, false)
-            localPlayer.prepare()
-        } else if (currentPlayer == castPlayer) {
-            castPlayer.setMediaItem(castMediaItem, lastPosition)
-            castPlayer.prepare()
-        }
-    }
-
-    fun reset() {
-        currentPlayer.playWhenReady = false
-
-        wasPlaying = false
-        lastPosition = -1
-
-        localMediaSource = buildLocalMediaSourceWithAds(client, uri)
-        castMediaItem = buildCastMediaItem(name, episode, coverUri, uri)
-
-        retry()
-
-        currentPlayer.playWhenReady = true
-    }
-
-    private fun buildClient(rawClient: OkHttpClient): OkHttpClient =
-        referer.let { referer ->
-            if (referer == null) {
-                rawClient
-            } else {
-                rawClient
-                    .newBuilder()
-                    .addInterceptor {
-                        val requestWithReferer =
-                            it
-                                .request()
-                                .newBuilder()
-                                .header("Referer", referer)
-                                .build()
-
-                        it.proceed(requestWithReferer)
-                    }.build()
-            }
-        }
-
-    private fun buildLocalMediaSourceWithAds(
-        client: OkHttpClient,
-        uri: Uri,
-    ): MediaSource {
-        val context = requireNotNull(weakContext.get())
-
-        val okHttpDataSourceFactory = OkHttpDataSource.Factory(client).setUserAgent(USER_AGENT)
-        val imaFactory = ImaMediaSourceFactory(okHttpDataSourceFactory, this::buildLocalMediaSource)
-        val localMediaSource = buildLocalMediaSource(okHttpDataSourceFactory, uri)
-
-        val safeAdsLoader = adsLoader
-
-        return if (safeAdsLoader != null) {
-            AdsMediaSource(
-                localMediaSource,
-                DataSpec(requireNotNull(adTag)),
-                requireNotNull(adTag).toString(),
-                imaFactory,
-                safeAdsLoader,
-                context.playerView,
-            )
-        } else {
-            localMediaSource
-        }
-    }
-
-    private fun buildLocalMediaSource(
-        dataSourceFactory: DataSource.Factory,
-        uri: Uri,
-    ): MediaSource {
-        val mediaItem = MediaItem.fromUri(uri)
-
-        return when (Util.inferContentType(uri)) {
-            C.CONTENT_TYPE_SS -> {
-                SsMediaSource
-                    .Factory(DefaultSsChunkSource.Factory(dataSourceFactory), dataSourceFactory)
-                    .createMediaSource(mediaItem)
-            }
-
-            C.CONTENT_TYPE_DASH -> {
-                DashMediaSource
-                    .Factory(DefaultDashChunkSource.Factory(dataSourceFactory), dataSourceFactory)
-                    .createMediaSource(mediaItem)
-            }
-
-            C.CONTENT_TYPE_HLS -> {
-                HlsMediaSource.Factory(dataSourceFactory).createMediaSource(mediaItem)
-            }
-
-            C.CONTENT_TYPE_OTHER -> {
-                ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(mediaItem)
-            }
-
-            else -> {
-                error("Unknown streamType for uri: $uri")
-            }
-        }
-    }
-
-    private fun buildCastMediaItem(
-        name: String?,
-        episode: Int?,
-        coverUri: Uri?,
-        uri: Uri,
-    ): MediaItem {
-        val mediaMetadata =
-            MediaMetadata
-                .Builder()
-                .apply {
-                    if (name != null) {
-                        setTitle(name)
-                    }
-
-                    if (episode != null) {
-                        setExtras(Bundle().apply { putInt(KEY_EPISODE_NUMBER, episode) })
-                    }
-
-                    if (coverUri != null) {
-                        setArtworkUri(coverUri)
-                    }
-                }.build()
-
-        return MediaItem
-            .Builder()
-            .setUri(uri)
-            .setMimeType(MimeTypes.VIDEO_MP4)
-            .setMediaMetadata(mediaMetadata)
-            .build()
-    }
-
-    private fun buildLocalPlayer(context: StreamActivity): ExoPlayer =
-        ExoPlayer.Builder(context).build().apply {
-            val audioAttributes =
-                AudioAttributes
-                    .Builder()
-                    .setContentType(C.AUDIO_CONTENT_TYPE_MOVIE)
-                    .setUsage(C.USAGE_MEDIA)
-                    .build()
-
-            setWakeMode(C.WAKE_MODE_NETWORK)
-            setHandleAudioBecomingNoisy(true)
-            setAudioAttributes(audioAttributes, true)
-        }
-
-    @Suppress("DEPRECATION")
-    private fun buildCastPlayer(context: StreamActivity): CastPlayer? =
-        context
-            .getSafeCastContext()
-            ?.let { CastPlayer(it, DefaultMediaItemConverter()) }
-            ?.apply { setSessionAvailabilityListener(castSessionAvailabilityListener) }
-
     enum class PlayerState {
         PLAYING,
         PAUSING,
         LOADING,
-    }
-
-    private class ImaMediaSourceFactory(
-        private val okHttpDataSourceFactory: OkHttpDataSource.Factory,
-        private val mediaSourceFunction: (DataSource.Factory, Uri) -> MediaSource,
-    ) : MediaSource.Factory {
-        override fun getSupportedTypes() = intArrayOf(C.CONTENT_TYPE_DASH, C.CONTENT_TYPE_HLS, C.CONTENT_TYPE_OTHER)
-
-        override fun createMediaSource(mediaItem: MediaItem): MediaSource {
-            val uri = mediaItem.localConfiguration?.uri ?: throw IllegalArgumentException("MediaItem without uri")
-
-            return mediaSourceFunction(okHttpDataSourceFactory, uri)
-        }
-
-        override fun setDrmSessionManagerProvider(drmSessionManagerProvider: DrmSessionManagerProvider) = this
-
-        override fun setLoadErrorHandlingPolicy(loadErrorHandlingPolicy: LoadErrorHandlingPolicy) = this
     }
 }

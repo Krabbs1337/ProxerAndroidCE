@@ -33,17 +33,17 @@ abstract class BaseContentFragment<T>(
         private const val IS_SOLVING_CAPTCHA_ARGUMENT = "is_solving_captcha"
     }
 
-    protected abstract val viewModel: BaseViewModel<T>
+    abstract val viewModel: BaseViewModel<T>
 
-    protected open val isSwipeToRefreshEnabled = false
+    open val isSwipeToRefreshEnabled = false
 
-    protected open val root: ViewGroup get() = requireView().findViewById(R.id.root)
-    protected open val contentContainer: ViewGroup get() = requireView().findViewById(R.id.contentContainer)
-    protected open val errorContainer: ViewGroup get() = requireView().findViewById(R.id.errorContainer)
-    protected open val errorInnerContainer: ViewGroup get() = requireView().findViewById(R.id.errorInnerContainer)
-    protected open val errorText: TextView get() = requireView().findViewById(R.id.errorText)
-    protected open val errorButton: Button get() = requireView().findViewById(R.id.errorButton)
-    protected open val progress: SwipeRefreshLayout get() = requireView().findViewById(R.id.progress)
+    open val root: ViewGroup get() = requireView().findViewById(R.id.root)
+    open val contentContainer: ViewGroup get() = requireView().findViewById(R.id.contentContainer)
+    open val errorContainer: ViewGroup get() = requireView().findViewById(R.id.errorContainer)
+    open val errorInnerContainer: ViewGroup get() = requireView().findViewById(R.id.errorInnerContainer)
+    open val errorText: TextView get() = requireView().findViewById(R.id.errorText)
+    open val errorButton: Button get() = requireView().findViewById(R.id.errorButton)
+    open val progress: SwipeRefreshLayout get() = requireView().findViewById(R.id.progress)
 
     private var isSolvingCaptcha: Boolean
         get() = requireArguments().getBoolean(IS_SOLVING_CAPTCHA_ARGUMENT, false)
@@ -111,15 +111,15 @@ abstract class BaseContentFragment<T>(
         }
     }
 
-    protected open fun showData(data: T) {
+    open fun showData(data: T) {
         contentContainer.isVisible = true
     }
 
-    protected open fun hideData() {
+    open fun hideData() {
         contentContainer.isVisible = false
     }
 
-    protected open fun showError(action: ErrorAction) {
+    open fun showError(action: ErrorAction) {
         errorContainer.isVisible = true
         errorText.text = getString(action.message)
         errorButton.isVisible = action.buttonMessage != ACTION_MESSAGE_HIDE
@@ -149,7 +149,7 @@ abstract class BaseContentFragment<T>(
             }
     }
 
-    protected open fun hideError() {
+    open fun hideError() {
         errorContainer.isVisible = false
     }
 }

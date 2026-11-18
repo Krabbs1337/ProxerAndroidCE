@@ -35,14 +35,14 @@ abstract class PagedContentFragment<T>(
 
     override val isSwipeToRefreshEnabled = true
 
-    protected open val emptyDataMessage get() = R.string.error_no_data
-    protected open val pagingThreshold = 5
+    open val emptyDataMessage get() = R.string.error_no_data
+    open val pagingThreshold = 5
 
-    protected abstract val layoutManager: RecyclerView.LayoutManager
-    protected abstract val innerAdapter: BaseAdapter<T, *>
-    protected var adapter by Delegates.notNull<EasyHeaderFooterAdapter>()
+    abstract val layoutManager: RecyclerView.LayoutManager
+    abstract val innerAdapter: BaseAdapter<T, *>
+    var adapter by Delegates.notNull<EasyHeaderFooterAdapter>()
 
-    protected open val recyclerView: RecyclerView get() = requireView().findViewById(R.id.recyclerView)
+    open val recyclerView: RecyclerView get() = requireView().findViewById(R.id.recyclerView)
 
     override val contentContainer: ViewGroup
         get() = recyclerView
@@ -156,5 +156,5 @@ abstract class PagedContentFragment<T>(
         adapter.footer = null
     }
 
-    protected open fun isAtTop() = recyclerView.isAtCompleteTop()
+    open fun isAtTop() = recyclerView.isAtCompleteTop()
 }

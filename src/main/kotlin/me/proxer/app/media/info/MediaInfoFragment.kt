@@ -51,6 +51,15 @@ import me.proxer.app.databinding.FragmentMediaInfoBinding
  * @author Ruben Gees
  */
 class MediaInfoFragment : BaseContentFragment<Entry>(R.layout.fragment_media_info) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
+        super.onViewCreated(view, savedInstanceState)
+
+        setupView()
+    }
+
     private val binding: FragmentMediaInfoBinding
         get() = FragmentMediaInfoBinding.bind(requireView())
 
@@ -72,122 +81,43 @@ class MediaInfoFragment : BaseContentFragment<Entry>(R.layout.fragment_media_inf
     private val id: String
         get() = hostingActivity.id
 
-    private var showUnratedTags: Boolean
+    internal var showUnratedTags: Boolean
         get() = requireArguments().getBoolean(SHOW_UNRATED_TAGS_ARGUMENT, false)
         set(value) = requireArguments().putBoolean(SHOW_UNRATED_TAGS_ARGUMENT, value)
 
-    private var showSpoilerTags: Boolean
+    internal var showSpoilerTags: Boolean
         get() = requireArguments().getBoolean(SHOW_SPOILER_TAGS_ARGUMENT, false)
         set(value) = requireArguments().putBoolean(SHOW_SPOILER_TAGS_ARGUMENT, value)
 
-    private val ratingContainer: ViewGroup get() = binding.ratingContainer
-    private val rating: RatingBar get() = binding.rating
-    private val ratingAmount: TextView get() = binding.ratingAmount
+    internal val ratingContainer: ViewGroup get() = binding.ratingContainer
+    internal val rating: RatingBar get() = binding.rating
+    internal val ratingAmount: TextView get() = binding.ratingAmount
 
-    private val infoTable: TableLayout get() = binding.infoTable
+    internal val infoTable: TableLayout get() = binding.infoTable
 
-    private val genresTitle: TextView get() = binding.genresTitle
-    private val genres: FlexboxLayout get() = binding.genres
-    private val tagsTitle: TextView get() = binding.tagsTitle
-    private val tags: FlexboxLayout get() = binding.tags
-    private val unratedTags: Button get() = binding.unratedTags
-    private val spoilerTags: Button get() = binding.spoilerTags
-    private val fskConstraintsTitle: TextView get() = binding.fskConstraintsTitle
-    private val fskConstraints: FlexboxLayout get() = binding.fskConstraints
-    private val translatorGroupsTitle: TextView get() = binding.translatorGroupsTitle
-    private val translatorGroups: FlexboxLayout get() = binding.translatorGroups
-    private val industriesTitle: TextView get() = binding.industriesTitle
-    private val industries: FlexboxLayout get() = binding.industries
+    internal val genresTitle: TextView get() = binding.genresTitle
+    internal val genres: FlexboxLayout get() = binding.genres
+    internal val tagsTitle: TextView get() = binding.tagsTitle
+    internal val tags: FlexboxLayout get() = binding.tags
+    internal val unratedTags: Button get() = binding.unratedTags
+    internal val spoilerTags: Button get() = binding.spoilerTags
+    internal val fskConstraintsTitle: TextView get() = binding.fskConstraintsTitle
+    internal val fskConstraints: FlexboxLayout get() = binding.fskConstraints
+    internal val translatorGroupsTitle: TextView get() = binding.translatorGroupsTitle
+    internal val translatorGroups: FlexboxLayout get() = binding.translatorGroups
+    internal val industriesTitle: TextView get() = binding.industriesTitle
+    internal val industries: FlexboxLayout get() = binding.industries
 
-    private val noteContainer: ViewGroup get() = binding.noteContainer
-    private val note: ImageView get() = binding.note
-    private val favorContainer: ViewGroup get() = binding.favorContainer
-    private val favor: ImageView get() = binding.favor
-    private val finishContainer: ViewGroup get() = binding.finishContainer
-    private val finish: ImageView get() = binding.finish
-    private val subscribeContainer: ViewGroup get() = binding.subscribeContainer
-    private val subscribe: ImageView get() = binding.subscribe
+    internal val noteContainer: ViewGroup get() = binding.noteContainer
+    internal val note: ImageView get() = binding.note
+    internal val favorContainer: ViewGroup get() = binding.favorContainer
+    internal val favor: ImageView get() = binding.favor
+    internal val finishContainer: ViewGroup get() = binding.finishContainer
+    internal val finish: ImageView get() = binding.finish
+    internal val subscribeContainer: ViewGroup get() = binding.subscribeContainer
+    internal val subscribe: ImageView get() = binding.subscribe
 
-    private val description: TextView get() = binding.description
-
-    override fun onViewCreated(
-        view: View,
-        savedInstanceState: Bundle?,
-    ) {
-        super.onViewCreated(view, savedInstanceState)
-
-        updateUnratedButton()
-        updateSpoilerButton()
-        bindUserInfo(null)
-
-        noteContainer
-            .clicks()
-            .autoDispose(viewLifecycleOwner.scope())
-            .subscribe { viewModel.note() }
-
-        favorContainer
-            .clicks()
-            .autoDispose(viewLifecycleOwner.scope())
-            .subscribe { viewModel.toggleFavorite() }
-
-        finishContainer
-            .clicks()
-            .autoDispose(viewLifecycleOwner.scope())
-            .subscribe { viewModel.markAsFinished() }
-
-        subscribeContainer
-            .clicks()
-            .autoDispose(viewLifecycleOwner.scope())
-            .subscribe { viewModel.toggleSubscription() }
-
-        unratedTags
-            .clicks()
-            .autoDispose(viewLifecycleOwner.scope())
-            .subscribe {
-                showUnratedTags = !showUnratedTags
-
-                viewModel.data.value?.let { entry -> bindTags(entry) }
-            }
-
-        spoilerTags
-            .clicks()
-            .autoDispose(viewLifecycleOwner.scope())
-            .subscribe {
-                showSpoilerTags = !showSpoilerTags
-
-                viewModel.data.value?.let { entry -> bindTags(entry) }
-            }
-
-        viewModel.userInfoData.observe(
-            viewLifecycleOwner,
-            Observer {
-                bindUserInfo(it)
-            },
-        )
-
-        viewModel.userInfoUpdateData.observe(
-            viewLifecycleOwner,
-            Observer {
-                it?.let {
-                    hostingActivity.snackbar(R.string.fragment_set_user_info_success)
-                }
-            },
-        )
-
-        viewModel.userInfoUpdateError.observe(
-            viewLifecycleOwner,
-            Observer {
-                it?.let {
-                    hostingActivity.multilineSnackbar(
-                        getString(R.string.error_set_user_info, getString(it.message)),
-                        Snackbar.LENGTH_LONG,
-                        it.buttonMessage,
-                        it.toClickListener(hostingActivity),
-                    )
-                }
-            },
-        )
-    }
+    internal val description: TextView get() = binding.description
 
     override fun showData(data: Entry) {
         super.showData(data)
@@ -211,317 +141,5 @@ class MediaInfoFragment : BaseContentFragment<Entry>(R.layout.fragment_media_inf
         bindIndustries(entry)
 
         description.text = entry.description
-    }
-
-    private fun bindRating(result: Entry) =
-        if (result.rating > 0) {
-            ratingContainer.isVisible = true
-            rating.rating = result.rating / 2.0f
-            ratingAmount.isVisible = true
-            ratingAmount.text =
-                requireContext().resources.getQuantityString(
-                    R.plurals.fragment_media_info_rate_count,
-                    result.ratingAmount,
-                    result.rating,
-                    result.ratingAmount,
-                )
-        } else {
-            ratingContainer.isGone = true
-            ratingAmount.isGone = true
-        }
-
-    private fun bindSynonyms(result: Entry) {
-        result.synonyms.forEach {
-            infoTable.addView(constructInfoTableRow(it.toTypeAppString(requireContext()), it.name, true))
-        }
-    }
-
-    private fun bindSeasons(result: Entry) {
-        val seasons = result.seasons
-
-        if (seasons.isNotEmpty()) {
-            val tableRow =
-                LayoutInflater
-                    .from(context)
-                    .inflate(R.layout.layout_media_info_seasons_row, infoTable, false)
-
-            val seasonStartView = tableRow.findViewById<TextView>(R.id.seasonStart)
-            val seasonEndView = tableRow.findViewById<TextView>(R.id.seasonEnd)
-
-            seasonStartView.text = seasons[0].toStartAppString(requireContext())
-
-            if (seasons.size >= 2) {
-                seasonEndView.text = seasons[1].toEndAppString(requireContext())
-            } else {
-                seasonEndView.isGone = true
-            }
-
-            infoTable.addView(tableRow)
-        }
-    }
-
-    private fun bindStatus(result: Entry) {
-        infoTable.addView(
-            constructInfoTableRow(
-                requireContext().getString(R.string.fragment_media_info_status_title),
-                result.state.toAppString(requireContext()),
-            ),
-        )
-    }
-
-    private fun bindLicense(result: Entry) {
-        infoTable.addView(
-            constructInfoTableRow(
-                requireContext().getString(R.string.fragment_media_info_license_title),
-                result.license.toAppString(requireContext()),
-            ),
-        )
-    }
-
-    private fun bindAdaption(result: Entry) {
-        result.adaptionInfo.let { adaptionInfo ->
-            if (adaptionInfo.id != "0") {
-                val title = getString(R.string.fragment_media_info_adaption_title)
-                val content = "${adaptionInfo.name} (${adaptionInfo.medium?.toAppString(requireContext())})"
-
-                infoTable.addView(
-                    constructInfoTableRow(title, content).also { tableRow ->
-                        tableRow.findViewById<View>(R.id.content).also { contentView ->
-                            val selectableItemBackground =
-                                TypedValue().apply {
-                                    requireContext().theme.resolveAttribute(R.attr.selectableItemBackground, this, true)
-                                }
-
-                            contentView.setBackgroundResource(selectableItemBackground.resourceId)
-
-                            contentView
-                                .clicks()
-                                .autoDispose(viewLifecycleOwner.scope(Lifecycle.Event.ON_DESTROY))
-                                .subscribe {
-                                    MediaActivity.navigateTo(
-                                        requireActivity(),
-                                        adaptionInfo.id,
-                                        adaptionInfo.name,
-                                        adaptionInfo.medium?.toCategory(),
-                                    )
-                                }
-                        }
-                    },
-                )
-            }
-        }
-    }
-
-    private fun constructInfoTableRow(
-        title: String,
-        content: String,
-        isSelectable: Boolean = false,
-    ): View {
-        val tableRow = LayoutInflater.from(context).inflate(R.layout.layout_media_info_row, infoTable, false)
-        val titleView = tableRow.findViewById<TextView>(R.id.title)
-        val contentView = tableRow.findViewById<TextView>(R.id.content)
-
-        titleView.text = title
-        contentView.text = content
-        contentView.isSaveEnabled = false
-        contentView.setTextIsSelectable(isSelectable)
-
-        return tableRow
-    }
-
-    private fun bindGenres(result: Entry) {
-        if (result.genres.isEmpty()) {
-            genresTitle.isGone = true
-            genres.isGone = true
-
-            return
-        }
-
-        bindChips(
-            genres,
-            result.genres.toList(),
-            mapFunction = { it.name },
-            onClick = { hostingActivity.multilineSnackbar(it.description) },
-        )
-    }
-
-    private fun bindTags(result: Entry) {
-        if (result.tags.isEmpty()) {
-            tagsTitle.isGone = true
-            unratedTags.isGone = true
-            spoilerTags.isGone = true
-        } else {
-            updateSpoilerButton()
-            updateUnratedButton()
-        }
-
-        val filteredTags =
-            result.tags.filter {
-                when (it.isRated) {
-                    true -> {
-                        when (it.isSpoiler) {
-                            true -> showSpoilerTags
-                            false -> true
-                        }
-                    }
-
-                    false -> {
-                        when (showUnratedTags) {
-                            true -> {
-                                when (it.isSpoiler) {
-                                    true -> showSpoilerTags
-                                    false -> true
-                                }
-                            }
-
-                            false -> {
-                                false
-                            }
-                        }
-                    }
-                }
-            }
-
-        bindChips(
-            tags,
-            filteredTags,
-            mapFunction = { it.name },
-            onClick = { hostingActivity.multilineSnackbar(it.description) },
-        )
-    }
-
-    private fun updateUnratedButton() {
-        unratedTags.text =
-            getString(
-                when (showUnratedTags) {
-                    true -> R.string.fragment_media_info_tags_unrated_hide
-                    false -> R.string.fragment_media_info_tags_unrated_show
-                },
-            )
-    }
-
-    private fun updateSpoilerButton() {
-        spoilerTags.text =
-            getString(
-                when (showSpoilerTags) {
-                    true -> R.string.fragment_media_info_tags_spoiler_hide
-                    false -> R.string.fragment_media_info_tags_spoiler_show
-                },
-            )
-    }
-
-    private fun bindFskConstraints(result: Entry) {
-        fskConstraints.removeAllViews()
-
-        if (result.fskConstraints.isEmpty()) {
-            fskConstraintsTitle.isGone = true
-            fskConstraints.isGone = true
-        } else {
-            result.fskConstraints.forEach { constraint ->
-                val image =
-                    LayoutInflater
-                        .from(context)
-                        .inflate(R.layout.layout_image, fskConstraints, false) as ImageView
-
-                image.setImageDrawable(constraint.toAppDrawable(requireContext()))
-
-                image
-                    .clicks()
-                    .autoDispose(viewLifecycleOwner.scope())
-                    .subscribe {
-                        hostingActivity.multilineSnackbar(constraint.toAppStringDescription(requireContext()))
-                    }
-
-                fskConstraints.addView(image)
-            }
-        }
-    }
-
-    private fun bindTranslatorGroups(result: Entry) =
-        if (result.translatorGroups.isEmpty()) {
-            translatorGroupsTitle.isGone = true
-            translatorGroups.isGone = true
-        } else {
-            bindChips(
-                translatorGroups,
-                result.translatorGroups,
-                mapFunction = { it.name },
-                onClick = { TranslatorGroupActivity.navigateTo(requireActivity(), it.id, it.name) },
-            )
-        }
-
-    private fun bindIndustries(result: Entry) =
-        if (result.industries.isEmpty()) {
-            industriesTitle.isGone = true
-            industries.isGone = true
-        } else {
-            bindChips(
-                industries,
-                result.industries,
-                mapFunction = {
-                    if (it.type == IndustryType.UNKNOWN) {
-                        it.name
-                    } else {
-                        "${it.name} (${it.type.toAppString(requireContext())})"
-                    }
-                },
-                onClick = {
-                    IndustryActivity.navigateTo(requireActivity(), it.id, it.name)
-                },
-            )
-        }
-
-    @Suppress("LabeledExpression")
-    private fun <T> bindChips(
-        layout: FlexboxLayout,
-        items: List<T>,
-        mapFunction: (T) -> String = { it.toString() },
-        onClick: ((T) -> Unit)? = null,
-    ) {
-        layout.post {
-            if (layout.width <= 0 || view == null || view?.isAttachedToWindow != true) return@post
-            if (layout.isNotEmpty()) layout.removeAllViews()
-
-            for ((index, mappedItem) in items
-                .asSequence()
-                .map(mapFunction)
-                .withIndex()
-                .toList()) {
-                val chip = LayoutInflater.from(layout.context).inflate(R.layout.item_chip, layout, false) as Chip
-
-                chip.text = mappedItem
-
-                if (onClick != null) {
-                    chip
-                        .clicks()
-                        .autoDispose(viewLifecycleOwner.scope(Lifecycle.Event.ON_DESTROY))
-                        .subscribe { onClick.invoke(items[index]) }
-                }
-
-                if (layout is MaxLineFlexboxLayout && !layout.canAddView(chip)) {
-                    layout.showAllEvents
-                        .autoDispose(viewLifecycleOwner.scope(Lifecycle.Event.ON_DESTROY))
-                        .subscribe { bindChips(layout, items, mapFunction, onClick) }
-
-                    layout.enableShowAllButton()
-
-                    break
-                } else {
-                    layout.addView(chip)
-                }
-            }
-        }
-    }
-
-    private fun bindUserInfo(userInfo: MediaUserInfo?) {
-        val noteColor = if (userInfo?.isNoted == true) R.attr.colorSecondary else R.attr.colorIcon
-        val favorColor = if (userInfo?.isTopTen == true) R.attr.colorSecondary else R.attr.colorIcon
-        val finishColor = if (userInfo?.isFinished == true) R.attr.colorSecondary else R.attr.colorIcon
-        val subscribeColor = if (userInfo?.isSubscribed == true) R.attr.colorSecondary else R.attr.colorIcon
-
-        note.setIconicsImage(CommunityMaterial.Icon.cmd_clock, 24, 0, noteColor)
-        favor.setIconicsImage(CommunityMaterial.Icon3.cmd_star, 24, 0, favorColor)
-        finish.setIconicsImage(CommunityMaterial.Icon.cmd_check, 24, 0, finishColor)
-        subscribe.setIconicsImage(CommunityMaterial.Icon3.cmd_newspaper, 24, 0, subscribeColor)
     }
 }

@@ -17,7 +17,6 @@ import com.mikepenz.iconics.typeface.library.community.material.CommunityMateria
 import com.uber.autodispose.autoDispose
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
-import kotterknife.bindView
 import me.proxer.app.GlideRequests
 import me.proxer.app.R
 import me.proxer.app.base.AutoDisposeViewHolder
@@ -30,6 +29,7 @@ import me.proxer.app.util.extension.mapBindingAdapterPosition
 import me.proxer.app.util.extension.setIconicsImage
 import me.proxer.library.util.ProxerUrls
 import java.util.concurrent.ConcurrentHashMap
+import me.proxer.app.databinding.ItemPostBinding
 
 /**
  * @author Ruben Gees
@@ -72,15 +72,17 @@ class PostAdapter : BaseAdapter<ParsedPost, ViewHolder>() {
     inner class ViewHolder(
         itemView: View,
     ) : AutoDisposeViewHolder(itemView) {
-        internal val userContainer by bindView<ViewGroup>(R.id.userContainer)
-        internal val image by bindView<ImageView>(R.id.image)
-        internal val user by bindView<TextView>(R.id.user)
-        internal val post by bindView<BBCodeView>(R.id.post)
-        internal val signatureDivider by bindView<View>(R.id.signatureDivider)
-        internal val signature by bindView<BBCodeView>(R.id.signature)
-        internal val date by bindView<TextView>(R.id.date)
-        internal val thankYouIcon by bindView<ImageView>(R.id.thankYouIcon)
-        internal val thankYou by bindView<TextView>(R.id.thankYou)
+        private val binding = ItemPostBinding.bind(itemView)
+
+        internal val userContainer: ViewGroup get() = binding.userContainer
+        internal val image: ImageView get() = binding.image
+        internal val user: TextView get() = binding.user
+        internal val post: BBCodeView get() = binding.post
+        internal val signatureDivider: View get() = binding.signatureDivider
+        internal val signature: BBCodeView get() = binding.signature
+        internal val date: TextView get() = binding.date
+        internal val thankYouIcon: ImageView get() = binding.thankYouIcon
+        internal val thankYou: TextView get() = binding.thankYou
 
         init {
             post.glide = glide

@@ -24,7 +24,7 @@ Ziel: Das Projekt auf einen aktuellen, build- und Play-Store-fähigen Stand brin
 | 8 | Performance + Polish — **erledigt 17.11.2026** | Glide, Baseline Profiles, AAB-Splits, Desugaring |
 | 9 | Qualitätssicherung + optionale Coroutines-Migration — **erledigt 17.11.2026** | detekt/ktlint/CI aktuell, schrittweise RxJava-Ablösung |
 | 10 | 16 KB Page Size + Abhängigkeits-Aufräumung — **erledigt 17.11.2026** | APK nativ-frei, jitpack-/unmaintained-Deps durch Shims ersetzt |
-| 11 | Runtime-Bugs, Lint-Cleanup + strukturelle Follow-ups — **11.1–11.3 erledigt 17.11.2026, 11.4a–d erledigt 18.11.2026**, Rest offen | Aus `lintDebug` + Code-Scan abgeleitet, siehe unten |
+| 11 | Runtime-Bugs, Lint-Cleanup + strukturelle Follow-ups — **11.1–11.3 erledigt 17.11.2026, 11.4a–e erledigt 18.11.2026**, Rest offen | Aus `lintDebug` + Code-Scan abgeleitet, siehe unten |
 
 ---
 
@@ -257,7 +257,7 @@ Checkliste (alle bekannten Berührungspunkte):
 
 ---
 
-## Phase 11 – Runtime-Bugs, Lint-Cleanup + strukturelle Follow-ups (11.1–11.3 erledigt 17.11.2026, 11.4a–d erledigt 18.11.2026, Rest offen)
+## Phase 11 – Runtime-Bugs, Lint-Cleanup + strukturelle Follow-ups (11.1–11.3 erledigt 17.11.2026, 11.4a–e erledigt 18.11.2026, Rest offen)
 
 **Quelle:** `./gradlew lintDebug` (247 Issues nach 11.1: 72 Error, 6 Fatal, 169 Warning) + Compiler-Warnungen (162 in 42 Dateien) + Code-Scan, Stand 17.11.2026.
 
@@ -335,9 +335,9 @@ Ursprüngliche Liste:
 - **Emulator-Verifikation (API 37):** frische Debug-APK installiert, App startet (News/ANMELDEN), 0 `FATAL EXCEPTION`.
 - Verifiziert grün: `ktlintFormat`, `ktlintCheck`, `detekt`, `lintDebug` + `lintRelease` (0 Issues, `abortOnError`), `assembleDebug`, `assembleRelease`, `bundleRelease`, `assembleLogRelease`, `:baselineprofile:assembleAndroidTest` — jeweils mit `allWarningsAsErrors`.
 
-### 11.4 Strukturelles / Architektur — **11.4a–11.4d erledigt 18.11.2026**, Rest offen
+### 11.4 Strukturelles / Architektur — **11.4a–11.4e erledigt 18.11.2026**, Rest offen
 
-- **Kotterknife-Shim → ViewBinding**: 75 Dateien, mechanisch, größter Einzelposten
+- **Kotterknife-Shim → ViewBinding (erledigt 18.11.2026, 11.4e):** kotterknife-Shim komplett gelöscht, 359 `by bindView`-Delegates in 61 Dateien auf ViewBinding umgestellt (`viewBinding true` in build.gradle): ViewHolder → `XBinding.bind(itemView)`, Activities → `Binding.inflate(layoutInflater)` + `setContentView(binding.root)`, Fragments → `XBinding.bind(requireView())`, Custom Views → `Binding.inflate(...)` im init. Ausnahmen (typisierte `findViewById`-Getter, da Layout nicht statisch oder Base-Klasse ohne Layout-Kenntnis): BaseActivity/DrawerActivity/MainActivity/ImageTabsActivity (`findViewById`), BaseFragment/BaseContentFragment/PagedContentFragment (`requireView().findViewById`), DialogFragments (`requireDialog().findViewById` — ViewBinding auf decorView griff in onGetLayoutInflater zu früh), sowie Ids in `<include>`-Layouts ohne Include-Id (z. B. `layout_upload_info`, ExoPlayer-Controller, Bottom-Sheets). Emulator-Test (API 37): News/Drawer/Settings/LoginDialog ohne Crash, 0 FATAL EXCEPTION.
 - **God-Objects aufteilen:** `StreamActivity` 698, `ProxerLibExtensions` 615, `MangaFragment` 611, `ErrorUtils` 590, `MediaInfoFragment` 523, `MediaListFragment` 443, `StreamPlayerManager` 422 Zeilen
 - **Verbleibende jitpack-Pins ablösen** (siehe Phase 10): `subsampling-scale-image-view`, `subsampling-pdf-decoder`, `material-about-library` rc (→ aboutlibraries/PreferenceScreen)
   - **Erledigt 18.11.2026:** `gravitysnaphelper` → eingebaute `LinearSnapHelper`/`PagerSnapHelper` (11.4a); `emoji-ios` jitpack-Commit → Maven Central `com.vanniktech:emoji(-ios):0.13.0` (11.4b, API-identisch, ungenutzte Theme-Attrs entfernt); `previewseekbar` Core-Inlining (11.4c): 6 Java-Klassen von Upstream-Commit `09eec85551` nach `src/main/java/com/github/rubensousa/previewseekbar/` übernommen (minSdk 24: `@TargetApi`-Guards entfernt, `PreviewAnimatorImpl` gelöscht, Lollipop-Animator immer genutzt), Ressourcen (`previewseekbar_morph.xml`, `previewseekbar_indicator_width`, `PreviewSeekBar`-Styleable) in App-Res verschoben, `PreviewTimeBar.kt` nutzt `me.proxer.app.R`. jitpack-`previewseekbar`-Dependency komplett entfernt.

@@ -20,7 +20,6 @@ import com.mikepenz.iconics.utils.paddingDp
 import com.mikepenz.iconics.utils.sizeDp
 import com.uber.autodispose.autoDispose
 import io.reactivex.subjects.PublishSubject
-import kotterknife.bindView
 import me.proxer.app.GlideRequests
 import me.proxer.app.R
 import me.proxer.app.anime.resolver.ProxerStreamResolver
@@ -41,6 +40,8 @@ import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import java.time.Instant
 import java.time.temporal.ChronoUnit
+import me.proxer.app.databinding.ItemStreamBinding
+import me.proxer.app.databinding.ItemStreamMessageBinding
 
 /**
  * @author Ruben Gees
@@ -141,21 +142,23 @@ class AnimeAdapter(
     inner class StreamViewHolder(
         itemView: View,
     ) : AutoDisposeViewHolder(itemView) {
-        internal val nameContainer: ViewGroup by bindView(R.id.nameContainer)
-        internal val name: TextView by bindView(R.id.name)
-        internal val image: ImageView by bindView(R.id.image)
+        private val binding = ItemStreamBinding.bind(itemView)
 
-        internal val uploadInfoContainer: ViewGroup by bindView(R.id.uploadInfoContainer)
-        internal val uploaderText: TextView by bindView(R.id.uploader)
-        internal val translatorGroup: TextView by bindView(R.id.translatorGroup)
-        internal val dateText: TextView by bindView(R.id.date)
+        internal val nameContainer: ViewGroup get() = binding.nameContainer
+        internal val name: TextView get() = binding.name
+        internal val image: ImageView get() = binding.image
 
-        internal val adAlert: ViewGroup by bindView(R.id.adAlert)
-        internal val dismissAdAlert: Button by bindView(R.id.dismissAdAlert)
-        internal val setAdInterval: Button by bindView(R.id.setAdInterval)
+        internal val uploadInfoContainer: ViewGroup get() = binding.uploadInfoContainer
+        internal val uploaderText: TextView get() = itemView.findViewById(R.id.uploader)
+        internal val translatorGroup: TextView get() = itemView.findViewById(R.id.translatorGroup)
+        internal val dateText: TextView get() = itemView.findViewById(R.id.date)
 
-        internal val info: TextView by bindView(R.id.info)
-        internal val play: Button by bindView(R.id.play)
+        internal val adAlert: ViewGroup get() = binding.adAlert.root
+        internal val dismissAdAlert: Button get() = binding.adAlert.dismissAdAlert
+        internal val setAdInterval: Button get() = binding.adAlert.setAdInterval
+
+        internal val info: TextView get() = binding.info
+        internal val play: Button get() = binding.play
 
         fun bind(item: AnimeStream) {
             val isLoginRequired = !item.isPublic && !storageHelper.isLoggedIn
@@ -336,7 +339,9 @@ class AnimeAdapter(
     inner class MessageViewHolder(
         itemView: View,
     ) : AutoDisposeViewHolder(itemView) {
-        internal val message: BetterLinkTextView by bindView(R.id.message)
+        private val binding = ItemStreamMessageBinding.bind(itemView)
+
+        internal val message: BetterLinkTextView get() = binding.message
 
         fun bind(item: AnimeStream) {
             val messageText = (item.resolutionResult as StreamResolutionResult.Message).message

@@ -13,8 +13,8 @@ import com.jakewharton.rxbinding3.view.clicks
 import com.uber.autodispose.android.ViewScopeProvider
 import com.uber.autodispose.autoDispose
 import io.reactivex.subjects.PublishSubject
-import kotterknife.bindView
 import me.proxer.app.R
+import me.proxer.app.databinding.ViewMediaControlBinding
 import me.proxer.app.util.Utils
 import java.time.LocalDateTime
 import kotlin.properties.Delegates
@@ -91,21 +91,23 @@ class MediaControlView(
             }
     }
 
-    private val uploaderRow: ViewGroup by bindView(R.id.uploaderRow)
-    private val translatorRow: ViewGroup by bindView(R.id.translatorRow)
-    private val dateRow: ViewGroup by bindView(R.id.dateRow)
+    private val binding: ViewMediaControlBinding
 
-    private val uploaderText: TextView by bindView(R.id.uploader)
-    private val translatorGroupText: TextView by bindView(R.id.translatorGroup)
-    private val dateText: TextView by bindView(R.id.date)
+    private val uploaderRow: ViewGroup get() = findViewById(R.id.uploaderRow)
+    private val translatorRow: ViewGroup get() = findViewById(R.id.translatorRow)
+    private val dateRow: ViewGroup get() = findViewById(R.id.dateRow)
 
-    private val previous: Button by bindView(R.id.previous)
-    private val next: Button by bindView(R.id.next)
-    private val bookmarkThis: Button by bindView(R.id.bookmarkThis)
-    private val bookmarkNext: Button by bindView(R.id.bookmarkNext)
+    private val uploaderText: TextView get() = findViewById(R.id.uploader)
+    private val translatorGroupText: TextView get() = findViewById(R.id.translatorGroup)
+    private val dateText: TextView get() = findViewById(R.id.date)
+
+    private val previous: Button get() = binding.previous
+    private val next: Button get() = binding.next
+    private val bookmarkThis: Button get() = binding.bookmarkThis
+    private val bookmarkNext: Button get() = binding.bookmarkNext
 
     init {
-        LayoutInflater.from(context).inflate(R.layout.view_media_control, this, true)
+        binding = ViewMediaControlBinding.inflate(LayoutInflater.from(context), this)
 
         uploader = null
         translatorGroup = null

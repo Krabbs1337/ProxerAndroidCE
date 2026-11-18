@@ -19,7 +19,6 @@ import com.rubengees.easyheaderfooteradapter.EasyHeaderFooterAdapter
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
 import io.reactivex.android.schedulers.AndroidSchedulers
-import kotterknife.bindView
 import me.proxer.app.GlideApp
 import me.proxer.app.R
 import me.proxer.app.anime.resolver.StreamResolutionResult
@@ -46,11 +45,15 @@ import me.proxer.library.util.ProxerUrls
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.properties.Delegates
+import me.proxer.app.databinding.FragmentAnimeBinding
 
 /**
  * @author Ruben Gees
  */
 class AnimeFragment : BaseContentFragment<AnimeStreamInfo>(R.layout.fragment_anime) {
+    private val binding: FragmentAnimeBinding
+        get() = FragmentAnimeBinding.bind(requireView())
+
     companion object {
         fun newInstance() =
             AnimeFragment().apply {
@@ -99,7 +102,7 @@ class AnimeFragment : BaseContentFragment<AnimeStreamInfo>(R.layout.fragment_ani
     override val contentContainer: ViewGroup
         get() = recyclerView
 
-    private val recyclerView: RecyclerView by bindView(R.id.recyclerView)
+    private val recyclerView: RecyclerView get() = binding.recyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

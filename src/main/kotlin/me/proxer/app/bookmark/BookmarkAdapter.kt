@@ -14,7 +14,6 @@ import com.jakewharton.rxbinding3.view.longClicks
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 import com.uber.autodispose.autoDispose
 import io.reactivex.subjects.PublishSubject
-import kotterknife.bindView
 import me.proxer.app.GlideRequests
 import me.proxer.app.R
 import me.proxer.app.base.AutoDisposeViewHolder
@@ -28,6 +27,7 @@ import me.proxer.app.util.extension.toEpisodeAppString
 import me.proxer.app.util.extension.toGeneralLanguage
 import me.proxer.library.entity.ucp.Bookmark
 import me.proxer.library.util.ProxerUrls
+import me.proxer.app.databinding.ItemBookmarkBinding
 
 /**
  * @author Ruben Gees
@@ -73,13 +73,15 @@ class BookmarkAdapter : BaseAdapter<Bookmark, BookmarkAdapter.ViewHolder>() {
     inner class ViewHolder(
         itemView: View,
     ) : AutoDisposeViewHolder(itemView) {
-        internal val container: ViewGroup by bindView(R.id.container)
-        internal val title: TextView by bindView(R.id.title)
-        internal val medium: TextView by bindView(R.id.medium)
-        internal val image: ImageView by bindView(R.id.image)
-        internal val episode: TextView by bindView(R.id.episode)
-        internal val language: ImageView by bindView(R.id.language)
-        internal val delete: ImageButton by bindView(R.id.delete)
+        private val binding = ItemBookmarkBinding.bind(itemView)
+
+        internal val container: ViewGroup get() = binding.container
+        internal val title: TextView get() = binding.title
+        internal val medium: TextView get() = binding.medium
+        internal val image: ImageView get() = binding.image
+        internal val episode: TextView get() = binding.episode
+        internal val language: ImageView get() = binding.language
+        internal val delete: ImageButton get() = binding.delete
 
         init {
             delete.setIconicsImage(CommunityMaterial.Icon.cmd_bookmark_remove, 48)

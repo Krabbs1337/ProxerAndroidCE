@@ -12,8 +12,8 @@ import com.mikepenz.iconics.typeface.library.community.material.CommunityMateria
 import com.mikepenz.iconics.utils.colorRes
 import com.mikepenz.iconics.utils.paddingDp
 import com.mikepenz.iconics.utils.sizeDp
-import kotterknife.bindView
 import me.proxer.app.R
+import me.proxer.app.databinding.ItemServerStatusBinding
 import me.proxer.app.base.BaseAdapter
 import me.proxer.app.settings.status.ServerStatusAdapter.ViewHolder
 import me.proxer.app.util.extension.setIconicsImage
@@ -37,9 +37,10 @@ class ServerStatusAdapter : BaseAdapter<ServerStatus, ViewHolder>() {
     class ViewHolder(
         itemView: View,
     ) : RecyclerView.ViewHolder(itemView) {
-        internal val icon: ImageView by bindView(R.id.icon)
-        internal val name: TextView by bindView(R.id.name)
-        internal val status: ImageView by bindView(R.id.status)
+        private val binding = ItemServerStatusBinding.bind(itemView)
+        internal val icon: ImageView get() = binding.icon
+        internal val name: TextView get() = binding.name
+        internal val status: ImageView get() = binding.status
 
         fun bind(item: ServerStatus) {
             val typeIcon: IIcon =

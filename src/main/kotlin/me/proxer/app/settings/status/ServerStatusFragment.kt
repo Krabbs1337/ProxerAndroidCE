@@ -11,18 +11,21 @@ import com.mikepenz.iconics.typeface.library.community.material.CommunityMateria
 import com.mikepenz.iconics.utils.colorRes
 import com.mikepenz.iconics.utils.paddingDp
 import com.mikepenz.iconics.utils.sizeDp
-import kotterknife.bindView
 import me.proxer.app.R
 import me.proxer.app.base.BaseContentFragment
 import me.proxer.app.util.DeviceUtils
 import me.proxer.app.util.extension.enableFastScroll
 import me.proxer.app.util.extension.unsafeLazy
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import me.proxer.app.databinding.FragmentServerStatusBinding
 
 /**
  * @author Ruben Gees
  */
 class ServerStatusFragment : BaseContentFragment<List<ServerStatus>>(R.layout.fragment_server_status) {
+    private val binding: FragmentServerStatusBinding
+        get() = FragmentServerStatusBinding.bind(requireView())
+
     companion object {
         fun newInstance() =
             ServerStatusFragment().apply {
@@ -40,8 +43,8 @@ class ServerStatusFragment : BaseContentFragment<List<ServerStatus>>(R.layout.fr
 
     private val adapter = ServerStatusAdapter()
 
-    private val overallStatus: TextView by bindView(R.id.overallStatus)
-    private val recyclerView: RecyclerView by bindView(R.id.recyclerView)
+    private val overallStatus: TextView get() = binding.overallStatus
+    private val recyclerView: RecyclerView get() = binding.recyclerView
 
     override fun onViewCreated(
         view: View,

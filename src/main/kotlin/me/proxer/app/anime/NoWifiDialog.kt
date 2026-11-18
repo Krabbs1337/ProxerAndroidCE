@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.setFragmentResult
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
-import kotterknife.bindView
 import me.proxer.app.R
 import me.proxer.app.base.BaseDialog
 import me.proxer.app.util.extension.getSafeString
@@ -30,7 +29,7 @@ class NoWifiDialog : BaseDialog() {
             .show(activity.supportFragmentManager, "no_wifi_dialog")
     }
 
-    private val remember by bindView<CheckBox>(R.id.remember)
+    private val remember: CheckBox get() = requireDialog().findViewById(R.id.remember)
 
     private val streamId: String
         get() = requireArguments().getSafeString(STREAM_ID_ARGUMENT)

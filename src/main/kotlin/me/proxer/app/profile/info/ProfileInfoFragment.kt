@@ -12,7 +12,6 @@ import com.gojuno.koptional.rxjava2.filterSome
 import com.gojuno.koptional.toOptional
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
-import kotterknife.bindView
 import me.proxer.app.R
 import me.proxer.app.base.BaseContentFragment
 import me.proxer.app.forum.TopicActivity
@@ -25,11 +24,15 @@ import me.proxer.app.util.extension.linkify
 import me.proxer.app.util.extension.toPrefixedUrlOrNull
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.core.parameter.parametersOf
+import me.proxer.app.databinding.FragmentProfileBinding
 
 /**
  * @author Ruben Gees
  */
 class ProfileInfoFragment : BaseContentFragment<UserInfoWrapper>(R.layout.fragment_profile) {
+    private val binding: FragmentProfileBinding
+        get() = FragmentProfileBinding.bind(requireView())
+
     companion object {
         private const val RANK_FORUM_ID = "207664"
         private const val RANK_FORUM_CATEGORY_ID = "79"
@@ -57,23 +60,23 @@ class ProfileInfoFragment : BaseContentFragment<UserInfoWrapper>(R.layout.fragme
     private val username: String?
         get() = hostingActivity.username
 
-    private val animePointsRow: TextView by bindView(R.id.animePointsRow)
-    private val mangaPointsRow: TextView by bindView(R.id.mangaPointsRow)
-    private val uploadPointsRow: TextView by bindView(R.id.uploadPointsRow)
-    private val forumPointsRow: TextView by bindView(R.id.forumPointsRow)
-    private val infoPointsRow: TextView by bindView(R.id.infoPointsRow)
-    private val miscellaneousPointsRow: TextView by bindView(R.id.miscellaneousPointsRow)
-    private val totalPointsRow: TextView by bindView(R.id.totalPointsRow)
-    private val rank: TextView by bindView(R.id.rank)
+    private val animePointsRow: TextView get() = binding.animePointsRow
+    private val mangaPointsRow: TextView get() = binding.mangaPointsRow
+    private val uploadPointsRow: TextView get() = binding.uploadPointsRow
+    private val forumPointsRow: TextView get() = binding.forumPointsRow
+    private val infoPointsRow: TextView get() = binding.infoPointsRow
+    private val miscellaneousPointsRow: TextView get() = binding.miscellaneousPointsRow
+    private val totalPointsRow: TextView get() = binding.totalPointsRow
+    private val rank: TextView get() = binding.rank
 
-    private val statusContainer: ViewGroup by bindView(R.id.statusContainer)
-    private val statusText: TextView by bindView(R.id.statusText)
+    private val statusContainer: ViewGroup get() = binding.statusContainer
+    private val statusText: TextView get() = binding.statusText
 
-    private val watchedEpisodesContainer: ViewGroup by bindView(R.id.watchedEpisodesContainer)
-    private val episodesRow: TextView by bindView(R.id.episodesRow)
-    private val minutesRow: TextView by bindView(R.id.minutesRow)
-    private val hoursRow: TextView by bindView(R.id.hoursRow)
-    private val daysRow: TextView by bindView(R.id.daysRow)
+    private val watchedEpisodesContainer: ViewGroup get() = binding.watchedEpisodesContainer
+    private val episodesRow: TextView get() = binding.episodesRow
+    private val minutesRow: TextView get() = binding.minutesRow
+    private val hoursRow: TextView get() = binding.hoursRow
+    private val daysRow: TextView get() = binding.daysRow
 
     override fun onViewCreated(
         view: View,

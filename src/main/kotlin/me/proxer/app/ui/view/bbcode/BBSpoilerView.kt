@@ -21,8 +21,8 @@ import com.mikepenz.iconics.utils.paddingDp
 import com.mikepenz.iconics.utils.sizeDp
 import com.uber.autodispose.android.ViewScopeProvider
 import com.uber.autodispose.autoDispose
-import kotterknife.bindView
 import me.proxer.app.R
+import me.proxer.app.databinding.ViewBbSpoilerBinding
 
 /**
  * @author Ruben Gees
@@ -64,18 +64,20 @@ internal class BBSpoilerView
                 }
             }
 
-        private val toggle by bindView<LinearLayout>(R.id.toggle)
-        private val toggleText by bindView<TextView>(R.id.toggleText)
-        private val toggleButton by bindView<ImageView>(R.id.toggleButton)
+        private val binding: ViewBbSpoilerBinding
 
-        private val decoration by bindView<LinearLayout>(R.id.decoration)
-        private val container by bindView<LinearLayout>(R.id.container)
+        private val toggle: LinearLayout get() = binding.toggle
+        private val toggleText: TextView get() = binding.toggleText
+        private val toggleButton: ImageView get() = binding.toggleButton
+
+        private val decoration: LinearLayout get() = binding.decoration
+        private val container: LinearLayout get() = binding.container
 
         init {
             layoutParams = MarginLayoutParams(MATCH_PARENT, WRAP_CONTENT)
             orientation = VERTICAL
 
-            LayoutInflater.from(context).inflate(R.layout.view_bb_spoiler, this, true)
+            binding = ViewBbSpoilerBinding.inflate(LayoutInflater.from(context), this)
 
             toggleText.setTextColor(spoilerTextColor)
             toggleText.setTag(R.id.ignore_tag, Unit)

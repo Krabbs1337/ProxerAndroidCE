@@ -8,18 +8,20 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import kotterknife.bindView
 import me.proxer.app.R
 import me.proxer.app.util.compat.TaskDescriptionCompat
 import me.proxer.app.util.data.PreferenceHelper
 import me.proxer.app.util.extension.getSafeStringExtra
 import me.proxer.app.util.extension.safeInject
 import me.proxer.app.util.extension.startActivity
+import me.proxer.app.databinding.ActivityWebViewBinding
 
 /**
  * @author Ruben Gees
  */
 class WebViewActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityWebViewBinding
+
     companion object {
         private const val URL_EXTRA = "url"
 
@@ -34,8 +36,8 @@ class WebViewActivity : AppCompatActivity() {
 
     private val preferenceHelper by safeInject<PreferenceHelper>()
 
-    private val toolbar: Toolbar by bindView(R.id.toolbar)
-    private val webView: WebView by bindView(R.id.webview)
+    private val toolbar: Toolbar get() = binding.toolbar
+    private val webView: WebView get() = binding.webview
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,7 +48,8 @@ class WebViewActivity : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_web_view)
+        binding = ActivityWebViewBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         setSupportActionBar(toolbar)
 
         webView.webViewClient = WebViewClient()

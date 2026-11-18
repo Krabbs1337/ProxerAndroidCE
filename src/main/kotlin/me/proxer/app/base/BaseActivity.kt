@@ -17,7 +17,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.rubengees.rxbus.RxBus
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
-import kotterknife.bindView
 import me.proxer.app.R
 import me.proxer.app.util.ErrorUtils
 import me.proxer.app.util.compat.TaskDescriptionCompat
@@ -50,7 +49,7 @@ abstract class BaseActivity :
     protected open val applyEdgeToEdgeInsets
         get() = true
 
-    protected open val root: ViewGroup by bindView(R.id.root)
+    protected open val root: ViewGroup get() = findViewById(R.id.root)
 
     protected val bus by safeInject<RxBus>()
     protected val storageHelper by safeInject<StorageHelper>()

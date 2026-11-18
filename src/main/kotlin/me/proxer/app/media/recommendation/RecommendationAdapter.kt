@@ -22,7 +22,6 @@ import com.mikepenz.iconics.utils.paddingDp
 import com.mikepenz.iconics.utils.sizeDp
 import com.uber.autodispose.autoDispose
 import io.reactivex.subjects.PublishSubject
-import kotterknife.bindView
 import me.proxer.app.GlideRequests
 import me.proxer.app.R
 import me.proxer.app.base.AutoDisposeViewHolder
@@ -37,6 +36,7 @@ import me.proxer.app.util.extension.toAppString
 import me.proxer.library.entity.info.Recommendation
 import me.proxer.library.enums.Category
 import me.proxer.library.util.ProxerUrls
+import me.proxer.app.databinding.ItemRecommendationBinding
 
 /**
  * @author Ruben Gees
@@ -72,20 +72,22 @@ class RecommendationAdapter : BaseAdapter<Recommendation, ViewHolder>() {
     inner class ViewHolder(
         itemView: View,
     ) : AutoDisposeViewHolder(itemView) {
-        internal val container: ViewGroup by bindView(R.id.container)
-        internal val title: TextView by bindView(R.id.title)
-        internal val medium: TextView by bindView(R.id.medium)
-        internal val image: ImageView by bindView(R.id.image)
-        internal val ratingContainer: ViewGroup by bindView(R.id.ratingContainer)
-        internal val rating: RatingBar by bindView(R.id.rating)
-        internal val state: ImageView by bindView(R.id.state)
-        internal val episodes: TextView by bindView(R.id.episodes)
-        internal val english: ImageView by bindView(R.id.english)
-        internal val german: ImageView by bindView(R.id.german)
-        internal val upvotesImage: ImageView by bindView(R.id.upvotesImage)
-        internal val upvotesText: TextView by bindView(R.id.upvotesText)
-        internal val downvotesImage: ImageView by bindView(R.id.downvotesImage)
-        internal val downvotesText: TextView by bindView(R.id.downvotesText)
+        private val binding = ItemRecommendationBinding.bind(itemView)
+
+        internal val container: ViewGroup get() = binding.container
+        internal val title: TextView get() = binding.title
+        internal val medium: TextView get() = binding.medium
+        internal val image: ImageView get() = binding.image
+        internal val ratingContainer: ViewGroup get() = binding.ratingContainer
+        internal val rating: RatingBar get() = binding.rating
+        internal val state: ImageView get() = binding.state
+        internal val episodes: TextView get() = binding.episodes
+        internal val english: ImageView get() = binding.english
+        internal val german: ImageView get() = binding.german
+        internal val upvotesImage: ImageView get() = binding.upvotesImage
+        internal val upvotesText: TextView get() = binding.upvotesText
+        internal val downvotesImage: ImageView get() = binding.downvotesImage
+        internal val downvotesText: TextView get() = binding.downvotesText
 
         init {
             upvotesImage.setImageDrawable(generateUpvotesImage())

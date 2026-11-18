@@ -17,7 +17,6 @@ import com.jakewharton.rxbinding3.view.clicks
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
 import io.reactivex.Observable
-import kotterknife.bindView
 import me.proxer.app.GlideApp
 import me.proxer.app.R
 import me.proxer.app.ui.ImageDetailActivity
@@ -43,10 +42,10 @@ abstract class ImageTabsActivity : DrawerActivity() {
     protected open val itemToDisplay
         get() = 0
 
-    protected open val collapsingToolbar: CollapsingToolbarLayout by bindView(R.id.collapsingToolbar)
-    protected open val viewPager: ViewPager2 by bindView(R.id.viewPager)
-    protected open val headerImage: ImageView by bindView(R.id.image)
-    protected open val tabs: TabLayout by bindView(R.id.tabs)
+    protected open val collapsingToolbar: CollapsingToolbarLayout get() = findViewById(R.id.collapsingToolbar)
+    protected open val viewPager: ViewPager2 get() = findViewById(R.id.viewPager)
+    protected open val headerImage: ImageView get() = findViewById(R.id.image)
+    protected open val tabs: TabLayout get() = findViewById(R.id.tabs)
 
     private var mediator: TabLayoutMediator? = null
 

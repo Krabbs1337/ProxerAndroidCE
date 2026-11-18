@@ -5,7 +5,6 @@ import androidx.annotation.LayoutRes
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import com.rubengees.rxbus.RxBus
-import kotterknife.KotterKnife
 import me.proxer.app.util.data.PreferenceHelper
 import me.proxer.app.util.data.StorageHelper
 import me.proxer.app.util.extension.androidUri
@@ -39,8 +38,6 @@ abstract class BaseFragment(
     }
 
     override fun onDestroyView() {
-        KotterKnife.reset(this)
-
         super.onDestroyView()
     }
 

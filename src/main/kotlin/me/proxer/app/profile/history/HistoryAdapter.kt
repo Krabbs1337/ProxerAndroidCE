@@ -11,7 +11,6 @@ import com.jakewharton.rxbinding3.view.clicks
 import com.jakewharton.rxbinding3.view.longClicks
 import com.uber.autodispose.autoDispose
 import io.reactivex.subjects.PublishSubject
-import kotterknife.bindView
 import me.proxer.app.GlideRequests
 import me.proxer.app.R
 import me.proxer.app.base.AutoDisposeViewHolder
@@ -23,6 +22,7 @@ import me.proxer.app.util.extension.mapBindingAdapterPosition
 import me.proxer.app.util.extension.toAppString
 import me.proxer.library.enums.Category
 import me.proxer.library.util.ProxerUrls
+import me.proxer.app.databinding.ItemHistoryEntryBinding
 
 /**
  * @author Ruben Gees
@@ -57,11 +57,13 @@ class HistoryAdapter : BaseAdapter<LocalUserHistoryEntry, ViewHolder>() {
     inner class ViewHolder(
         itemView: View,
     ) : AutoDisposeViewHolder(itemView) {
-        internal val container: ViewGroup by bindView(R.id.container)
-        internal val title: TextView by bindView(R.id.title)
-        internal val medium: TextView by bindView(R.id.medium)
-        internal val image: ImageView by bindView(R.id.image)
-        internal val status: TextView by bindView(R.id.status)
+        private val binding = ItemHistoryEntryBinding.bind(itemView)
+
+        internal val container: ViewGroup get() = binding.container
+        internal val title: TextView get() = binding.title
+        internal val medium: TextView get() = binding.medium
+        internal val image: ImageView get() = binding.image
+        internal val status: TextView get() = binding.status
 
         fun bind(item: LocalUserHistoryEntry) {
             container

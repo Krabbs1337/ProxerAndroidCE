@@ -37,7 +37,6 @@ import com.mikepenz.iconics.utils.colorInt
 import com.mikepenz.iconics.utils.sizeDp
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
-import kotterknife.bindView
 import me.proxer.app.R
 import me.proxer.app.base.BaseContentFragment
 import me.proxer.app.ui.view.bbcode.BBCodeView
@@ -47,11 +46,15 @@ import me.proxer.app.util.extension.resolveColor
 import me.proxer.app.util.extension.setIconicsImage
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.core.parameter.parametersOf
+import me.proxer.app.databinding.FragmentEditCommentBinding
 
 /**
  * @author Ruben Gees
  */
 class EditCommentFragment : BaseContentFragment<LocalComment>(R.layout.fragment_edit_comment) {
+    private val binding: FragmentEditCommentBinding
+        get() = FragmentEditCommentBinding.bind(requireView())
+
     companion object {
         fun newInstance() =
             EditCommentFragment().apply {
@@ -66,34 +69,34 @@ class EditCommentFragment : BaseContentFragment<LocalComment>(R.layout.fragment_
         parametersOf(id, entryId)
     }
 
-    private val scrollContainer by bindView<ViewGroup>(R.id.scrollContainer)
+    private val scrollContainer: ViewGroup get() = binding.scrollContainer
 
-    private val rulesContainer by bindView<ViewGroup>(R.id.rulesContainer)
-    private val expandRules by bindView<ImageButton>(R.id.expandRules)
-    private val rules by bindView<TextView>(R.id.rules)
+    private val rulesContainer: ViewGroup get() = binding.rulesContainer
+    private val expandRules: ImageButton get() = binding.expandRules
+    private val rules: TextView get() = binding.rules
 
-    private val ratingTitle by bindView<TextView>(R.id.ratingTitle)
-    private val rating by bindView<RatingBar>(R.id.rating)
-    private val ratingClear by bindView<ImageButton>(R.id.ratingClear)
+    private val ratingTitle: TextView get() = binding.ratingTitle
+    private val rating: RatingBar get() = binding.rating
+    private val ratingClear: ImageButton get() = binding.ratingClear
 
-    private val editor by bindView<EditText>(R.id.editor)
-    private val counter by bindView<TextView>(R.id.counter)
+    private val editor: EditText get() = binding.editor
+    private val counter: TextView get() = binding.counter
 
-    private val bold by bindView<ImageButton>(R.id.bold)
-    private val italic by bindView<ImageButton>(R.id.italic)
-    private val underlined by bindView<ImageButton>(R.id.underline)
-    private val strikethrough by bindView<ImageButton>(R.id.strikethrough)
-    private val size by bindView<ImageButton>(R.id.size)
-    private val color by bindView<ImageButton>(R.id.color)
-    private val left by bindView<ImageButton>(R.id.left)
-    private val center by bindView<ImageButton>(R.id.center)
-    private val right by bindView<ImageButton>(R.id.right)
-    private val spoiler by bindView<ImageButton>(R.id.spoiler)
+    private val bold: ImageButton get() = binding.bold
+    private val italic: ImageButton get() = binding.italic
+    private val underlined: ImageButton get() = binding.underline
+    private val strikethrough: ImageButton get() = binding.strikethrough
+    private val size: ImageButton get() = binding.size
+    private val color: ImageButton get() = binding.color
+    private val left: ImageButton get() = binding.left
+    private val center: ImageButton get() = binding.center
+    private val right: ImageButton get() = binding.right
+    private val spoiler: ImageButton get() = binding.spoiler
 
-    private val commentPreviewBottomSheet by bindView<ViewGroup>(R.id.commentPreviewBottomSheet)
-    private val commentPreviewTitle by bindView<TextView>(R.id.commentPreviewTitle)
-    private val commentPreview by bindView<BBCodeView>(R.id.commentPreview)
-    private val commentPreviewEmpty by bindView<TextView>(R.id.commentPreviewEmpty)
+    private val commentPreviewBottomSheet: ViewGroup get() = requireView().findViewById(R.id.commentPreviewBottomSheet)
+    private val commentPreviewTitle: TextView get() = requireView().findViewById(R.id.commentPreviewTitle)
+    private val commentPreview: BBCodeView get() = requireView().findViewById(R.id.commentPreview)
+    private val commentPreviewEmpty: TextView get() = requireView().findViewById(R.id.commentPreviewEmpty)
 
     private val commentBottomSheetBehavior get() = BottomSheetBehavior.from(commentPreviewBottomSheet)
 

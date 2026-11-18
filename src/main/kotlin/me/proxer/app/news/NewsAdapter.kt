@@ -17,7 +17,6 @@ import com.jakewharton.rxbinding3.view.clicks
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 import com.uber.autodispose.autoDispose
 import io.reactivex.subjects.PublishSubject
-import kotterknife.bindView
 import me.proxer.app.GlideRequests
 import me.proxer.app.R
 import me.proxer.app.base.AutoDisposeViewHolder
@@ -31,6 +30,7 @@ import me.proxer.app.util.extension.mapBindingAdapterPosition
 import me.proxer.app.util.extension.setIconicsImage
 import me.proxer.library.entity.notifications.NewsArticle
 import me.proxer.library.util.ProxerUrls
+import me.proxer.app.databinding.ItemNewsBinding
 
 /**
  * @author Ruben Gees
@@ -98,13 +98,15 @@ class NewsAdapter(
     inner class ViewHolder(
         itemView: View,
     ) : AutoDisposeViewHolder(itemView) {
-        internal val container: ViewGroup by bindView(R.id.container)
-        internal val expand: ImageButton by bindView(R.id.expand)
-        internal val description: AppCompatTextView by bindView(R.id.description)
-        internal val image: ImageView by bindView(R.id.image)
-        internal val title: TextView by bindView(R.id.title)
-        internal val category: TextView by bindView(R.id.category)
-        internal val time: TextView by bindView(R.id.time)
+        private val binding = ItemNewsBinding.bind(itemView)
+
+        internal val container: ViewGroup get() = binding.container
+        internal val expand: ImageButton get() = binding.expand
+        internal val description: AppCompatTextView get() = binding.description as AppCompatTextView
+        internal val image: ImageView get() = binding.image
+        internal val title: TextView get() = binding.title
+        internal val category: TextView get() = binding.category
+        internal val time: TextView get() = binding.time
 
         init {
             expand.setIconicsImage(CommunityMaterial.Icon.cmd_chevron_down, 32)

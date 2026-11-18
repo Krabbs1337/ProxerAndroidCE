@@ -23,7 +23,6 @@ import com.jakewharton.rxbinding3.view.actionViewEvents
 import com.mikepenz.iconics.utils.IconicsMenuInflaterUtil
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
-import kotterknife.bindView
 import me.proxer.app.GlideApp
 import me.proxer.app.R
 import me.proxer.app.base.BackPressAware
@@ -49,6 +48,7 @@ import me.proxer.library.enums.TagSpoilerFilter
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.EnumSet
 import kotlin.properties.Delegates
+import me.proxer.app.databinding.FragmentMediaListBinding
 
 /**
  * @author Ruben Gees
@@ -56,6 +56,9 @@ import kotlin.properties.Delegates
 class MediaListFragment :
     PagedContentFragment<MediaListEntry>(R.layout.fragment_media_list),
     BackPressAware {
+    private val binding: FragmentMediaListBinding
+        get() = FragmentMediaListBinding.bind(requireView())
+
     companion object {
         private const val CATEGORY_ARGUMENT = "category"
         private const val SORT_CRITERIA_ARGUMENT = "sort_criteria"
@@ -229,18 +232,24 @@ class MediaListFragment :
 
     private val toolbar by unsafeLazy { requireActivity().findViewById<Toolbar>(R.id.toolbar) }
 
-    internal val searchBottomSheet by bindView<ViewGroup>(R.id.searchBottomSheet)
-    internal val searchBottomSheetTitle by bindView<ViewGroup>(R.id.titleContainer)
-    internal val search by bindView<Button>(R.id.search)
-    internal val languageSelector by bindView<ExpandableSelectionView>(R.id.languageSelector)
-    internal val genreSelector by bindView<ExpandableSelectionView>(R.id.genreSelector)
-    internal val excludedGenreSelector by bindView<ExpandableSelectionView>(R.id.excludedGenreSelector)
-    internal val fskSelector by bindView<ExpandableSelectionView>(R.id.fskSelector)
-    internal val tagSelector by bindView<ExpandableSelectionView>(R.id.tagSelector)
-    internal val excludedTagSelector by bindView<ExpandableSelectionView>(R.id.excludedTagSelector)
-    internal val includeUnratedTags by bindView<CheckBox>(R.id.includeUnratedTags)
-    internal val includeSpoilerTags by bindView<CheckBox>(R.id.includeSpoilerTags)
-    internal val hideFinishedCheckBox by bindView<CheckBox>(R.id.hideFinished)
+    internal val searchBottomSheet: ViewGroup get() = requireView().findViewById(R.id.searchBottomSheet)
+    internal val searchBottomSheetTitle: ViewGroup get() = requireView().findViewById(R.id.titleContainer)
+    internal val search: Button get() = requireView().findViewById(R.id.search)
+    internal val languageSelector: ExpandableSelectionView get() = requireView().findViewById(R.id.languageSelector)
+    internal val genreSelector: ExpandableSelectionView get() = requireView().findViewById(R.id.genreSelector)
+    internal val excludedGenreSelector: ExpandableSelectionView get() =
+        requireView().findViewById(
+            R.id.excludedGenreSelector,
+        )
+    internal val fskSelector: ExpandableSelectionView get() = requireView().findViewById(R.id.fskSelector)
+    internal val tagSelector: ExpandableSelectionView get() = requireView().findViewById(R.id.tagSelector)
+    internal val excludedTagSelector: ExpandableSelectionView get() =
+        requireView().findViewById(
+            R.id.excludedTagSelector,
+        )
+    internal val includeUnratedTags: CheckBox get() = requireView().findViewById(R.id.includeUnratedTags)
+    internal val includeSpoilerTags: CheckBox get() = requireView().findViewById(R.id.includeSpoilerTags)
+    internal val hideFinishedCheckBox: CheckBox get() = requireView().findViewById(R.id.hideFinished)
 
     internal var searchView by Delegates.notNull<SearchView>()
 

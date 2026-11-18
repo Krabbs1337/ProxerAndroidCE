@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
-import kotterknife.bindView
 import me.proxer.app.GlideApp
 import me.proxer.app.R
 import me.proxer.app.base.BaseContentFragment
@@ -21,11 +20,15 @@ import me.proxer.library.entity.info.Recommendation
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.properties.Delegates
+import me.proxer.app.databinding.FragmentRecommendationBinding
 
 /**
  * @author Ruben Gees
  */
 class RecommendationFragment : BaseContentFragment<List<Recommendation>>(R.layout.fragment_recommendation) {
+    private val binding: FragmentRecommendationBinding
+        get() = FragmentRecommendationBinding.bind(requireView())
+
     companion object {
         fun newInstance() =
             RecommendationFragment().apply {
@@ -46,7 +49,7 @@ class RecommendationFragment : BaseContentFragment<List<Recommendation>>(R.layou
     override val contentContainer: ViewGroup
         get() = recyclerView
 
-    private val recyclerView: RecyclerView by bindView(R.id.recyclerView)
+    private val recyclerView: RecyclerView get() = binding.recyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

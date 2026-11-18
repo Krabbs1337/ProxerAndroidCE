@@ -13,7 +13,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.rubengees.easyheaderfooteradapter.EasyHeaderFooterAdapter
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
-import kotterknife.bindView
 import me.proxer.app.R
 import me.proxer.app.base.BaseAdapter.ContainerPositionResolver
 import me.proxer.app.util.ErrorUtils.ErrorAction
@@ -43,7 +42,7 @@ abstract class PagedContentFragment<T>(
     protected abstract val innerAdapter: BaseAdapter<T, *>
     protected var adapter by Delegates.notNull<EasyHeaderFooterAdapter>()
 
-    protected open val recyclerView: RecyclerView by bindView(R.id.recyclerView)
+    protected open val recyclerView: RecyclerView get() = requireView().findViewById(R.id.recyclerView)
 
     override val contentContainer: ViewGroup
         get() = recyclerView

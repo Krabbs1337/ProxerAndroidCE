@@ -60,7 +60,6 @@ import com.mikepenz.iconics.utils.paddingDp
 import com.mikepenz.iconics.utils.sizeDp
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
-import kotterknife.bindView
 import me.proxer.app.GlideApp
 import me.proxer.app.R
 import me.proxer.app.anime.resolver.StreamResolutionResult
@@ -93,12 +92,15 @@ import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
 import timber.log.Timber
 import java.util.Locale
+import me.proxer.app.databinding.ActivityStreamBinding
 
 /**
  * @author Ruben Gees
  */
 @Suppress("DEPRECATION") // TODO: Wait for androidx fullscreen support library.
 class StreamActivity : BaseActivity() {
+    private lateinit var binding: ActivityStreamBinding
+
     // Fullscreen player handles window insets itself.
     override val applyEdgeToEdgeInsets = false
 
@@ -147,20 +149,20 @@ class StreamActivity : BaseActivity() {
     private val client by safeInject<OkHttpClient>()
     private val playerManager by unsafeLazy { StreamPlayerManager(this, client, adTag) }
 
-    internal val playerView: TouchablePlayerView by bindView(R.id.player)
+    internal val playerView: TouchablePlayerView get() = binding.player
 
-    private val toolbar: Toolbar by bindView(R.id.toolbar)
+    private val toolbar: Toolbar get() = binding.toolbar
 
-    private val loading: ProgressBar by bindView(R.id.loading)
-    private val progress: PreviewTimeBar by bindView(R.id.exo_progress)
-    private val rewindIndicator: TextView by bindView(R.id.rewindIndicator)
-    private val fastForwardIndicator: TextView by bindView(R.id.fastForwardIndicator)
+    private val loading: ProgressBar get() = binding.loading
+    private val progress: PreviewTimeBar get() = findViewById(R.id.exo_progress)
+    private val rewindIndicator: TextView get() = binding.rewindIndicator
+    private val fastForwardIndicator: TextView get() = binding.fastForwardIndicator
 
-    private val play: ImageButton by bindView(R.id.play)
-    private val fullscreen: ImageButton by bindView(R.id.fullscreen)
-    private val controlIcon: ImageView by bindView(R.id.controlIcon)
-    private val controlProgress: MaterialProgressBar by bindView(R.id.controlProgress)
-    private val preview: ImageView by bindView(R.id.preview)
+    private val play: ImageButton get() = findViewById(R.id.play)
+    private val fullscreen: ImageButton get() = findViewById(R.id.fullscreen)
+    private val controlIcon: ImageView get() = binding.controlIcon
+    private val controlProgress: MaterialProgressBar get() = binding.controlProgress
+    private val preview: ImageView get() = findViewById(R.id.preview)
 
     private var mediaRouteButton: MenuItem? = null
     private var introductoryOverlay: IntroductoryOverlay? = null
@@ -186,7 +188,8 @@ class StreamActivity : BaseActivity() {
             window.attributes.layoutInDisplayCutoutMode = LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
         }
 
-        setContentView(R.layout.activity_stream)
+        binding = ActivityStreamBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         setSupportActionBar(toolbar)
         setupUi()
 

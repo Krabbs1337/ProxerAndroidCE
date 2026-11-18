@@ -10,7 +10,6 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
-import kotterknife.bindView
 import me.proxer.app.R
 import me.proxer.app.base.BaseDialog
 import me.proxer.app.util.extension.toast
@@ -26,8 +25,8 @@ class LogoutDialog : BaseDialog() {
 
     private val viewModel by viewModel<LogoutViewModel>()
 
-    private val content: TextView by bindView(R.id.content)
-    private val progress: ProgressBar by bindView(R.id.progress)
+    private val content: TextView get() = requireDialog().findViewById(R.id.content)
+    private val progress: ProgressBar get() = requireDialog().findViewById(R.id.progress)
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =
         MaterialDialog(requireContext())

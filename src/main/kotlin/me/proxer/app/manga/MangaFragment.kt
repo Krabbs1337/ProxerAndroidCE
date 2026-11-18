@@ -28,7 +28,6 @@ import com.rubengees.easyheaderfooteradapter.EasyHeaderFooterAdapter
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
 import io.reactivex.Observable
-import kotterknife.bindView
 import me.proxer.app.GlideApp
 import me.proxer.app.R
 import me.proxer.app.base.BaseAdapter.ContainerPositionResolver
@@ -53,11 +52,15 @@ import me.proxer.library.enums.Language
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.properties.Delegates
+import me.proxer.app.databinding.FragmentMangaBinding
 
 /**
  * @author Ruben Gees
  */
 class MangaFragment : BaseContentFragment<MangaChapterInfo>(R.layout.fragment_manga) {
+    private val binding: FragmentMangaBinding
+        get() = FragmentMangaBinding.bind(requireView())
+
     companion object {
         private const val LAST_POSITION_STATE = "fragment_manga_last_position"
         private const val LOW_MEMORY_STATE = "fragment_manga_low_memory"
@@ -143,7 +146,7 @@ class MangaFragment : BaseContentFragment<MangaChapterInfo>(R.layout.fragment_ma
         get() = recyclerView
 
     private val toolbar by unsafeLazy { requireActivity().findViewById<Toolbar>(R.id.toolbar) }
-    private val recyclerView: RecyclerView by bindView(R.id.recyclerView)
+    private val recyclerView: RecyclerView get() = binding.recyclerView
 
     @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {

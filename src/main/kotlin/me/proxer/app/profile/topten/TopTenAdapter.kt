@@ -13,7 +13,6 @@ import com.jakewharton.rxbinding3.view.clicks
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 import com.uber.autodispose.autoDispose
 import io.reactivex.subjects.PublishSubject
-import kotterknife.bindView
 import me.proxer.app.GlideRequests
 import me.proxer.app.R
 import me.proxer.app.base.AutoDisposeViewHolder
@@ -23,6 +22,7 @@ import me.proxer.app.util.extension.defaultLoad
 import me.proxer.app.util.extension.mapBindingAdapterPosition
 import me.proxer.app.util.extension.setIconicsImage
 import me.proxer.library.util.ProxerUrls
+import me.proxer.app.databinding.ItemTopTenEntryBinding
 
 /**
  * @author Ruben Gees
@@ -57,10 +57,12 @@ class TopTenAdapter : BaseAdapter<LocalTopTenEntry, ViewHolder>() {
     inner class ViewHolder(
         itemView: View,
     ) : AutoDisposeViewHolder(itemView) {
-        internal val container: ViewGroup by bindView(R.id.container)
-        internal val image: ImageView by bindView(R.id.image)
-        internal val title: TextView by bindView(R.id.title)
-        internal val deleteButton: ImageButton by bindView(R.id.deleteButton)
+        private val binding = ItemTopTenEntryBinding.bind(itemView)
+
+        internal val container: ViewGroup get() = binding.container
+        internal val image: ImageView get() = binding.image
+        internal val title: TextView get() = binding.title
+        internal val deleteButton: ImageButton get() = binding.deleteButton
 
         init {
             deleteButton.setIconicsImage(CommunityMaterial.Icon3.cmd_star_off, 48)

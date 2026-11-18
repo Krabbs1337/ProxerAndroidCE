@@ -8,7 +8,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import com.rubengees.rxbus.RxBus
-import kotterknife.KotterKnife
 import me.proxer.app.util.data.PreferenceHelper
 import me.proxer.app.util.data.StorageHelper
 import me.proxer.app.util.extension.androidUri
@@ -97,8 +96,6 @@ abstract class BaseDialog :
         if (dialog != null) {
             lifecycleRegistry?.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
         }
-
-        KotterKnife.reset(this)
 
         super.onDestroyView()
     }

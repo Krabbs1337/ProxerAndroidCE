@@ -32,7 +32,6 @@ import com.jakewharton.rxbinding3.view.systemUiVisibilityChanges
 import com.mikepenz.iconics.utils.IconicsMenuInflaterUtil
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
-import kotterknife.bindView
 import me.proxer.app.R
 import me.proxer.app.base.BaseActivity
 import me.proxer.app.media.MediaActivity
@@ -45,12 +44,15 @@ import me.proxer.library.util.ProxerUrls
 import me.proxer.library.util.ProxerUtils
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
+import me.proxer.app.databinding.ActivityMangaBinding
 
 /**
  * @author Ruben Gees
  */
 @Suppress("DEPRECATION") // TODO: Wait for androidx fullscreen support library.
 class MangaActivity : BaseActivity() {
+    private lateinit var binding: ActivityMangaBinding
+
     companion object {
         private const val ID_EXTRA = "id"
         private const val EPISODE_EXTRA = "episode"
@@ -153,7 +155,7 @@ class MangaActivity : BaseActivity() {
 
     private val viewModel by viewModel<MangaViewModel> { parametersOf(id, language, episode) }
 
-    private val toolbar: Toolbar by bindView(R.id.toolbar)
+    private val toolbar: Toolbar get() = binding.toolbar
 
     private val fullscreenHandler = Handler(Looper.getMainLooper())
 
@@ -164,7 +166,8 @@ class MangaActivity : BaseActivity() {
             window.attributes.layoutInDisplayCutoutMode = LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
         }
 
-        setContentView(R.layout.activity_manga)
+        binding = ActivityMangaBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         setSupportActionBar(toolbar)
 
         setupToolbar()

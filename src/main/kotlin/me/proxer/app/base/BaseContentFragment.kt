@@ -14,7 +14,6 @@ import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
 import com.jakewharton.rxbinding3.view.clicks
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
-import kotterknife.bindView
 import me.proxer.app.R
 import me.proxer.app.util.ErrorUtils.ErrorAction
 import me.proxer.app.util.ErrorUtils.ErrorAction.Companion.ACTION_MESSAGE_DEFAULT
@@ -38,13 +37,13 @@ abstract class BaseContentFragment<T>(
 
     protected open val isSwipeToRefreshEnabled = false
 
-    protected open val root: ViewGroup by bindView(R.id.root)
-    protected open val contentContainer: ViewGroup by bindView(R.id.contentContainer)
-    protected open val errorContainer: ViewGroup by bindView(R.id.errorContainer)
-    protected open val errorInnerContainer: ViewGroup by bindView(R.id.errorInnerContainer)
-    protected open val errorText: TextView by bindView(R.id.errorText)
-    protected open val errorButton: Button by bindView(R.id.errorButton)
-    protected open val progress: SwipeRefreshLayout by bindView(R.id.progress)
+    protected open val root: ViewGroup get() = requireView().findViewById(R.id.root)
+    protected open val contentContainer: ViewGroup get() = requireView().findViewById(R.id.contentContainer)
+    protected open val errorContainer: ViewGroup get() = requireView().findViewById(R.id.errorContainer)
+    protected open val errorInnerContainer: ViewGroup get() = requireView().findViewById(R.id.errorInnerContainer)
+    protected open val errorText: TextView get() = requireView().findViewById(R.id.errorText)
+    protected open val errorButton: Button get() = requireView().findViewById(R.id.errorButton)
+    protected open val progress: SwipeRefreshLayout get() = requireView().findViewById(R.id.progress)
 
     private var isSolvingCaptcha: Boolean
         get() = requireArguments().getBoolean(IS_SOLVING_CAPTCHA_ARGUMENT, false)

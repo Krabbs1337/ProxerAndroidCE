@@ -19,7 +19,6 @@ import com.jakewharton.rxbinding3.view.clicks
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 import com.uber.autodispose.autoDispose
 import io.reactivex.subjects.PublishSubject
-import kotterknife.bindView
 import me.proxer.app.GlideRequests
 import me.proxer.app.R
 import me.proxer.app.base.AutoDisposeViewHolder
@@ -37,6 +36,7 @@ import me.proxer.app.util.extension.toEpisodeAppString
 import me.proxer.app.util.extension.unsafeLazy
 import me.proxer.library.enums.Category
 import me.proxer.library.util.ProxerUrls
+import me.proxer.app.databinding.ItemCommentBinding
 
 /**
  * @author Ruben Gees
@@ -100,34 +100,36 @@ class CommentsAdapter(
     inner class ViewHolder(
         itemView: View,
     ) : AutoDisposeViewHolder(itemView) {
-        internal val titleContainer: ViewGroup by bindView(R.id.titleContainer)
-        internal val image: ImageView by bindView(R.id.image)
-        internal val title: TextView by bindView(R.id.title)
+        private val binding = ItemCommentBinding.bind(itemView)
 
-        internal val edit: ImageView by bindView(R.id.edit)
-        internal val delete: ImageView by bindView(R.id.delete)
-        internal val upvoteIcon: ImageView by bindView(R.id.upvoteIcon)
-        internal val upvotes: TextView by bindView(R.id.upvotes)
+        internal val titleContainer: ViewGroup get() = binding.titleContainer
+        internal val image: ImageView get() = binding.image
+        internal val title: TextView get() = binding.title
 
-        internal val ratingOverallRow: ViewGroup by bindView(R.id.ratingOverallRow)
-        internal val ratingOverall: RatingBar by bindView(R.id.ratingOverall)
-        internal val ratingGenre: RatingBar by bindView(R.id.ratingGenre)
-        internal val ratingGenreRow: ViewGroup by bindView(R.id.ratingGenreRow)
-        internal val ratingStory: RatingBar by bindView(R.id.ratingStory)
-        internal val ratingStoryRow: ViewGroup by bindView(R.id.ratingStoryRow)
-        internal val ratingAnimation: RatingBar by bindView(R.id.ratingAnimation)
-        internal val ratingAnimationRow: ViewGroup by bindView(R.id.ratingAnimationRow)
-        internal val ratingCharacters: RatingBar by bindView(R.id.ratingCharacters)
-        internal val ratingCharactersRow: ViewGroup by bindView(R.id.ratingCharactersRow)
-        internal val ratingMusic: RatingBar by bindView(R.id.ratingMusic)
-        internal val ratingMusicRow: ViewGroup by bindView(R.id.ratingMusicRow)
+        internal val edit: ImageView get() = binding.edit
+        internal val delete: ImageView get() = binding.delete
+        internal val upvoteIcon: ImageView get() = binding.upvoteIcon
+        internal val upvotes: TextView get() = binding.upvotes
 
-        internal val comment: BBCodeView by bindView(R.id.comment)
-        internal val expand: ImageButton by bindView(R.id.expand)
-        internal val divider: View by bindView(R.id.divider)
+        internal val ratingOverallRow: ViewGroup get() = binding.ratingOverallRow
+        internal val ratingOverall: RatingBar get() = binding.ratingOverall
+        internal val ratingGenre: RatingBar get() = binding.ratingGenre
+        internal val ratingGenreRow: ViewGroup get() = binding.ratingGenreRow
+        internal val ratingStory: RatingBar get() = binding.ratingStory
+        internal val ratingStoryRow: ViewGroup get() = binding.ratingStoryRow
+        internal val ratingAnimation: RatingBar get() = binding.ratingAnimation
+        internal val ratingAnimationRow: ViewGroup get() = binding.ratingAnimationRow
+        internal val ratingCharacters: RatingBar get() = binding.ratingCharacters
+        internal val ratingCharactersRow: ViewGroup get() = binding.ratingCharactersRow
+        internal val ratingMusic: RatingBar get() = binding.ratingMusic
+        internal val ratingMusicRow: ViewGroup get() = binding.ratingMusicRow
 
-        internal val time: TextView by bindView(R.id.time)
-        internal val progress: TextView by bindView(R.id.progress)
+        internal val comment: BBCodeView get() = binding.comment
+        internal val expand: ImageButton get() = binding.expand
+        internal val divider: View get() = binding.divider
+
+        internal val time: TextView get() = binding.time
+        internal val progress: TextView get() = binding.progress
 
         private val maxHeight by unsafeLazy { comment.context.resources.displayMetrics.heightPixels / 4 }
 

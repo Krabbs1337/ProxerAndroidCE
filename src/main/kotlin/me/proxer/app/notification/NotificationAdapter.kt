@@ -10,7 +10,6 @@ import com.jakewharton.rxbinding3.view.clicks
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 import com.uber.autodispose.autoDispose
 import io.reactivex.subjects.PublishSubject
-import kotterknife.bindView
 import me.proxer.app.R
 import me.proxer.app.base.AutoDisposeViewHolder
 import me.proxer.app.base.BaseAdapter
@@ -19,6 +18,7 @@ import me.proxer.app.util.extension.ProxerNotification
 import me.proxer.app.util.extension.distanceInWordsToNow
 import me.proxer.app.util.extension.mapBindingAdapterPosition
 import me.proxer.app.util.extension.setIconicsImage
+import me.proxer.app.databinding.ItemNotificationBinding
 
 /**
  * @author Ruben Gees
@@ -45,10 +45,12 @@ class NotificationAdapter : BaseAdapter<ProxerNotification, ViewHolder>() {
     inner class ViewHolder(
         itemView: View,
     ) : AutoDisposeViewHolder(itemView) {
-        internal val container: ViewGroup by bindView(R.id.container)
-        internal val text: TextView by bindView(R.id.text)
-        internal val date: TextView by bindView(R.id.date)
-        internal val delete: ImageButton by bindView(R.id.delete)
+        private val binding = ItemNotificationBinding.bind(itemView)
+
+        internal val container: ViewGroup get() = binding.container
+        internal val text: TextView get() = binding.text
+        internal val date: TextView get() = binding.date
+        internal val delete: ImageButton get() = binding.delete
 
         init {
             delete.setIconicsImage(CommunityMaterial.Icon.cmd_delete, 32, 4)

@@ -12,7 +12,6 @@ import androidx.core.text.set
 import com.jakewharton.rxbinding3.view.clicks
 import com.uber.autodispose.autoDispose
 import io.reactivex.subjects.PublishSubject
-import kotterknife.bindView
 import me.proxer.app.R
 import me.proxer.app.base.AutoDisposeViewHolder
 import me.proxer.app.base.BaseAdapter
@@ -20,6 +19,7 @@ import me.proxer.app.media.discussion.DiscussionAdapter.ViewHolder
 import me.proxer.app.util.extension.fastText
 import me.proxer.app.util.extension.mapBindingAdapterPosition
 import me.proxer.library.entity.info.ForumDiscussion
+import me.proxer.app.databinding.ItemDiscussionBinding
 
 /**
  * @author Ruben Gees
@@ -44,9 +44,11 @@ class DiscussionAdapter : BaseAdapter<ForumDiscussion, ViewHolder>() {
     inner class ViewHolder(
         itemView: View,
     ) : AutoDisposeViewHolder(itemView) {
-        internal val container: ViewGroup by bindView(R.id.container)
-        internal val subject: TextView by bindView(R.id.subject)
-        internal val metaInfo: AppCompatTextView by bindView(R.id.metaInfo)
+        private val binding = ItemDiscussionBinding.bind(itemView)
+
+        internal val container: ViewGroup get() = binding.container
+        internal val subject: TextView get() = binding.subject
+        internal val metaInfo: AppCompatTextView get() = binding.metaInfo as AppCompatTextView
 
         fun bind(item: ForumDiscussion) {
             container

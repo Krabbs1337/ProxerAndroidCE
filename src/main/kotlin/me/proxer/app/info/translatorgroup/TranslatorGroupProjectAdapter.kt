@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.view.clicks
 import com.uber.autodispose.autoDispose
 import io.reactivex.subjects.PublishSubject
-import kotterknife.bindView
 import me.proxer.app.GlideRequests
 import me.proxer.app.R
 import me.proxer.app.base.AutoDisposeViewHolder
@@ -24,6 +23,7 @@ import me.proxer.app.util.extension.mapBindingAdapterPosition
 import me.proxer.app.util.extension.toAppString
 import me.proxer.library.entity.list.TranslatorGroupProject
 import me.proxer.library.util.ProxerUrls
+import me.proxer.app.databinding.ItemProjectBinding
 
 /**
  * @author Ruben Gees
@@ -57,13 +57,15 @@ class TranslatorGroupProjectAdapter : BaseAdapter<TranslatorGroupProject, ViewHo
     inner class ViewHolder(
         itemView: View,
     ) : AutoDisposeViewHolder(itemView) {
-        internal val container: ViewGroup by bindView(R.id.container)
-        internal val title: TextView by bindView(R.id.title)
-        internal val medium: TextView by bindView(R.id.medium)
-        internal val image: ImageView by bindView(R.id.image)
-        internal val ratingContainer: ViewGroup by bindView(R.id.ratingContainer)
-        internal val rating: RatingBar by bindView(R.id.rating)
-        internal val status: TextView by bindView(R.id.status)
+        private val binding = ItemProjectBinding.bind(itemView)
+
+        internal val container: ViewGroup get() = binding.container
+        internal val title: TextView get() = binding.title
+        internal val medium: TextView get() = binding.medium
+        internal val image: ImageView get() = binding.image
+        internal val ratingContainer: ViewGroup get() = binding.ratingContainer
+        internal val rating: RatingBar get() = binding.rating
+        internal val status: TextView get() = binding.status
 
         fun bind(item: TranslatorGroupProject) {
             container

@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
-import kotterknife.bindView
 import me.proxer.app.R
 import me.proxer.app.base.BaseContentFragment
 import me.proxer.app.forum.TopicActivity
@@ -20,11 +19,15 @@ import me.proxer.library.entity.info.ForumDiscussion
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.properties.Delegates
+import me.proxer.app.databinding.FragmentDiscussionBinding
 
 /**
  * @author Ruben Gees
  */
 class DiscussionFragment : BaseContentFragment<List<ForumDiscussion>>(R.layout.fragment_discussion) {
+    private val binding: FragmentDiscussionBinding
+        get() = FragmentDiscussionBinding.bind(requireView())
+
     companion object {
         fun newInstance() =
             DiscussionFragment().apply {
@@ -45,7 +48,7 @@ class DiscussionFragment : BaseContentFragment<List<ForumDiscussion>>(R.layout.f
     override val contentContainer: ViewGroup
         get() = recyclerView
 
-    private val recyclerView: RecyclerView by bindView(R.id.recyclerView)
+    private val recyclerView: RecyclerView get() = binding.recyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

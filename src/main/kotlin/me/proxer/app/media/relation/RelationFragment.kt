@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
-import kotterknife.bindView
 import me.proxer.app.GlideApp
 import me.proxer.app.R
 import me.proxer.app.base.BaseContentFragment
@@ -21,11 +20,15 @@ import me.proxer.library.entity.info.Relation
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.properties.Delegates
+import me.proxer.app.databinding.FragmentRelationBinding
 
 /**
  * @author Ruben Gees
  */
 class RelationFragment : BaseContentFragment<List<Relation>>(R.layout.fragment_relation) {
+    private val binding: FragmentRelationBinding
+        get() = FragmentRelationBinding.bind(requireView())
+
     companion object {
         fun newInstance() =
             RelationFragment().apply {
@@ -46,7 +49,7 @@ class RelationFragment : BaseContentFragment<List<Relation>>(R.layout.fragment_r
     override val contentContainer: ViewGroup
         get() = recyclerView
 
-    private val recyclerView: RecyclerView by bindView(R.id.recyclerView)
+    private val recyclerView: RecyclerView get() = binding.recyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

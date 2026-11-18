@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
-import kotterknife.bindView
 import me.proxer.app.R
 import me.proxer.app.base.BaseDialog
 import kotlin.properties.Delegates
@@ -23,8 +22,8 @@ class ThemeDialog : BaseDialog() {
                 .show(activity.supportFragmentManager, "theme_dialog")
     }
 
-    private val colorList by bindView<RecyclerView>(R.id.colorList)
-    private val nightRadioGroup by bindView<RadioGroup>(R.id.nightRadioGroup)
+    private val colorList: RecyclerView get() = requireDialog().findViewById(R.id.colorList)
+    private val nightRadioGroup: RadioGroup get() = requireDialog().findViewById(R.id.nightRadioGroup)
 
     private var adapter by Delegates.notNull<ThemeAdapter>()
 

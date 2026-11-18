@@ -23,7 +23,6 @@ import com.mikepenz.iconics.utils.colorInt
 import com.mikepenz.iconics.utils.sizeDp
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
-import kotterknife.bindView
 import me.proxer.app.R
 import me.proxer.app.base.BaseDialog
 import me.proxer.app.util.extension.dip
@@ -47,15 +46,15 @@ class LoginDialog : BaseDialog() {
 
     private val viewModel by viewModel<LoginViewModel>()
 
-    private val inputContainer: ViewGroup by bindView(R.id.inputContainer)
-    private val usernameContainer: TextInputLayout by bindView(R.id.usernameContainer)
-    private val username: TextInputEditText by bindView(R.id.username)
-    private val passwordContainer: TextInputLayout by bindView(R.id.passwordContainer)
-    private val password: TextInputEditText by bindView(R.id.password)
-    private val secretContainer: TextInputLayout by bindView(R.id.secretContainer)
-    private val secret: TextInputEditText by bindView(R.id.secret)
-    private val registrationInfo: TextView by bindView(R.id.registrationInfo)
-    private val progress: ProgressBar by bindView(R.id.progress)
+    private val inputContainer: ViewGroup get() = requireDialog().findViewById(R.id.inputContainer)
+    private val usernameContainer: TextInputLayout get() = requireDialog().findViewById(R.id.usernameContainer)
+    private val username: TextInputEditText get() = requireDialog().findViewById(R.id.username)
+    private val passwordContainer: TextInputLayout get() = requireDialog().findViewById(R.id.passwordContainer)
+    private val password: TextInputEditText get() = requireDialog().findViewById(R.id.password)
+    private val secretContainer: TextInputLayout get() = requireDialog().findViewById(R.id.secretContainer)
+    private val secret: TextInputEditText get() = requireDialog().findViewById(R.id.secret)
+    private val registrationInfo: TextView get() = requireDialog().findViewById(R.id.registrationInfo)
+    private val progress: ProgressBar get() = requireDialog().findViewById(R.id.progress)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

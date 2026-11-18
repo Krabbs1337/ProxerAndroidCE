@@ -11,7 +11,6 @@ import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.appbar.AppBarLayout
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
-import kotterknife.bindView
 import me.proxer.app.MainActivity
 import me.proxer.app.R
 import me.proxer.app.auth.LoginDialog
@@ -39,9 +38,9 @@ abstract class DrawerActivity : BaseActivity() {
 
     private lateinit var actionBarDrawerToggle: ActionBarDrawerToggle
 
-    open val drawerLayout: DrawerLayout by bindView(R.id.root)
-    open val toolbar: Toolbar by bindView(R.id.toolbar)
-    open val appbar: AppBarLayout by bindView(R.id.appbar)
+    open val drawerLayout: DrawerLayout get() = findViewById(R.id.root)
+    open val toolbar: Toolbar get() = findViewById(R.id.toolbar)
+    open val appbar: AppBarLayout get() = findViewById(R.id.appbar)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

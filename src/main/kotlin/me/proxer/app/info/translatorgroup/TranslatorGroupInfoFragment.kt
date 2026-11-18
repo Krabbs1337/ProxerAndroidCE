@@ -15,7 +15,6 @@ import com.gojuno.koptional.rxjava2.filterSome
 import com.gojuno.koptional.toOptional
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
-import kotterknife.bindView
 import me.proxer.app.R
 import me.proxer.app.base.BaseContentFragment
 import me.proxer.app.util.extension.linkClicks
@@ -28,11 +27,15 @@ import me.proxer.library.entity.info.TranslatorGroup
 import me.proxer.library.enums.Country
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
+import me.proxer.app.databinding.FragmentTranslatorGroupBinding
 
 /**
  * @author Ruben Gees
  */
 class TranslatorGroupInfoFragment : BaseContentFragment<TranslatorGroup>(R.layout.fragment_translator_group) {
+    private val binding: FragmentTranslatorGroupBinding
+        get() = FragmentTranslatorGroupBinding.bind(requireView())
+
     companion object {
         fun newInstance() =
             TranslatorGroupInfoFragment().apply {
@@ -54,12 +57,12 @@ class TranslatorGroupInfoFragment : BaseContentFragment<TranslatorGroup>(R.layou
             hostingActivity.name = value
         }
 
-    private val languageRow: ViewGroup by bindView(R.id.languageRow)
-    private val language: ImageView by bindView(R.id.language)
-    private val linkRow: ViewGroup by bindView(R.id.linkRow)
-    private val link: TextView by bindView(R.id.link)
-    private val descriptionContainer: ViewGroup by bindView(R.id.descriptionContainer)
-    private val description: TextView by bindView(R.id.description)
+    private val languageRow: ViewGroup get() = binding.languageRow
+    private val language: ImageView get() = binding.language
+    private val linkRow: ViewGroup get() = binding.linkRow
+    private val link: TextView get() = binding.link
+    private val descriptionContainer: ViewGroup get() = binding.descriptionContainer
+    private val description: TextView get() = binding.description
 
     override fun onViewCreated(
         view: View,

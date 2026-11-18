@@ -16,7 +16,6 @@ import com.gojuno.koptional.rxjava2.filterSome
 import com.gojuno.koptional.toOptional
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
-import kotterknife.bindView
 import me.proxer.app.R
 import me.proxer.app.base.BaseContentFragment
 import me.proxer.app.profile.ProfileActivity
@@ -34,11 +33,15 @@ import me.proxer.library.enums.Gender
 import me.proxer.library.enums.RelationshipStatus
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
+import me.proxer.app.databinding.FragmentAboutBinding
 
 /**
  * @author Ruben Gees
  */
 class ProfileAboutFragment : BaseContentFragment<UserAbout>(R.layout.fragment_about) {
+    private val binding: FragmentAboutBinding
+        get() = FragmentAboutBinding.bind(requireView())
+
     companion object {
         private const val ZERO_DATE = "0000-00-00"
 
@@ -61,10 +64,10 @@ class ProfileAboutFragment : BaseContentFragment<UserAbout>(R.layout.fragment_ab
     private val username: String?
         get() = hostingActivity.username
 
-    private val generalContainer by bindView<ViewGroup>(R.id.generalContainer)
-    private val generalTable by bindView<TableLayout>(R.id.generalTable)
-    private val aboutContainer by bindView<ViewGroup>(R.id.aboutContainer)
-    private val about by bindView<ProxerWebView>(R.id.about)
+    private val generalContainer: ViewGroup get() = binding.generalContainer
+    private val generalTable: TableLayout get() = binding.generalTable
+    private val aboutContainer: ViewGroup get() = binding.aboutContainer
+    private val about: ProxerWebView get() = binding.about
 
     override fun onViewCreated(
         view: View,

@@ -10,15 +10,16 @@ import cat.ereza.customactivityoncrash.config.CaocConfig
 import com.jakewharton.rxbinding3.view.clicks
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
-import kotterknife.bindView
 import me.proxer.app.R
 import me.proxer.app.base.BaseActivity
 import me.proxer.app.util.extension.linkify
+import me.proxer.app.databinding.ActivityCrashBinding
 
 /**
  * @author Ruben Gees
  */
 class CrashActivity : BaseActivity() {
+    private lateinit var binding: ActivityCrashBinding
     private val config: CaocConfig
         get() =
             try {
@@ -35,15 +36,16 @@ class CrashActivity : BaseActivity() {
             return androidVersion + CustomActivityOnCrash.getAllErrorDetailsFromIntent(this, intent)
         }
 
-    private val toolbar: Toolbar by bindView(R.id.toolbar)
-    private val text: TextView by bindView(R.id.text)
-    private val report: Button by bindView(R.id.report)
-    private val restart: Button by bindView(R.id.restart)
+    private val toolbar: Toolbar get() = binding.toolbar
+    private val text: TextView get() = binding.text
+    private val report: Button get() = binding.report
+    private val restart: Button get() = binding.restart
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_crash)
+        binding = ActivityCrashBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         setSupportActionBar(toolbar)
         title = getString(R.string.section_crash)
 

@@ -15,7 +15,6 @@ import androidx.fragment.app.commitNow
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import com.google.android.material.tabs.TabLayout
-import kotterknife.bindView
 import me.proxer.app.anime.schedule.ScheduleFragment
 import me.proxer.app.base.BackPressAware
 import me.proxer.app.base.DrawerActivity
@@ -64,7 +63,7 @@ class MainActivity : DrawerActivity() {
     override val isRootActivity get() = intent.action != Intent.ACTION_VIEW && !intent.hasExtra(SECTION_EXTRA)
     override val isMainActivity = true
 
-    internal val tabs: TabLayout by bindView(R.id.tabs)
+    internal val tabs: TabLayout get() = findViewById(R.id.tabs)
 
     private val profileSettingsViewModel by viewModel<ProfileSettingsViewModel>()
 

@@ -29,7 +29,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Consumer
 import io.reactivex.subjects.PublishSubject
-import kotterknife.bindView
 import me.proxer.app.GlideRequests
 import me.proxer.app.R
 import me.proxer.app.anime.schedule.ScheduleEntryAdapter.ViewHolder
@@ -48,6 +47,7 @@ import java.util.Collections
 import java.util.Locale
 import java.util.WeakHashMap
 import java.util.concurrent.TimeUnit
+import me.proxer.app.databinding.ItemScheduleEntryBinding
 
 /**
  * @author Ruben Gees
@@ -126,14 +126,16 @@ class ScheduleEntryAdapter : BaseAdapter<CalendarEntry, ViewHolder>() {
     inner class ViewHolder(
         itemView: View,
     ) : AutoDisposeViewHolder(itemView) {
-        internal val container: ViewGroup by bindView(R.id.container)
-        internal val image by bindView<ImageView>(R.id.image)
-        internal val title by bindView<TextView>(R.id.title)
-        internal val episode by bindView<TextView>(R.id.episode)
-        internal val ratingContainer by bindView<ViewGroup>(R.id.ratingContainer)
-        internal val rating by bindView<RatingBar>(R.id.rating)
-        internal val airingInfo by bindView<TextView>(R.id.airingInfo)
-        internal val status by bindView<TextView>(R.id.status)
+        private val binding = ItemScheduleEntryBinding.bind(itemView)
+
+        internal val container: ViewGroup get() = binding.container
+        internal val image: ImageView get() = binding.image
+        internal val title: TextView get() = binding.title
+        internal val episode: TextView get() = binding.episode
+        internal val ratingContainer: ViewGroup get() = binding.ratingContainer
+        internal val rating: RatingBar get() = binding.rating
+        internal val airingInfo: TextView get() = binding.airingInfo
+        internal val status: TextView get() = binding.status
 
         internal var airingInfoDisposable: Disposable? = null
 

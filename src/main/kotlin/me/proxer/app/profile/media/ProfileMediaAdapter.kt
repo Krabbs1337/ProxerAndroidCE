@@ -16,7 +16,6 @@ import com.mikepenz.iconics.typeface.library.community.material.CommunityMateria
 import com.mikepenz.iconics.utils.sizeDp
 import com.uber.autodispose.autoDispose
 import io.reactivex.subjects.PublishSubject
-import kotterknife.bindView
 import me.proxer.app.GlideRequests
 import me.proxer.app.R
 import me.proxer.app.base.AutoDisposeViewHolder
@@ -30,6 +29,7 @@ import me.proxer.app.util.extension.toAppString
 import me.proxer.app.util.extension.toCategory
 import me.proxer.app.util.extension.toEpisodeAppString
 import me.proxer.library.util.ProxerUrls
+import me.proxer.app.databinding.ItemProfileMediaEntryBinding
 
 /**
  * @author Ruben Gees
@@ -65,15 +65,17 @@ class ProfileMediaAdapter : BaseAdapter<LocalUserMediaListEntry, ViewHolder>() {
     inner class ViewHolder(
         itemView: View,
     ) : AutoDisposeViewHolder(itemView) {
-        internal val container: ViewGroup by bindView(R.id.container)
-        internal val title: TextView by bindView(R.id.title)
-        internal val medium: TextView by bindView(R.id.medium)
-        internal val image: ImageView by bindView(R.id.image)
-        internal val status: TextView by bindView(R.id.status)
-        internal val state: ImageView by bindView(R.id.state)
-        internal val ratingContainer: ViewGroup by bindView(R.id.ratingContainer)
-        internal val rating: RatingBar by bindView(R.id.rating)
-        internal val delete: ImageButton by bindView(R.id.delete)
+        private val binding = ItemProfileMediaEntryBinding.bind(itemView)
+
+        internal val container: ViewGroup get() = binding.container
+        internal val title: TextView get() = binding.title
+        internal val medium: TextView get() = binding.medium
+        internal val image: ImageView get() = binding.image
+        internal val status: TextView get() = binding.status
+        internal val state: ImageView get() = binding.state
+        internal val ratingContainer: ViewGroup get() = binding.ratingContainer
+        internal val rating: RatingBar get() = binding.rating
+        internal val delete: ImageButton get() = binding.delete
 
         init {
             delete.setIconicsImage(CommunityMaterial.Icon.cmd_close_circle, 48)

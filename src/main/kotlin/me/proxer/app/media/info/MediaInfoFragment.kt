@@ -23,7 +23,6 @@ import com.jakewharton.rxbinding3.view.clicks
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
-import kotterknife.bindView
 import me.proxer.app.R
 import me.proxer.app.base.BaseContentFragment
 import me.proxer.app.info.industry.IndustryActivity
@@ -46,11 +45,15 @@ import me.proxer.library.entity.info.MediaUserInfo
 import me.proxer.library.enums.IndustryType
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.core.parameter.parametersOf
+import me.proxer.app.databinding.FragmentMediaInfoBinding
 
 /**
  * @author Ruben Gees
  */
 class MediaInfoFragment : BaseContentFragment<Entry>(R.layout.fragment_media_info) {
+    private val binding: FragmentMediaInfoBinding
+        get() = FragmentMediaInfoBinding.bind(requireView())
+
     companion object {
         private const val SHOW_UNRATED_TAGS_ARGUMENT = "show_unrated_tags"
         private const val SHOW_SPOILER_TAGS_ARGUMENT = "show_spoiler_tags"
@@ -77,35 +80,35 @@ class MediaInfoFragment : BaseContentFragment<Entry>(R.layout.fragment_media_inf
         get() = requireArguments().getBoolean(SHOW_SPOILER_TAGS_ARGUMENT, false)
         set(value) = requireArguments().putBoolean(SHOW_SPOILER_TAGS_ARGUMENT, value)
 
-    private val ratingContainer: ViewGroup by bindView(R.id.ratingContainer)
-    private val rating: RatingBar by bindView(R.id.rating)
-    private val ratingAmount: TextView by bindView(R.id.ratingAmount)
+    private val ratingContainer: ViewGroup get() = binding.ratingContainer
+    private val rating: RatingBar get() = binding.rating
+    private val ratingAmount: TextView get() = binding.ratingAmount
 
-    private val infoTable: TableLayout by bindView(R.id.infoTable)
+    private val infoTable: TableLayout get() = binding.infoTable
 
-    private val genresTitle: TextView by bindView(R.id.genresTitle)
-    private val genres: FlexboxLayout by bindView(R.id.genres)
-    private val tagsTitle: TextView by bindView(R.id.tagsTitle)
-    private val tags: FlexboxLayout by bindView(R.id.tags)
-    private val unratedTags: Button by bindView(R.id.unratedTags)
-    private val spoilerTags: Button by bindView(R.id.spoilerTags)
-    private val fskConstraintsTitle: TextView by bindView(R.id.fskConstraintsTitle)
-    private val fskConstraints: FlexboxLayout by bindView(R.id.fskConstraints)
-    private val translatorGroupsTitle: TextView by bindView(R.id.translatorGroupsTitle)
-    private val translatorGroups: FlexboxLayout by bindView(R.id.translatorGroups)
-    private val industriesTitle: TextView by bindView(R.id.industriesTitle)
-    private val industries: FlexboxLayout by bindView(R.id.industries)
+    private val genresTitle: TextView get() = binding.genresTitle
+    private val genres: FlexboxLayout get() = binding.genres
+    private val tagsTitle: TextView get() = binding.tagsTitle
+    private val tags: FlexboxLayout get() = binding.tags
+    private val unratedTags: Button get() = binding.unratedTags
+    private val spoilerTags: Button get() = binding.spoilerTags
+    private val fskConstraintsTitle: TextView get() = binding.fskConstraintsTitle
+    private val fskConstraints: FlexboxLayout get() = binding.fskConstraints
+    private val translatorGroupsTitle: TextView get() = binding.translatorGroupsTitle
+    private val translatorGroups: FlexboxLayout get() = binding.translatorGroups
+    private val industriesTitle: TextView get() = binding.industriesTitle
+    private val industries: FlexboxLayout get() = binding.industries
 
-    private val noteContainer: ViewGroup by bindView(R.id.noteContainer)
-    private val note: ImageView by bindView(R.id.note)
-    private val favorContainer: ViewGroup by bindView(R.id.favorContainer)
-    private val favor: ImageView by bindView(R.id.favor)
-    private val finishContainer: ViewGroup by bindView(R.id.finishContainer)
-    private val finish: ImageView by bindView(R.id.finish)
-    private val subscribeContainer: ViewGroup by bindView(R.id.subscribeContainer)
-    private val subscribe: ImageView by bindView(R.id.subscribe)
+    private val noteContainer: ViewGroup get() = binding.noteContainer
+    private val note: ImageView get() = binding.note
+    private val favorContainer: ViewGroup get() = binding.favorContainer
+    private val favor: ImageView get() = binding.favor
+    private val finishContainer: ViewGroup get() = binding.finishContainer
+    private val finish: ImageView get() = binding.finish
+    private val subscribeContainer: ViewGroup get() = binding.subscribeContainer
+    private val subscribe: ImageView get() = binding.subscribe
 
-    private val description: TextView by bindView(R.id.description)
+    private val description: TextView get() = binding.description
 
     override fun onViewCreated(
         view: View,

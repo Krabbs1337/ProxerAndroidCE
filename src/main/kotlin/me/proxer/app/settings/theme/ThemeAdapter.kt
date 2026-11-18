@@ -6,12 +6,12 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import com.jakewharton.rxbinding3.view.clicks
 import com.uber.autodispose.autoDispose
-import kotterknife.bindView
 import me.proxer.app.R
 import me.proxer.app.base.AutoDisposeViewHolder
 import me.proxer.app.base.BaseAdapter
 import me.proxer.app.settings.theme.ThemeAdapter.ViewHolder
 import me.proxer.app.util.extension.mapBindingAdapterPosition
+import me.proxer.app.databinding.ItemThemeBinding
 
 /**
  * @author Ruben Gees
@@ -48,7 +48,9 @@ class ThemeAdapter(
     inner class ViewHolder(
         itemView: View,
     ) : AutoDisposeViewHolder(itemView) {
-        internal val themeButton by bindView<ImageButton>(R.id.themeButton)
+        private val binding = ItemThemeBinding.bind(itemView)
+
+        internal val themeButton: ImageButton get() = binding.themeButton
 
         fun bind(item: Theme) {
             val drawable =

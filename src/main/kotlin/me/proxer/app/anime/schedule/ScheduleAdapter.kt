@@ -12,9 +12,9 @@ import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.LinearSnapHelper
 import io.reactivex.subjects.PublishSubject
-import kotterknife.bindView
 import me.proxer.app.GlideRequests
 import me.proxer.app.R
+import me.proxer.app.databinding.ItemScheduleDayBinding
 import me.proxer.app.anime.schedule.ScheduleAdapter.ViewHolder
 import me.proxer.app.base.BaseAdapter
 import me.proxer.app.util.DeviceUtils
@@ -67,8 +67,9 @@ class ScheduleAdapter : BaseAdapter<Pair<CalendarDay, List<CalendarEntry>>, View
     inner class ViewHolder(
         itemView: View,
     ) : RecyclerView.ViewHolder(itemView) {
-        internal val weekDay by bindView<TextView>(R.id.weekDay)
-        internal val childRecyclerView by bindView<RecyclerView>(R.id.childRecyclerView)
+        private val binding = ItemScheduleDayBinding.bind(itemView)
+        internal val weekDay: TextView get() = binding.weekDay
+        internal val childRecyclerView: RecyclerView get() = binding.childRecyclerView
 
         init {
             childRecyclerView.setHasFixedSize(true)

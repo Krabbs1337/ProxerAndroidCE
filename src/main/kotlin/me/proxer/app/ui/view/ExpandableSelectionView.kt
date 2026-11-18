@@ -27,8 +27,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
-import kotterknife.bindView
 import me.proxer.app.R
+import me.proxer.app.databinding.ViewExpandableMultiSelectionBinding
 import me.proxer.app.util.extension.dip
 import me.proxer.app.util.extension.setIconicsImage
 import me.proxer.app.util.extension.subscribeAndLogErrors
@@ -44,11 +44,13 @@ class ExpandableSelectionView
         attrs: AttributeSet? = null,
         defStyleAttr: Int = 0,
     ) : LinearLayout(context, attrs, defStyleAttr) {
-        private val controlContainer by bindView<ViewGroup>(R.id.controlContainer)
-        private val title by bindView<TextView>(R.id.title)
-        private val resetButton by bindView<ImageButton>(R.id.resetButton)
-        private val toggleButton by bindView<ImageButton>(R.id.toggleButton)
-        private val itemContainer by bindView<ViewGroup>(R.id.items)
+        private val binding: ViewExpandableMultiSelectionBinding
+
+        private val controlContainer: ViewGroup get() = binding.controlContainer
+        private val title: TextView get() = binding.title
+        private val resetButton: ImageButton get() = binding.resetButton
+        private val toggleButton: ImageButton get() = binding.toggleButton
+        private val itemContainer: ViewGroup get() = binding.items
 
         val selectionChangeSubject: PublishSubject<List<String>> = PublishSubject.create()
 
@@ -84,7 +86,7 @@ class ExpandableSelectionView
         init {
             orientation = VERTICAL
 
-            inflate(context, R.layout.view_expandable_multi_selection, this)
+            binding = ViewExpandableMultiSelectionBinding.inflate(LayoutInflater.from(context), this)
 
             context.theme.obtainStyledAttributes(attrs, R.styleable.ExpandableSelectionView, 0, 0).apply {
                 titleText = getString(R.styleable.ExpandableSelectionView_titleText) ?: ""

@@ -18,7 +18,6 @@ import com.mikepenz.iconics.typeface.library.community.material.CommunityMateria
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
 import io.reactivex.android.schedulers.AndroidSchedulers
-import kotterknife.bindView
 import me.proxer.app.GlideApp
 import me.proxer.app.R
 import me.proxer.app.anime.AnimeActivity
@@ -44,11 +43,15 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import java.util.concurrent.TimeUnit
 import kotlin.properties.Delegates
+import me.proxer.app.databinding.FragmentEpisodeBinding
 
 /**
  * @author Ruben Gees
  */
 class EpisodeFragment : BaseContentFragment<List<EpisodeRow>>(R.layout.fragment_episode) {
+    private val binding: FragmentEpisodeBinding
+        get() = FragmentEpisodeBinding.bind(requireView())
+
     companion object {
         private const val LANGUAGES_EXTRA = "languages"
 
@@ -96,8 +99,8 @@ class EpisodeFragment : BaseContentFragment<List<EpisodeRow>>(R.layout.fragment_
     override val contentContainer: ViewGroup
         get() = recyclerView
 
-    private val recyclerView: RecyclerView by bindView(R.id.recyclerView)
-    private val scrollToBottom: FloatingActionButton by bindView(R.id.scrollToBottom)
+    private val recyclerView: RecyclerView get() = binding.recyclerView
+    private val scrollToBottom: FloatingActionButton get() = binding.scrollToBottom
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

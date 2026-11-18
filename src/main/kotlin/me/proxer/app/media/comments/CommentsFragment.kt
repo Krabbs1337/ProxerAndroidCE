@@ -26,7 +26,6 @@ import com.uber.autodispose.autoDispose
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotterknife.bindView
 import me.proxer.app.GlideApp
 import me.proxer.app.R
 import me.proxer.app.base.PagedContentFragment
@@ -42,11 +41,15 @@ import me.proxer.library.enums.CommentSortCriteria
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.properties.Delegates
+import me.proxer.app.databinding.FragmentCommentsBinding
 
 /**
  * @author Ruben Gees
  */
 class CommentsFragment : PagedContentFragment<ParsedComment>(R.layout.fragment_comments) {
+    private val binding: FragmentCommentsBinding
+        get() = FragmentCommentsBinding.bind(requireView())
+
     companion object {
         private const val SORT_CRITERIA_ARGUMENT = "sort_criteria"
 
@@ -88,7 +91,7 @@ class CommentsFragment : PagedContentFragment<ParsedComment>(R.layout.fragment_c
 
     override var innerAdapter by Delegates.notNull<CommentsAdapter>()
 
-    private val create by bindView<FloatingActionButton>(R.id.create)
+    private val create: FloatingActionButton get() = binding.create
 
     private val editComment =
         registerForActivityResult(EditCommentActivity.Contract()) { comment ->

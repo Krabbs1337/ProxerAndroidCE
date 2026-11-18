@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
-import kotterknife.bindView
 import me.proxer.app.GlideApp
 import me.proxer.app.R
 import me.proxer.app.base.BaseContentFragment
@@ -18,11 +17,15 @@ import me.proxer.library.entity.media.CalendarEntry
 import me.proxer.library.enums.CalendarDay
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.properties.Delegates
+import me.proxer.app.databinding.FragmentScheduleBinding
 
 /**
  * @author Ruben Gees
  */
 class ScheduleFragment : BaseContentFragment<Map<CalendarDay, List<CalendarEntry>>>(R.layout.fragment_schedule) {
+    private val binding: FragmentScheduleBinding
+        get() = FragmentScheduleBinding.bind(requireView())
+
     companion object {
         fun newInstance() =
             ScheduleFragment().apply {
@@ -37,7 +40,7 @@ class ScheduleFragment : BaseContentFragment<Map<CalendarDay, List<CalendarEntry
     override val contentContainer: ViewGroup
         get() = recyclerView
 
-    private val recyclerView by bindView<RecyclerView>(R.id.recyclerView)
+    private val recyclerView: RecyclerView get() = binding.recyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

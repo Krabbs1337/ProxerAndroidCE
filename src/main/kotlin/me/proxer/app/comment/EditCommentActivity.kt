@@ -10,7 +10,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.commitNow
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
-import kotterknife.bindView
 import me.proxer.app.R
 import me.proxer.app.base.BaseActivity
 import me.proxer.app.util.extension.intentFor
@@ -18,11 +17,14 @@ import me.proxer.app.util.extension.multilineSnackbar
 import me.proxer.app.util.extension.toast
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
+import me.proxer.app.databinding.ActivityNoDrawerBinding
 
 /**
  * @author Ruben Gees
  */
 class EditCommentActivity : BaseActivity() {
+    private lateinit var binding: ActivityNoDrawerBinding
+
     companion object {
         const val COMMENT_EXTRA = "comment"
 
@@ -44,12 +46,13 @@ class EditCommentActivity : BaseActivity() {
         parametersOf(id, entryId)
     }
 
-    private val toolbar: Toolbar by bindView(R.id.toolbar)
+    private val toolbar: Toolbar get() = binding.toolbar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_no_drawer)
+        binding = ActivityNoDrawerBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         setSupportActionBar(toolbar)
         setupToolbar()
 

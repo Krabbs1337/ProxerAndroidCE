@@ -13,7 +13,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
 import io.reactivex.Observable
-import kotterknife.bindView
 import me.proxer.app.GlideApp
 import me.proxer.app.R
 import me.proxer.app.base.BaseContentFragment
@@ -27,11 +26,15 @@ import me.proxer.app.util.extension.multilineSnackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.properties.Delegates
+import me.proxer.app.databinding.FragmentTopTenBinding
 
 /**
  * @author Ruben Gees
  */
 class TopTenFragment : BaseContentFragment<ZippedTopTenResult>(R.layout.fragment_top_ten) {
+    private val binding: FragmentTopTenBinding
+        get() = FragmentTopTenBinding.bind(requireView())
+
     companion object {
         fun newInstance() =
             TopTenFragment().apply {
@@ -56,10 +59,10 @@ class TopTenFragment : BaseContentFragment<ZippedTopTenResult>(R.layout.fragment
     private var animeAdapter by Delegates.notNull<TopTenAdapter>()
     private var mangaAdapter by Delegates.notNull<TopTenAdapter>()
 
-    private val animeContainer: ViewGroup by bindView(R.id.animeContainer)
-    private val mangaContainer: ViewGroup by bindView(R.id.mangaContainer)
-    private val animeRecyclerView: RecyclerView by bindView(R.id.animeRecyclerView)
-    private val mangaRecyclerView: RecyclerView by bindView(R.id.mangaRecyclerView)
+    private val animeContainer: ViewGroup get() = binding.animeContainer
+    private val mangaContainer: ViewGroup get() = binding.mangaContainer
+    private val animeRecyclerView: RecyclerView get() = binding.animeRecyclerView
+    private val mangaRecyclerView: RecyclerView get() = binding.mangaRecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -15,7 +15,6 @@ import com.jakewharton.rxbinding3.view.clicks
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 import com.uber.autodispose.autoDispose
 import io.reactivex.subjects.PublishSubject
-import kotterknife.bindView
 import me.proxer.app.GlideRequests
 import me.proxer.app.R
 import me.proxer.app.base.AutoDisposeViewHolder
@@ -34,6 +33,7 @@ import me.proxer.app.util.extension.toEpisodeAppString
 import me.proxer.app.util.extension.toGeneralLanguage
 import me.proxer.library.enums.MediaLanguage
 import me.proxer.library.util.ProxerUrls
+import me.proxer.app.databinding.ItemEpisodeBinding
 
 /**
  * @author Ruben Gees
@@ -92,10 +92,12 @@ class EpisodeAdapter(
     inner class ViewHolder(
         itemView: View,
     ) : AutoDisposeViewHolder(itemView) {
-        internal val title: TextView by bindView(R.id.title)
-        internal val titleContainer: ViewGroup by bindView(R.id.titleContainer)
-        internal val watched: ImageView by bindView(R.id.watched)
-        internal val languages: ViewGroup by bindView(R.id.languages)
+        private val binding = ItemEpisodeBinding.bind(itemView)
+
+        internal val title: TextView get() = binding.title
+        internal val titleContainer: ViewGroup get() = binding.titleContainer
+        internal val watched: ImageView get() = binding.watched
+        internal val languages: ViewGroup get() = binding.languages
 
         init {
             watched.setIconicsImage(CommunityMaterial.Icon.cmd_check, 24, 0)

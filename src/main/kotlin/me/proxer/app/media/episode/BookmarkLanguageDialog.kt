@@ -17,8 +17,8 @@ import com.jakewharton.rxbinding3.view.clicks
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
 import io.reactivex.subjects.PublishSubject
-import kotterknife.bindView
 import me.proxer.app.R
+import me.proxer.app.databinding.ItemBookmarkLanguageBinding
 import me.proxer.app.base.AutoDisposeViewHolder
 import me.proxer.app.base.BaseDialog
 import me.proxer.app.util.extension.mapBindingAdapterPosition
@@ -98,9 +98,11 @@ class BookmarkLanguageDialog : BaseDialog() {
         inner class ViewHolder(
             itemView: View,
         ) : AutoDisposeViewHolder(itemView) {
-            internal val container: ViewGroup by bindView(R.id.container)
-            internal val image: ImageView by bindView(R.id.image)
-            internal val text: TextView by bindView(R.id.text)
+            private val binding = ItemBookmarkLanguageBinding.bind(itemView)
+
+            internal val container: ViewGroup get() = binding.container
+            internal val image: ImageView get() = binding.image
+            internal val text: TextView get() = binding.text
 
             fun bind(language: MediaLanguage) {
                 container

@@ -28,7 +28,6 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
-import kotterknife.bindView
 import me.proxer.app.GlideRequests
 import me.proxer.app.R
 import me.proxer.app.base.AutoDisposeViewHolder
@@ -51,6 +50,8 @@ import me.proxer.library.util.ProxerUrls
 import timber.log.Timber
 import java.io.File
 import kotlin.properties.Delegates
+import me.proxer.app.databinding.ItemMangaPageBinding
+import me.proxer.app.databinding.ItemMangaPageGifBinding
 
 /**
  * @author Ruben Gees
@@ -145,7 +146,7 @@ class MangaAdapter(
     ) : AutoDisposeViewHolder(itemView) {
         internal abstract val image: View
 
-        internal val errorIndicator: ImageView by bindView(R.id.errorIndicator)
+        internal val errorIndicator: ImageView get() = itemView.findViewById(R.id.errorIndicator)
 
         private val screenWidth = DeviceUtils.getScreenWidth(itemView.context)
 
@@ -219,7 +220,9 @@ class MangaAdapter(
     inner class ImageViewHolder(
         itemView: View,
     ) : MangaViewHolder(itemView) {
-        override val image: SubsamplingScaleImageView by bindView(R.id.image)
+        private val binding = ItemMangaPageBinding.bind(itemView)
+
+        override val image: SubsamplingScaleImageView get() = binding.image
 
         internal var glideTarget: GlideFileTarget? = null
 
@@ -303,7 +306,9 @@ class MangaAdapter(
     inner class GifViewHolder(
         itemView: View,
     ) : MangaViewHolder(itemView) {
-        override val image: ImageView by bindView(R.id.image)
+        private val binding = ItemMangaPageGifBinding.bind(itemView)
+
+        override val image: ImageView get() = binding.image
 
         override fun bind(item: Page) {
             super.bind(item)

@@ -9,7 +9,6 @@ import com.bumptech.glide.request.target.ImageViewTarget
 import com.jakewharton.rxbinding3.view.clicks
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
-import kotterknife.bindView
 import me.proxer.app.GlideApp
 import me.proxer.app.R
 import me.proxer.app.base.BaseActivity
@@ -18,11 +17,14 @@ import me.proxer.app.util.extension.getSafeStringExtra
 import me.proxer.app.util.extension.intentFor
 import me.proxer.app.util.extension.logErrors
 import okhttp3.HttpUrl
+import me.proxer.app.databinding.ActivityImageDetailBinding
 
 /**
  * @author Ruben Gees
  */
 class ImageDetailActivity : BaseActivity() {
+    private lateinit var binding: ActivityImageDetailBinding
+
     companion object {
         private const val URL_EXTRA = "url"
 
@@ -43,12 +45,13 @@ class ImageDetailActivity : BaseActivity() {
     private val url: String
         get() = intent.getSafeStringExtra(URL_EXTRA)
 
-    private val image: ImageView by bindView(R.id.image)
+    private val image: ImageView get() = binding.image
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_image_detail)
+        binding = ActivityImageDetailBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         supportPostponeEnterTransition()
 
         ViewCompat.setTransitionName(image, ActivityUtils.getTransitionName(this))

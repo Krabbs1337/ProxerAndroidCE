@@ -1,7 +1,7 @@
 package me.proxer.app.anime.schedule
 
 import android.os.Parcelable
-import android.view.Gravity
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +10,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import androidx.recyclerview.widget.RecyclerView
-import com.github.rubensousa.gravitysnaphelper.GravitySnapHelper
+import androidx.recyclerview.widget.LinearSnapHelper
 import io.reactivex.subjects.PublishSubject
 import kotterknife.bindView
 import me.proxer.app.GlideRequests
@@ -74,7 +74,7 @@ class ScheduleAdapter : BaseAdapter<Pair<CalendarDay, List<CalendarEntry>>, View
             childRecyclerView.setHasFixedSize(true)
             childRecyclerView.isNestedScrollingEnabled = false
 
-            GravitySnapHelper(Gravity.START).attachToRecyclerView(childRecyclerView)
+            LinearSnapHelper().attachToRecyclerView(childRecyclerView)
         }
 
         fun bind(item: Pair<CalendarDay, List<CalendarEntry>>) {

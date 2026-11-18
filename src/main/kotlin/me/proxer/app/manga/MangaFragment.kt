@@ -3,7 +3,7 @@ package me.proxer.app.manga
 import androidx.core.os.BundleCompat
 import android.os.Bundle
 import android.os.Parcelable
-import android.view.Gravity
+
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -21,7 +21,7 @@ import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.github.rubensousa.gravitysnaphelper.GravitySnapHelper
+import androidx.recyclerview.widget.PagerSnapHelper
 import com.google.android.material.snackbar.Snackbar
 import com.mikepenz.iconics.utils.IconicsMenuInflaterUtil
 import com.rubengees.easyheaderfooteradapter.EasyHeaderFooterAdapter
@@ -126,7 +126,7 @@ class MangaFragment : BaseContentFragment<MangaChapterInfo>(R.layout.fragment_ma
     private var header by Delegates.notNull<MediaControlView>()
     private var footer by Delegates.notNull<MediaControlView>()
 
-    private var gravitySnapHelper: GravitySnapHelper? = null
+    private var snapHelper: PagerSnapHelper? = null
 
     private var readerOrientation = preferenceHelper.mangaReaderOrientation
         set(value) {
@@ -306,8 +306,8 @@ class MangaFragment : BaseContentFragment<MangaChapterInfo>(R.layout.fragment_ma
     }
 
     override fun onDestroyView() {
-        gravitySnapHelper?.attachToRecyclerView(null)
-        gravitySnapHelper = null
+        snapHelper?.attachToRecyclerView(null)
+        snapHelper = null
 
         recyclerView.layoutManager = null
         recyclerView.adapter = null
@@ -577,19 +577,15 @@ class MangaFragment : BaseContentFragment<MangaChapterInfo>(R.layout.fragment_ma
     private fun bindLayoutManager() {
         val state = recyclerView.layoutManager?.onSaveInstanceState()
 
-        gravitySnapHelper?.attachToRecyclerView(null)
-        gravitySnapHelper = null
+        snapHelper?.attachToRecyclerView(null)
+        snapHelper = null
 
         recyclerView.recycledViewPool.clear()
 
         recyclerView.layoutManager = MangaLinearLayoutManger(requireContext(), readerOrientation)
 
         if (!isVertical) {
-            gravitySnapHelper =
-                GravitySnapHelper(Gravity.END)
-                    .apply { maxFlingSizeFraction = 1.0f }
-                    .apply { scrollMsPerInch = 50f }
-                    .apply { attachToRecyclerView(recyclerView) }
+            snapHelper = PagerSnapHelper().apply { attachToRecyclerView(recyclerView) }
         }
 
         innerAdapter.isVertical = isVertical

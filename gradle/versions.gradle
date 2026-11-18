@@ -72,7 +72,6 @@ ext {
     previewSeekbarVersion = "09eec85551"
     materialProgressBarVersion = "1.6.1"
     materialRatingBarVersion = "1.4.0"
-    gravitySnapHelperVersion = "2.2.1"
 
     // Utils
     proxerLibVersion = "5.4.0"

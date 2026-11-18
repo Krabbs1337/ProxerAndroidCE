@@ -57,7 +57,6 @@ dependencies {
     implementation "com.github.vanniktech.Emoji:emoji-ios:$emojiIosVersion"
     implementation "me.zhanghai.android.materialprogressbar:library:$materialProgressBarVersion"
     implementation "me.zhanghai.android.materialratingbar:library:$materialRatingBarVersion"
-    implementation "com.github.rubensousa:gravitysnaphelper:$gravitySnapHelperVersion"
     implementation "androidx.media3:media3-exoplayer:$media3Version"
     implementation "androidx.media3:media3-exoplayer-hls:$media3Version"
     implementation "androidx.media3:media3-exoplayer-dash:$media3Version"

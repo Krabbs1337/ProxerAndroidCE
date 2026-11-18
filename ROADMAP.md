@@ -228,6 +228,23 @@ Checkliste (alle bekannten Berührungspunkte):
 
 ---
 
+## Phase 10 – 16 KB Page Size + Abhängigkeits-Aufräumung
+
+**Ziel:** App ohne native Libs (damit auf allen ABIs 16-KB-kompatibel, „Android App Compatibility"-Dialog verschwindet) und weniger jitpack-/unmaintained-Abhängigkeiten.
+
+**16-KB-Analyse (17.11.2026):** ELF-Scan der .so im Debug-APK zeigte: `libimage*.so` (x86_64) mit LOAD p_align=4096 → hartes Fail; Quelle `com.github.seven332.Image` (jitpack `a7b102262a`, Hippo Image, nur im Manga-Reader genutzt). `libandroidx.graphics.path.so` (via `media3-cast` → compose ui-graphics, graphics-path 1.0.1; 1.1.0 geprüft – gleiches ELF-Profil) → „Unknown error" auf x86_64. arm64 war bei allen Libs OK. `packaging.jniLibs.useLegacyPackaging=false` war bereits gesetzt.
+
+**Umgesetzt am 17.11.2026:**
+
+- Hippo Image entfernt: `ImageLibDecoder.kt`/`ImageLibRegionDecoder.kt` gelöscht, `MangaAdapter` nutzt die plattformbasierten `SkiaImageDecoder`/`SkiaImageRegionDecoder` von subscaleview; die 3 `com.github.seven332.Image`-Deps + `imageDecoderVersion` entfernt.
+- `androidx.graphics:graphics-path` per `exclude` aus `media3-cast` entfernt (view-basierte Cast-API braucht es nicht).
+- Ergebnis: **0 .so-Dateien in Debug- und Release-APK** – im Emulator (API 37, x86_64) startet die App ohne den 16-KB-Dialog, Drawer/Settings/LoginDialog laufen, 0 FATAL EXCEPTION.
+- Verifiziert grün: `assembleDebug`, `assembleRelease`.
+
+**Abnahme:** APK nativ-frei, Emulator-Start ohne 16-KB-Dialog – erfüllt. Manga-Reader-Decode auf Gerät mit Login manuell testen (Skia-Decoder statt Hippo-Natives).
+
+---
+
 ## Quick Wins (vor oder während Phase 1, geringer Aufwand, sofortiger Nutzen)
 
 1. PendingIntent-Flags nachtragen (8 Stellen, siehe Phase 3).

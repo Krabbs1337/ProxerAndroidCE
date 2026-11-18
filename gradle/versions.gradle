@@ -87,7 +87,6 @@ ext {
     retrofitVersion = "2.12.0"
     okHttpVersion = "4.12.1"
     moshiVersion = "1.15.2"
-    imageDecoderVersion = "a7b102262a"
     betterLinkMovementMethodVersion = "2.2.0"
     jsoupVersion = "1.24.1"
 

@@ -66,7 +66,11 @@ dependencies {
     implementation "androidx.media3:media3-exoplayer-dash:$media3Version"
     implementation "androidx.media3:media3-exoplayer-smoothstreaming:$media3Version"
     implementation "androidx.media3:media3-ui:$media3Version"
-    implementation "androidx.media3:media3-cast:$media3Version"
+    implementation("androidx.media3:media3-cast:$media3Version") {
+        // graphics-path ships libandroidx.graphics.path.so which fails the 16 KB page size
+        // check on x86_64; the view-based Cast API never touches it (compose-only Path APIs).
+        exclude group: "androidx.graphics", module: "graphics-path"
+    }
     implementation "androidx.media3:media3-exoplayer-ima:$media3Version"
     implementation "androidx.media3:media3-datasource-okhttp:$media3Version"
     implementation "com.github.rubengees.PreviewSeekBar:previewseekbar:$previewSeekbarVersion"
@@ -82,9 +86,6 @@ dependencies {
     implementation "com.squareup.okhttp3:logging-interceptor:$okHttpVersion"
     implementation "com.squareup.moshi:moshi:$moshiVersion"
     implementation "com.squareup.moshi:moshi-adapters:$moshiVersion"
-    implementation "com.github.seven332.Image:core:$imageDecoderVersion"
-    implementation "com.github.seven332.Image:jpeg:$imageDecoderVersion"
-    implementation "com.github.seven332.Image:png:$imageDecoderVersion"
     implementation "me.saket:better-link-movement-method:$betterLinkMovementMethodVersion"
     implementation "org.jsoup:jsoup:$jsoupVersion"
 

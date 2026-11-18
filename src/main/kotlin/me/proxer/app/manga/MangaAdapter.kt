@@ -14,6 +14,8 @@ import com.bumptech.glide.request.target.ImageViewTarget
 import com.bumptech.glide.request.transition.Transition
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
+import com.davemorrissey.labs.subscaleview.decoder.SkiaImageDecoder
+import com.davemorrissey.labs.subscaleview.decoder.SkiaImageRegionDecoder
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView.PAN_LIMIT_INSIDE
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView.ZOOM_FOCUS_CENTER
 import com.gojuno.koptional.rxjava2.filterSome
@@ -231,8 +233,8 @@ class MangaAdapter(
             image.setMinimumTileDpi(196)
             image.setMinimumDpi(90)
 
-            image.setBitmapDecoderFactory { ImageLibDecoder() }
-            image.setRegionDecoderFactory { ImageLibRegionDecoder() }
+            image.setBitmapDecoderFactory { SkiaImageDecoder() }
+            image.setRegionDecoderFactory { SkiaImageRegionDecoder() }
         }
 
         override fun bind(item: Page) {

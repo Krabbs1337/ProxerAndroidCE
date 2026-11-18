@@ -243,6 +243,16 @@ Checkliste (alle bekannten Berührungspunkte):
 
 **Abnahme:** APK nativ-frei, Emulator-Start ohne 16-KB-Dialog – erfüllt. Manga-Reader-Decode auf Gerät mit Login manuell testen (Skia-Decoder statt Hippo-Natives).
 
+**Abhängigkeits-Aufräumung (17.11.2026, jitpack-/unmaintained-Deps durch In-Repo-Shims bzw. Plattform-APIs ersetzt, Call-Sites unverändert):**
+
+- `com.github.rubengees:rxbus` → In-Repo-`com.rubengees.rxbus.RxBus` (PublishSubject, nur `post`/`register`).
+- `com.github.anrwatchdog:anrwatchdog` → In-Repo-`ANRWatchDog`-Shim (gleiche API: `setANRListener`/`start`).
+- `com.github.kirillr:StrictModeCompat` → Plattform-`android.os.StrictMode` mit Versions-Guards für Detektoren > minSdk 24.
+- `com.github.santalu:aspect-ratio-imageview` → In-Repo-`AspectRatioImageView`-Shim + `ari_ratio`-Styleable in `values/attrs.xml` (3 Layouts unverändert).
+- `com.afollestad.material-dialogs:core:3.3.0` (deprecated, 12 Dateien) → In-Repo-`com.afollestad.materialdialogs.MaterialDialog`-Shim auf `AlertDialog` (gleiche Pakete; `noAutoDismiss` via Button-Listener-Rewire in `show()`, `findViewById` auf die Custom-View erweitert weil `onDialogCreated` vor `show()` läuft; `customView`/`customListAdapter`/`onCancel`-Extensions). `md_color_button_text`-Theme-Item entfernt (Attr existiert nicht mehr).
+- Verifiziert: Emulator (API 37) — LoginDialog rendert mit Custom-View + Buttons, Dismiss funktioniert, 0 FATAL.
+- **Verbleibende jitpack-Commit-Pins (bewusst, Folgephase):** `subsampling-scale-image-view` (Manga-Reader-Kern, pure Java), `subsampling-pdf-decoder` (Plattform-PdfRenderer-Wrapper), `emoji-ios` (BBCode-Emoji), `gravitysnaphelper`, `previewseekbar` (Core-Artefakt; media3-Teil bereits in-repo), `material-about-library:3.2.0-rc01` (About-Screen), `ProxerLibJava` (offizielle API-Lib, Release).
+
 ---
 
 ## Quick Wins (vor oder während Phase 1, geringer Aufwand, sofortiger Nutzen)

@@ -24,7 +24,7 @@ Ziel: Das Projekt auf einen aktuellen, build- und Play-Store-fähigen Stand brin
 | 8 | Performance + Polish — **erledigt 17.11.2026** | Glide, Baseline Profiles, AAB-Splits, Desugaring |
 | 9 | Qualitätssicherung + optionale Coroutines-Migration — **erledigt 17.11.2026** | detekt/ktlint/CI aktuell, schrittweise RxJava-Ablösung |
 | 10 | 16 KB Page Size + Abhängigkeits-Aufräumung — **erledigt 17.11.2026** | APK nativ-frei, jitpack-/unmaintained-Deps durch Shims ersetzt |
-| 11 | Runtime-Bugs, Lint-Cleanup + strukturelle Follow-ups — **11.1–11.3 erledigt 17.11.2026, 11.4a–k erledigt 18.11.2026**, Rest offen | Aus `lintDebug` + Code-Scan abgeleitet, siehe unten |
+| 11 | Runtime-Bugs, Lint-Cleanup + strukturelle Follow-ups — **11.1–11.3 erledigt 17.11.2026, 11.4a–k + 11.5 erledigt 18.11.2026** | Aus `lintDebug` + Code-Scan abgeleitet, siehe unten |
 
 ---
 
@@ -257,7 +257,7 @@ Checkliste (alle bekannten Berührungspunkte):
 
 ---
 
-## Phase 11 – Runtime-Bugs, Lint-Cleanup + strukturelle Follow-ups (11.1–11.3 erledigt 17.11.2026, 11.4a–k erledigt 18.11.2026, Rest offen)
+## Phase 11 – Runtime-Bugs, Lint-Cleanup + strukturelle Follow-ups (11.1–11.3 erledigt 17.11.2026, 11.4a–k + 11.5 erledigt 18.11.2026)
 
 **Quelle:** `./gradlew lintDebug` (247 Issues nach 11.1: 72 Error, 6 Fatal, 169 Warning) + Compiler-Warnungen (162 in 42 Dateien) + Code-Scan, Stand 17.11.2026.
 
@@ -351,6 +351,12 @@ Ursprüngliche Liste:
 - **Glide 4.16 → 5.x (erledigt 18.11.2026, 11.4g):** Glide **5.0.10** (letztes Stable; `com.github.bumptech.glide`-Gruppe liegt auf Maven Central). KSP-Artefakt `ksp:5.0.10` statt `kapt compiler` → **`com.android.legacy-kapt` komplett entfernt**. Glide 5 generiert kein `GlideApp`/`GlideRequests` mehr: `GlideApp.with()` → `Glide.with()` (22 Dateien), `GlideRequests` → `RequestManager`, `GlideRequest<T>` → `RequestBuilder<T>`, `defaultLoad` nutzt `asDrawable().load(...)`. Emulator-Test (API 37): Start + LoginDialog ohne Crash, 0 FATAL EXCEPTION.
 - **RxJava → Coroutines/Flow** schrittweise pro Feature (Start z. B. `BaseViewModel.load()`), gemäß Festlegung
 - **CI (erledigt 18.11.2026, 11.4d):** Build-Step um `lintDebug lintRelease` (strict, abortOnError) erweitert; neuer Job `baselineprofile` mit `reactivecircus/android-emulator-runner` (API 36) führt `:baselineprofile:connectedReleaseAndroidTest` aus und lädt die Profile als Artifact
+
+### 11.5 Netzwerk-Timeout beim Login — **erledigt 18.11.2026**
+
+- **Symptom:** Login im Emulator (API 37) endete mit „TimeOut" (`error_timeout` ← `SocketTimeoutException` in `ErrorUtils`). Debug-Build loggt HTTP via `HttpTimberLogger`: `POST https://proxer.me/api/v1/user/login` brauchte vom Emulator 1,5–2 s warm, kalt mehr — `connectTimeout` war auf **5 s** gesetzt (`MainModules.kt`), daher intermittierend SocketTimeoutException auf der ersten Verbindung.
+- **Fix:** OkHttpClient in `MainModules.kt`: `connectTimeout` 5 → **15 s**, `readTimeout`/`writeTimeout` 10 → **30 s** (einziger Client im Projekt; Stream/Upload bauen auf demselben `rawClient` auf).
+- **Verifiziert:** Host-Check `https://proxer.me/api/v1/` antwortet in ~0,2 s, API-Key aus `secrets.properties` (gitignored) wird akzeptiert; nach Fix im Emulator: `--> POST .../user/login` / `<-- 200 OK (1458 ms)` — kein Timeout mehr, frische Debug-APK installiert, 0 FATAL EXCEPTION.
 
 ---
 

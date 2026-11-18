@@ -1,5 +1,6 @@
 package me.proxer.app.media.comments
 
+import java.text.NumberFormat
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -145,7 +146,7 @@ class CommentsAdapter(
             ViewCompat.setTransitionName(image, "comment_${item.id}")
 
             title.text = item.author
-            upvotes.text = item.helpfulVotes.toString()
+            upvotes.text = NumberFormat.getIntegerInstance().format(item.helpfulVotes)
             edit.isVisible = item.authorId == storageHelper.user?.id
             delete.isVisible = item.authorId == storageHelper.user?.id
 

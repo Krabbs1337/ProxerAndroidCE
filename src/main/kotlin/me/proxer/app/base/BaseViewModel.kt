@@ -76,8 +76,6 @@ abstract class BaseViewModel<T> : ViewModel() {
         disposables.dispose()
 
         dataDisposable = null
-
-        super.onCleared()
     }
 
     open fun load() {

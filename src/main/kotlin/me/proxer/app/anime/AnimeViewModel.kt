@@ -59,8 +59,8 @@ class AnimeViewModel(
                     }
                 }
 
-    val resolutionResult = ResettingMutableLiveData<StreamResolutionResult>()
-    val resolutionError = ResettingMutableLiveData<ErrorAction>()
+    val resolutionResult = ResettingMutableLiveData<StreamResolutionResult?>()
+    val resolutionError = ResettingMutableLiveData<ErrorAction?>()
 
     val userStateData = ResettingMutableLiveData<Unit?>()
     val userStateError = ResettingMutableLiveData<ErrorAction?>()

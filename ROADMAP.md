@@ -24,7 +24,7 @@ Ziel: Das Projekt auf einen aktuellen, build- und Play-Store-fähigen Stand brin
 | 8 | Performance + Polish — **erledigt 17.11.2026** | Glide, Baseline Profiles, AAB-Splits, Desugaring |
 | 9 | Qualitätssicherung + optionale Coroutines-Migration — **erledigt 17.11.2026** | detekt/ktlint/CI aktuell, schrittweise RxJava-Ablösung |
 | 10 | 16 KB Page Size + Abhängigkeits-Aufräumung — **erledigt 17.11.2026** | APK nativ-frei, jitpack-/unmaintained-Deps durch Shims ersetzt |
-| 11 | Runtime-Bugs, Lint-Cleanup + strukturelle Follow-ups — **11.1 erledigt 17.11.2026**, 11.2–11.4 offen | Aus `lintDebug` (262 Issues) + Code-Scan abgeleitet, siehe unten |
+| 11 | Runtime-Bugs, Lint-Cleanup + strukturelle Follow-ups — **11.1 + 11.2 erledigt 17.11.2026**, 11.3–11.4 offen | Aus `lintDebug` + Code-Scan abgeleitet, siehe unten |
 
 ---
 
@@ -257,9 +257,9 @@ Checkliste (alle bekannten Berührungspunkte):
 
 ---
 
-## Phase 11 – Runtime-Bugs, Lint-Cleanup + strukturelle Follow-ups (11.1 erledigt, 11.2–11.4 offen)
+## Phase 11 – Runtime-Bugs, Lint-Cleanup + strukturelle Follow-ups (11.1 + 11.2 erledigt 17.11.2026, 11.3–11.4 offen)
 
-**Quelle:** `./gradlew lintDebug` (262 Issues: 89 Error, 6 Fatal, 166 Warning) + Compiler-Warnungen (162 in 42 Dateien) + Code-Scan, Stand 17.11.2026.
+**Quelle:** `./gradlew lintDebug` (247 Issues nach 11.1: 72 Error, 6 Fatal, 169 Warning) + Compiler-Warnungen (162 in 42 Dateien) + Code-Scan, Stand 17.11.2026.
 
 ### 11.1 Echte Bugs / Runtime-Risiken — **erledigt 17.11.2026**
 
@@ -284,7 +284,9 @@ Checkliste (alle bekannten Berührungspunkte):
 - **Emulator-Verifikation (Medium_Phone, API 37):** App startet ohne Crash (News/ANMELDEN), 0 `FATAL EXCEPTION`, `KEYCODE_BACK` beendet Root-Activity über Dispatcher, Screenshot bestätigt Statusleiste über rotem App-Bar.
 - Verifiziert grün: `ktlintCheck`, `detekt`, `lintDebug`, `assembleDebug`, `assembleRelease`, `bundleRelease`, `assembleLogRelease`, `:baselineprofile:assembleAndroidTest`.
 
-### 11.2 Lint-Cleanup (Voraussetzung für `lint { abortOnError = true }`)
+### 11.2 Lint-Cleanup — **erledigt 17.11.2026** (247 → 0 Issues, `abortOnError`/`warningsAsErrors` wieder aktiv)
+
+Ursprüngliche Liste:
 
 - 19× `UnusedResources` löschen (u. a. Chat-Überbleibsel `dialog_link_check`, `fragment_chat_container`, `error_invalid_*`-Strings)
 - 28× `IntentFilterUniqueDataAttributes` – Deep-Link-`data`-Tags splitten; 7× `AppLinkWarning` (assetlinks/Verifizierung)
@@ -292,6 +294,24 @@ Checkliste (alle bekannten Berührungspunkte):
 - 16× `SetTextI18n`, 19× `UseKtx`, 9× `ObsoleteSdkInt` (tote `SDK_INT < 24`-Checks), 6× `NullSafeMutableLiveData`, 4× `NotifyDataSetChanged` (`EasyHeaderFooterAdapter`, `MediaActivity` ×2, `ProfileActivity` → DiffUtil/ListAdapter), 4× `SwitchIntDef`, 2× `WrongConstant`, 4× `EmptySuperCall`, 3× `PrivateResource`, 1× `Overdraw`
 - 77× `UnsafeOptInUsageError` – media3 `@UnstableApi`-Opt-ins annotieren/suppressen
 - 1× `LintError` – AutoDispose-Lint-Detector inkompatibel mit AGP 9 → Lint-ID `AutoDispose` in `lint {}` disablen
+
+**Umgesetzt am 17.11.2026:**
+
+- **Manifest:** alle 28 Multi-Attribut-`<data>`-Tags semantik-erhaltend in Einzel-Attribut-Tags gesplittet (82 Tags); 7 BROWSABLE-Intent-Filter mit `android:autoVerify="false"` (keine assetlinks-Verifizierung, dokumentiert statt gewarnt).
+- **Lint-Config (`lint {}`):** `AutoDispose` (Detector nutzt unter AGP 9 verbotenes `getMainProject()`), `GifUsage` (Emoticon-GIFs sind Content) und `UnsafeOptInUsageError` (lint erkennt `@OptIn` unter AGP 9 nicht; media3-`@UnstableApi`-Nutzung ist beabsichtigt und per `@file:OptIn(UnstableApi::class)` in `StreamPlayerManager`, `StreamActivity`, `PreviewTimeBar`, `TouchablePlayerView`, `ErrorUtils` compiler-seitig abgesichert) disabled, jeweils mit Kommentar. Danach `abortOnError = true` + `warningsAsErrors = true` aktiviert — `lintDebug` **und** `lintRelease` grün mit 0 Issues.
+- **Fatal `NullSafeMutableLiveData` ×6:** `AnimeViewModel.resolutionResult/resolutionError` und `ProfileSettingsViewModel.error/updateError` auf nullable Typparameter (`ResettingMutableLiveData<T?>`) — Observer waren bereits null-sicher.
+- **Error `WrongConstant` ×2:** `PreviewLoader` nutzt `MediaMetadataRetriever.OPTION_CLOSEST_SYNC` statt `0`; `StreamPlayerManager` `C.AUDIO_CONTENT_TYPE_MOVIE` statt `C.CONTENT_TYPE_MOVIE`.
+- **`SwitchIntDef` ×4:** `C.TYPE_SS/DASH/HLS/OTHER` → `C.CONTENT_TYPE_*` in `StreamPlayerManager.buildLocalMediaSource`.
+- **`UnusedResources` ×19:** 2 Chat-Layouts + 17 Chat-Strings gelöscht (vorher per grep als unreferenziert verifiziert; mehrzeiliger `dialog_link_check_message`-Body mit entfernt).
+- **`UseKtx` ×19:** `Uri.parse(x)` → `x.toUri()` (10 Dateien, `androidx.core.net.toUri`), `ColorDrawable(resolveColor(...))` → `resolveColor(...).toDrawable()` (`MaterialDrawerWrapper`, `ViewExtensions` ×3), `obtainStyledAttributes` → `withStyledAttributes` (`AspectRatioImageView`), `childCount > 0` → `isNotEmpty()` (`MediaInfoFragment`); ungenutzte `Uri`/`ColorDrawable`-Imports entfernt.
+- **`SetTextI18n` ×16:** Zahl-Anzeigen via `NumberFormat.getIntegerInstance().format(...)` (5 Dateien, 15 Stellen); `StreamActivity`-Indikator via `String.format(Locale.ROOT, "%d", ...)` (Rücklesen per `toIntOrNull` bleibt ohne Grouping sicher).
+- **`ObsoleteSdkInt` ×7:** tote `SDK_INT < 24`/`>= M`/`>= N`-Branches entfernt (`ConnectivityCompat` ×2, `DeviceUtils`, `LocalDataInitializer`, `MangaActivity`, `StreamActivity`, `TouchablePlayerView`); ungenutzte `Build`/`VERSION`/`File`-Imports entfernt.
+- **`EmptySuperCall` ×4:** `super.onCleared()` in `BaseViewModel`, `LoginViewModel`, `LogoutViewModel`, `ProfileSettingsViewModel` entfernt.
+- **`PrivateResource` ×3:** `is_tablet`-Bool in `values{,-sw600dp,-sw720dp}/dimens.xml` mit `tools:override="true"` (bewusstes Override des mediarouter-Privat-Bool).
+- **`Overdraw` ×1:** `android:background` vom Root-Layout `activity_introduction.xml` entfernt (Theme malt bereits).
+- **`NotifyDataSetChanged` ×4:** `@Suppress("NotifyDataSetChanged")` an den betroffenen Stellen (`EasyHeaderFooterAdapter.onChanged`, `MediaActivity.category`-Setter + `onCreate`, `ProfileActivity.onCreate`) — DiffUtil/ListAdapter-Umbau bleibt 11.4.
+- **Emulator-Verifikation (API 37):** frische Debug-APK installiert, App startet (News/ANMELDEN), 0 `FATAL EXCEPTION`.
+- Verifiziert grün: `ktlintFormat`, `ktlintCheck`, `detekt`, `lintDebug` + `lintRelease` (0 Issues, strict), `assembleDebug`, `assembleRelease`, `bundleRelease`, `assembleLogRelease`, `:baselineprofile:assembleAndroidTest`.
 
 ### 11.3 Compiler-Deprecations (Voraussetzung für `allWarningsAsErrors`)
 

@@ -1,3 +1,5 @@
+@file:OptIn(androidx.media3.common.util.UnstableApi::class)
+
 package me.proxer.app.anime.stream
 
 import android.app.Activity
@@ -320,23 +322,23 @@ class StreamPlayerManager(
         val mediaItem = MediaItem.fromUri(uri)
 
         return when (Util.inferContentType(uri)) {
-            C.TYPE_SS -> {
+            C.CONTENT_TYPE_SS -> {
                 SsMediaSource
                     .Factory(DefaultSsChunkSource.Factory(dataSourceFactory), dataSourceFactory)
                     .createMediaSource(mediaItem)
             }
 
-            C.TYPE_DASH -> {
+            C.CONTENT_TYPE_DASH -> {
                 DashMediaSource
                     .Factory(DefaultDashChunkSource.Factory(dataSourceFactory), dataSourceFactory)
                     .createMediaSource(mediaItem)
             }
 
-            C.TYPE_HLS -> {
+            C.CONTENT_TYPE_HLS -> {
                 HlsMediaSource.Factory(dataSourceFactory).createMediaSource(mediaItem)
             }
 
-            C.TYPE_OTHER -> {
+            C.CONTENT_TYPE_OTHER -> {
                 ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(mediaItem)
             }
 
@@ -382,7 +384,7 @@ class StreamPlayerManager(
             val audioAttributes =
                 AudioAttributes
                     .Builder()
-                    .setContentType(C.CONTENT_TYPE_MOVIE)
+                    .setContentType(C.AUDIO_CONTENT_TYPE_MOVIE)
                     .setUsage(C.USAGE_MEDIA)
                     .build()
 

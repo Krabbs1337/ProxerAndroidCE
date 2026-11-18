@@ -1,6 +1,6 @@
 package me.proxer.app.anime.resolver
 
-import android.net.Uri
+import androidx.core.net.toUri
 import io.reactivex.Single
 import me.proxer.app.MainApplication
 import me.proxer.app.exception.StreamResolutionException
@@ -41,7 +41,7 @@ object ProxerStreamCFResolver : StreamResolver() {
                             "https://videodelivery.net/$streamId/manifest/video.mpd".toHttpUrlOrNull()
                                 ?: throw StreamResolutionException()
 
-                        val adTagUri = if (adTag.isNotBlank()) Uri.parse(adTag) else null
+                        val adTagUri = if (adTag.isNotBlank()) adTag.toUri() else null
 
                         StreamResolutionResult.Video(
                             url,

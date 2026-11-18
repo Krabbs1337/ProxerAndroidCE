@@ -3,6 +3,7 @@ package com.santalu.aspectratioimageview
 import android.content.Context
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.content.withStyledAttributes
 import me.proxer.app.R
 
 /**
@@ -19,9 +20,9 @@ class AspectRatioImageView
         private var ratio = 1f
 
         init {
-            val a = context.obtainStyledAttributes(attrs, R.styleable.AspectRatioImageView)
-            ratio = a.getFloat(R.styleable.AspectRatioImageView_ari_ratio, ratio)
-            a.recycle()
+            context.withStyledAttributes(attrs, R.styleable.AspectRatioImageView) {
+                ratio = getFloat(R.styleable.AspectRatioImageView_ari_ratio, ratio)
+            }
         }
 
         override fun onMeasure(

@@ -18,6 +18,7 @@ import android.widget.ImageView
 import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.text.util.LinkifyCompat
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.bumptech.glide.load.engine.GlideException
@@ -116,7 +117,7 @@ inline fun <T> GlideRequest<T>.logErrors(): GlideRequest<T> =
         },
     )
 
-inline fun HttpUrl.androidUri(): Uri = Uri.parse(toString())
+inline fun HttpUrl.androidUri(): Uri = toString().toUri()
 
 fun String.toPrefixedUrlOrNull(): HttpUrl? =
     when {
@@ -154,7 +155,7 @@ inline fun <reified T : Enum<T>> Bundle.getEnumSet(
 }
 
 inline fun Intent.addReferer(): Intent {
-    putExtra(Intent.EXTRA_REFERRER, Uri.parse("android-app://$APPLICATION_ID"))
+    putExtra(Intent.EXTRA_REFERRER, "android-app://$APPLICATION_ID".toUri())
 
     return this
 }

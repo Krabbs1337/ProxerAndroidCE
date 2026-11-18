@@ -1,8 +1,8 @@
 package me.proxer.app.util.wrapper
 
+import androidx.core.graphics.drawable.toDrawable
 import android.app.Activity
 import android.content.Context
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import androidx.appcompat.widget.Toolbar
 import com.mikepenz.crossfader.Crossfader
@@ -111,7 +111,7 @@ class MaterialDrawerWrapper(
                 addProfiles(*generateProfiles(context))
                 withSavedInstance(savedInstanceState)
 
-                headerBackground = ImageHolder(ColorDrawable(context.resolveColor(R.attr.colorPrimary)))
+                headerBackground = ImageHolder(context.resolveColor(R.attr.colorPrimary).toDrawable())
 
                 onAccountHeaderListener = { _, item, _ ->
                     val drawerItem = ProfileItem.fromIdOrDefault(item.identifier)

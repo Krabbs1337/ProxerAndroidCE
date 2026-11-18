@@ -1,9 +1,9 @@
 package me.proxer.app.util
 
+import androidx.core.net.toUri
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ResolveInfo
-import android.net.Uri
 import com.bumptech.glide.request.target.Target
 import me.proxer.app.GlideApp
 import me.proxer.app.util.extension.androidUri
@@ -55,7 +55,7 @@ object Utils {
         context: Context,
         url: HttpUrl,
     ): Set<String> {
-        val browserActivityIntent = Intent(Intent.ACTION_VIEW, Uri.parse("http://www.generic.com"))
+        val browserActivityIntent = Intent(Intent.ACTION_VIEW, "http://www.generic.com".toUri())
         val genericResolvedList =
             extractPackageNames(
                 context.packageManager.queryIntentActivities(browserActivityIntent, 0),

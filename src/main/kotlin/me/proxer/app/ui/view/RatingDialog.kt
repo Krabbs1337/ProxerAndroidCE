@@ -1,9 +1,9 @@
 package me.proxer.app.ui.view
 
+import androidx.core.net.toUri
 import android.app.Dialog
 import android.content.ActivityNotFoundException
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.afollestad.materialdialogs.MaterialDialog
@@ -33,14 +33,14 @@ class RatingDialog : BaseDialog() {
                     requireContext().startActivity(
                         Intent(
                             Intent.ACTION_VIEW,
-                            Uri.parse("market://details?id=$APPLICATION_ID"),
+                            "market://details?id=$APPLICATION_ID".toUri(),
                         ),
                     )
                 } catch (error: ActivityNotFoundException) {
                     requireContext().startActivity(
                         Intent(
                             Intent.ACTION_VIEW,
-                            Uri.parse("https://play.google.com/store/apps/details?id=$APPLICATION_ID"),
+                            "https://play.google.com/store/apps/details?id=$APPLICATION_ID".toUri(),
                         ),
                     )
                 }

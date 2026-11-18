@@ -2,8 +2,8 @@
 
 package me.proxer.app.util.extension
 
+import androidx.core.graphics.drawable.toDrawable
 import android.animation.LayoutTransition
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.StateListDrawable
 import android.view.ViewGroup
@@ -94,11 +94,11 @@ fun RecyclerView.enableFastScroll() {
 
     val thumbDrawableSelector =
         StateListDrawable().apply {
-            addState(intArrayOf(android.R.attr.state_pressed), ColorDrawable(pressedColor))
-            addState(intArrayOf(), ColorDrawable(thumbColor))
+            addState(intArrayOf(android.R.attr.state_pressed), pressedColor.toDrawable())
+            addState(intArrayOf(), thumbColor.toDrawable())
         }
 
-    val trackDrawable = ColorDrawable(trackColor)
+    val trackDrawable = trackColor.toDrawable()
 
     try {
         val initFastScrollerMethod =

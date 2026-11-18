@@ -1,5 +1,6 @@
 package me.proxer.app.media.recommendation
 
+import java.text.NumberFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -134,8 +135,8 @@ class RecommendationAdapter : BaseAdapter<Recommendation, ViewHolder>() {
                 null -> Unit
             }
 
-            upvotesText.text = item.positiveVotes.toString()
-            downvotesText.text = item.negativeVotes.toString()
+            upvotesText.text = NumberFormat.getIntegerInstance().format(item.positiveVotes)
+            downvotesText.text = NumberFormat.getIntegerInstance().format(item.negativeVotes)
 
             state.setImageDrawable(item.state.toAppDrawable(state.context))
             glide?.defaultLoad(image, ProxerUrls.entryImage(item.id))

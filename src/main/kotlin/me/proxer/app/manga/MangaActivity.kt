@@ -278,7 +278,7 @@ class MangaActivity : BaseActivity() {
     }
 
     private fun setFullscreen(fullscreen: Boolean) {
-        val isInMultiWindowMode = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && this.isInMultiWindowMode
+        val isInMultiWindowMode = this.isInMultiWindowMode
 
         if (fullscreen && !isInMultiWindowMode) {
             window.decorView.systemUiVisibility = SYSTEM_UI_FLAG_LOW_PROFILE or

@@ -92,6 +92,8 @@ class MediaActivity : ImageTabsActivity() {
 
     var category: Category?
         get() = intent.getSerializableExtra(CATEGORY_EXTRA) as Category?
+
+        @Suppress("NotifyDataSetChanged")
         set(value) {
             intent.putExtra(CATEGORY_EXTRA, value)
 
@@ -123,6 +125,7 @@ class MediaActivity : ImageTabsActivity() {
 
     private val viewModel by viewModel<MediaInfoViewModel> { parametersOf(id) }
 
+    @Suppress("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

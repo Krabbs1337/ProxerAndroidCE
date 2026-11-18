@@ -1,5 +1,6 @@
 package me.proxer.app.anime.resolver
 
+import androidx.core.net.toUri
 import android.content.pm.PackageManager
 import android.net.Uri
 import io.reactivex.Single
@@ -37,6 +38,6 @@ object CrunchyrollStreamResolver : StreamResolver() {
                     throw StreamResolutionException()
                 }
 
-                StreamResolutionResult.App(Uri.parse("crunchyroll://media/${Uri.encode(mediaId)}"))
+                StreamResolutionResult.App("crunchyroll://media/${Uri.encode(mediaId)}".toUri())
             }
 }

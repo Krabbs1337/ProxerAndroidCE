@@ -41,6 +41,7 @@ class EasyHeaderFooterAdapter(
         @Suppress("UNCHECKED_CAST")
         (inner as RecyclerView.Adapter<RecyclerView.ViewHolder>).registerAdapterDataObserver(
             object : RecyclerView.AdapterDataObserver() {
+                @Suppress("NotifyDataSetChanged")
                 override fun onChanged() = notifyDataSetChanged()
 
                 override fun onItemRangeChanged(

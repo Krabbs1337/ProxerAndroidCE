@@ -1,5 +1,6 @@
 package me.proxer.app.profile.info
 
+import java.text.NumberFormat
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -104,13 +105,13 @@ class ProfileInfoFragment : BaseContentFragment<UserInfoWrapper>(R.layout.fragme
             userInfo.animePoints + userInfo.mangaPoints + userInfo.uploadPoints +
                 userInfo.forumPoints + userInfo.infoPoints + userInfo.miscPoints
 
-        animePointsRow.text = userInfo.animePoints.toString()
-        mangaPointsRow.text = userInfo.mangaPoints.toString()
-        uploadPointsRow.text = userInfo.uploadPoints.toString()
-        forumPointsRow.text = userInfo.forumPoints.toString()
-        infoPointsRow.text = userInfo.infoPoints.toString()
-        miscellaneousPointsRow.text = userInfo.miscPoints.toString()
-        totalPointsRow.text = totalPoints.toString()
+        animePointsRow.text = NumberFormat.getIntegerInstance().format(userInfo.animePoints)
+        mangaPointsRow.text = NumberFormat.getIntegerInstance().format(userInfo.mangaPoints)
+        uploadPointsRow.text = NumberFormat.getIntegerInstance().format(userInfo.uploadPoints)
+        forumPointsRow.text = NumberFormat.getIntegerInstance().format(userInfo.forumPoints)
+        infoPointsRow.text = NumberFormat.getIntegerInstance().format(userInfo.infoPoints)
+        miscellaneousPointsRow.text = NumberFormat.getIntegerInstance().format(userInfo.miscPoints)
+        totalPointsRow.text = NumberFormat.getIntegerInstance().format(totalPoints)
         rank.text = rankToString(totalPoints).linkify(web = false, mentions = false, custom = arrayOf(rankRegex))
 
         if (userInfo.status.isBlank()) {
@@ -127,8 +128,8 @@ class ProfileInfoFragment : BaseContentFragment<UserInfoWrapper>(R.layout.fragme
             val days = hours / 24f
 
             watchedEpisodesContainer.isVisible = true
-            episodesRow.text = watchedEpisodes.toString()
-            minutesRow.text = minutes.toString()
+            episodesRow.text = NumberFormat.getIntegerInstance().format(watchedEpisodes)
+            minutesRow.text = NumberFormat.getIntegerInstance().format(minutes)
             hoursRow.text = DATE_FORMAT.format(hours)
             daysRow.text = DATE_FORMAT.format(days)
         } else {

@@ -1,3 +1,5 @@
+@file:OptIn(androidx.media3.common.util.UnstableApi::class)
+
 package me.proxer.app.anime.stream
 
 import android.annotation.SuppressLint
@@ -92,6 +94,7 @@ import me.zhanghai.android.materialprogressbar.ThinCircularProgressDrawable
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
 import timber.log.Timber
+import java.util.Locale
 
 /**
  * @author Ruben Gees
@@ -515,7 +518,7 @@ class StreamActivity : BaseActivity() {
     }
 
     private fun toggleFullscreen(fullscreen: Boolean) {
-        val isInMultiWindowMode = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && this.isInMultiWindowMode
+        val isInMultiWindowMode = this.isInMultiWindowMode
 
         window.decorView.systemUiVisibility =
             when {
@@ -620,7 +623,7 @@ class StreamActivity : BaseActivity() {
         val wasVisible = view.isVisible
 
         view.isVisible = true
-        view.text = ((previousDuration ?: 0) + 10).toString()
+        view.text = String.format(Locale.ROOT, "%d", (previousDuration ?: 0) + 10)
 
         if (animate) {
             view.background.state =

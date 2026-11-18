@@ -83,8 +83,6 @@
     </string>
     <string name="error_invalid_chapter">Dieses Kapitel wurde noch nicht hochgeladen :/</string>
     <string name="error_invalid_episode">Diese Episode wurde noch nicht hochgeladen :/</string>
-    <string name="error_invalid_input">Ungültige Eingabe</string>
-    <string name="error_invalid_topic">Ungültiges Thema</string>
     <string name="error_account_expired">Der Account ist abgelaufen</string>
     <string name="error_account_blocked">Der Account wurde geblockt</string>
     <string name="error_api">Die Schnittstelle hat einen Fehler gemeldet.
@@ -128,11 +126,6 @@
     <string name="error_comment_too_long">Der Kommentar darf maximal 20000 Zeichen lang sein</string>
     <string name="error_comment_invalid_progress">Es kann kein Kommentar für vermerkte Werke veröffentlich werden</string>
 
-    <string name="error_input_empty">Gib etwas ein</string>
-    <string name="error_duplicate_participant">Diesen Teilnehmer hast du schon hinzugefügt</string>
-    <string name="error_self_participant">Du kannst dich nicht selbst hinzufügen</string>
-    <string name="error_missing_message">Gib eine Nachricht ein</string>
-    <string name="error_missing_participants">Füge mindestens einen Teilnehmer hinzu</string>
 
     <string name="error_video_deleted">Das Video ist nicht mehr verfügbar</string>
     <string name="error_video_service_unavailable">
@@ -379,17 +372,6 @@
     </string>
     <string name="dialog_comment_delete_positive">Löschen</string>
 
-    <!-- language=HTML -->
-    <string name="dialog_link_check_message">
-        <![CDATA[
-        Links können zu schädlichen Seiten wie Spam oder Phishing führen. Dieser Link führt zu <b>%s</b>. Auch wenn der
-        Link nicht als schädlich bekannt ist, solltest du immer vorsichtig sein.
-        ]]>
-    </string>
-    <string name="dialog_link_check_progress">Überprüfe…</string>
-    <string name="dialog_link_check_secure">Dieser Link ist nicht als schädlich bekannt</string>
-    <string name="dialog_link_check_not_secure">Dieser Link ist als schädlich bekannt</string>
-    <string name="dialog_link_check_positive">Öffnen</string>
 
     <string name="fragment_bookmark_delete_message">Lesezeichen gelöscht</string>
     <string name="fragment_bookmark_delete_content_description">Löschen</string>
@@ -846,11 +828,7 @@
     <string name="action_filter">Filter</string>
     <string name="action_sort">Sortierung</string>
     <string name="action_share">Teilen</string>
-    <string name="action_answer">Antworten</string>
-    <string name="action_copy">Kopieren</string>
-    <string name="action_reply">Antworten</string>
     <string name="action_delete_all">Alle löschen</string>
-    <string name="action_report">Melden</string>
     <string name="action_undo">Rückgängig</string>
 
     <string name="action_filter_all">Alles</string>
@@ -875,7 +853,6 @@
     <string name="action_create_comment">Neuer Kommentar</string>
     <string name="action_update_comment">Kommentar bearbeiten</string>
 
-    <string name="action_create_group">Neue Gruppe</string>
 
 
     <string name="action_filter_available">Nur verfügbare anzeigen</string>

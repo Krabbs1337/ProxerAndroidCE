@@ -82,7 +82,7 @@ object DeviceUtils {
 
         if (
             isLandscape(activity.resources) &&
-            (Build.VERSION.SDK_INT < Build.VERSION_CODES.N || !activity.isInMultiWindowMode)
+            !activity.isInMultiWindowMode
         ) {
             result++
         }

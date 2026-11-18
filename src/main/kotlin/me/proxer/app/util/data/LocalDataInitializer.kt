@@ -2,9 +2,7 @@ package me.proxer.app.util.data
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.os.Build
 import androidx.core.content.edit
-import java.io.File
 
 /**
  * @author Ruben Gees
@@ -46,14 +44,7 @@ class LocalDataInitializer(
     }
 
     private fun deleteLegacyHawkFiles() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            context.deleteSharedPreferences("Hawk2")
-            context.deleteSharedPreferences("crypto.KEY_256")
-        } else {
-            arrayOf("shared_prefs/Hawk2.xml", "shared_prefs/crypto.KEY_256.xml")
-                .map { File(context.filesDir.parent, it) }
-                .filter { it.exists() }
-                .forEach { it.delete() }
-        }
+        context.deleteSharedPreferences("Hawk2")
+        context.deleteSharedPreferences("crypto.KEY_256")
     }
 }

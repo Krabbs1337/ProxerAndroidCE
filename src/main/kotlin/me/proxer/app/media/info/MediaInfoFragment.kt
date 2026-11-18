@@ -1,5 +1,6 @@
 package me.proxer.app.media.info
 
+import androidx.core.view.isNotEmpty
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -476,7 +477,7 @@ class MediaInfoFragment : BaseContentFragment<Entry>(R.layout.fragment_media_inf
     ) {
         layout.post {
             if (layout.width <= 0 || view == null || view?.isAttachedToWindow != true) return@post
-            if (layout.childCount > 0) layout.removeAllViews()
+            if (layout.isNotEmpty()) layout.removeAllViews()
 
             for ((index, mappedItem) in items
                 .asSequence()

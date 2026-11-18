@@ -1,6 +1,6 @@
 package me.proxer.app.anime.resolver
 
-import android.net.Uri
+import androidx.core.net.toUri
 import io.reactivex.Single
 import me.proxer.app.MainApplication.Companion.USER_AGENT
 import me.proxer.app.exception.StreamResolutionException
@@ -39,7 +39,7 @@ object ProxerStreamResolver : StreamResolver() {
                         val url = regexResult.groupValues[2].toHttpUrlOrNull() ?: throw StreamResolutionException()
                         val type = regexResult.groupValues[1]
 
-                        val adTagUri = if (adTag.isNotBlank()) Uri.parse(adTag) else null
+                        val adTagUri = if (adTag.isNotBlank()) adTag.toUri() else null
 
                         StreamResolutionResult.Video(url, type, adTag = adTagUri)
                     }

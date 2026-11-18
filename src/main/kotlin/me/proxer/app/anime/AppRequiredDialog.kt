@@ -3,10 +3,10 @@ package me.proxer.app.anime
 import android.app.Dialog
 import android.content.ActivityNotFoundException
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
+import androidx.core.net.toUri
 import com.afollestad.materialdialogs.MaterialDialog
 import me.proxer.app.R
 import me.proxer.app.base.BaseDialog
@@ -39,13 +39,13 @@ class AppRequiredDialog : BaseDialog() {
             .positiveButton(R.string.dialog_app_required_positive) {
                 try {
                     requireContext().startActivity(
-                        Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$packageName")),
+                        Intent(Intent.ACTION_VIEW, "market://details?id=$packageName".toUri()),
                     )
                 } catch (error: ActivityNotFoundException) {
                     requireContext().startActivity(
                         Intent(
                             Intent.ACTION_VIEW,
-                            Uri.parse("https://play.google.com/store/apps/details?id=$packageName"),
+                            "https://play.google.com/store/apps/details?id=$packageName".toUri(),
                         ),
                     )
                 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
-    <bool name="is_tablet">true</bool>
+    <bool name="is_tablet" tools:override="true">true</bool>
     <bool name="is_large_tablet">true</bool>
 </resources>

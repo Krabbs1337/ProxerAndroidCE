@@ -1,5 +1,6 @@
 package me.proxer.app.forum
 
+import java.text.NumberFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -112,7 +113,7 @@ class PostAdapter : BaseAdapter<ParsedPost, ViewHolder>() {
 
             user.text = item.username
             date.text = item.date.distanceInWordsToNow(date.context)
-            thankYou.text = item.thankYouAmount.toString()
+            thankYou.text = NumberFormat.getIntegerInstance().format(item.thankYouAmount)
 
             post.userId = item.userId
             post.tree = item.parsedMessage

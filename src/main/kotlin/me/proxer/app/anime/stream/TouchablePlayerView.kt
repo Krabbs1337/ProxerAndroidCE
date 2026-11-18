@@ -1,3 +1,5 @@
+@file:OptIn(androidx.media3.common.util.UnstableApi::class)
+
 package me.proxer.app.anime.stream
 
 import android.annotation.SuppressLint
@@ -6,8 +8,6 @@ import android.app.NotificationManager
 import android.content.Context
 import android.database.ContentObserver
 import android.media.AudioManager
-import android.os.Build.VERSION
-import android.os.Build.VERSION_CODES
 import android.provider.Settings.SettingNotFoundException
 import android.provider.Settings.System
 import android.util.AttributeSet
@@ -48,13 +48,7 @@ class TouchablePlayerView
         private val canChangeAudio
             get() =
                 audioManager.isVolumeFixed.not() ||
-                    if (VERSION.SDK_INT >=
-                        VERSION_CODES.M
-                    ) {
-                        notificationManager.isNotificationPolicyAccessGranted
-                    } else {
-                        true
-                    }
+                    notificationManager.isNotificationPolicyAccessGranted
 
         private var localVolume = 0f
         private var isScrolling = false

@@ -57,71 +57,97 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <intent-filter>
+            <intent-filter
+                android:autoVerify="false">
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="proxer.me"
-                    android:pathPattern="/news"
+                    android:host="proxer.me" />
+                <data
+                    android:pathPattern="/news" />
+                <data
                     android:scheme="http" />
 
                 <data
-                    android:host="proxer.me"
-                    android:pathPattern="/news"
+                    android:host="proxer.me" />
+                <data
+                    android:pathPattern="/news" />
+                <data
                     android:scheme="https" />
 
                 <data
-                    android:host="proxer.me"
-                    android:pathPattern="/anime"
+                    android:host="proxer.me" />
+                <data
+                    android:pathPattern="/anime" />
+                <data
                     android:scheme="http" />
 
                 <data
-                    android:host="proxer.me"
-                    android:pathPattern="/anime"
+                    android:host="proxer.me" />
+                <data
+                    android:pathPattern="/anime" />
+                <data
                     android:scheme="https" />
 
                 <data
-                    android:host="proxer.me"
-                    android:pathPattern="/anime/.*"
+                    android:host="proxer.me" />
+                <data
+                    android:pathPattern="/anime/.*" />
+                <data
                     android:scheme="http" />
 
                 <data
-                    android:host="proxer.me"
-                    android:pathPattern="/anime/.*"
+                    android:host="proxer.me" />
+                <data
+                    android:pathPattern="/anime/.*" />
+                <data
                     android:scheme="https" />
 
                 <data
-                    android:host="proxer.me"
-                    android:pathPattern="/calendar"
+                    android:host="proxer.me" />
+                <data
+                    android:pathPattern="/calendar" />
+                <data
                     android:scheme="http" />
 
                 <data
-                    android:host="proxer.me"
-                    android:pathPattern="/calendar"
+                    android:host="proxer.me" />
+                <data
+                    android:pathPattern="/calendar" />
+                <data
                     android:scheme="https" />
 
                 <data
-                    android:host="proxer.me"
-                    android:pathPattern="/manga"
+                    android:host="proxer.me" />
+                <data
+                    android:pathPattern="/manga" />
+                <data
                     android:scheme="http" />
 
                 <data
-                    android:host="proxer.me"
-                    android:pathPattern="/manga"
+                    android:host="proxer.me" />
+                <data
+                    android:pathPattern="/manga" />
+                <data
                     android:scheme="https" />
 
                 <data
-                    android:host="proxer.me"
-                    android:pathPattern="/manga/.*"
+                    android:host="proxer.me" />
+                <data
+                    android:pathPattern="/manga/.*" />
+                <data
                     android:scheme="http" />
 
                 <data
-                    android:host="proxer.me"
-                    android:pathPattern="/manga/.*"
+                    android:host="proxer.me" />
+                <data
+                    android:pathPattern="/manga/.*" />
+                <data
                     android:scheme="https" />
+
             </intent-filter>
 
             <meta-data
@@ -131,21 +157,27 @@
 
         <activity android:name=".profile.ProfileActivity" android:exported="true">
 
-            <intent-filter>
+            <intent-filter
+                android:autoVerify="false">
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="proxer.me"
-                    android:pathPattern="/user/.*"
+                    android:host="proxer.me" />
+                <data
+                    android:pathPattern="/user/.*" />
+                <data
                     android:scheme="http" />
 
                 <data
-                    android:host="proxer.me"
-                    android:pathPattern="/user/.*"
+                    android:host="proxer.me" />
+                <data
+                    android:pathPattern="/user/.*" />
+                <data
                     android:scheme="https" />
+
             </intent-filter>
         </activity>
 
@@ -159,21 +191,27 @@
 
         <activity android:name=".media.MediaActivity" android:exported="true">
 
-            <intent-filter>
+            <intent-filter
+                android:autoVerify="false">
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="proxer.me"
-                    android:pathPattern="/info/.*"
+                    android:host="proxer.me" />
+                <data
+                    android:pathPattern="/info/.*" />
+                <data
                     android:scheme="http" />
 
                 <data
-                    android:host="proxer.me"
-                    android:pathPattern="/info/.*"
+                    android:host="proxer.me" />
+                <data
+                    android:pathPattern="/info/.*" />
+                <data
                     android:scheme="https" />
+
             </intent-filter>
         </activity>
 
@@ -191,96 +229,126 @@
             android:launchMode="singleTask" />
 
         <activity android:name=".manga.MangaActivity" android:exported="true">
-            <intent-filter>
+            <intent-filter
+                android:autoVerify="false">
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="proxer.me"
-                    android:pathPattern="/chapter/.*"
+                    android:host="proxer.me" />
+                <data
+                    android:pathPattern="/chapter/.*" />
+                <data
                     android:scheme="http" />
 
                 <data
-                    android:host="proxer.me"
-                    android:pathPattern="/chapter/.*"
+                    android:host="proxer.me" />
+                <data
+                    android:pathPattern="/chapter/.*" />
+                <data
                     android:scheme="https" />
 
                 <data
-                    android:host="proxer.me"
-                    android:pathPattern="/read/.*"
+                    android:host="proxer.me" />
+                <data
+                    android:pathPattern="/read/.*" />
+                <data
                     android:scheme="http" />
 
                 <data
-                    android:host="proxer.me"
-                    android:pathPattern="/read/.*"
+                    android:host="proxer.me" />
+                <data
+                    android:pathPattern="/read/.*" />
+                <data
                     android:scheme="https" />
+
             </intent-filter>
         </activity>
 
         <activity android:name=".anime.AnimeActivity" android:exported="true">
-            <intent-filter>
+            <intent-filter
+                android:autoVerify="false">
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="proxer.me"
-                    android:pathPattern="/watch/.*"
+                    android:host="proxer.me" />
+                <data
+                    android:pathPattern="/watch/.*" />
+                <data
                     android:scheme="http" />
 
                 <data
-                    android:host="proxer.me"
-                    android:pathPattern="/watch/.*"
+                    android:host="proxer.me" />
+                <data
+                    android:pathPattern="/watch/.*" />
+                <data
                     android:scheme="https" />
+
             </intent-filter>
         </activity>
 
         <activity android:name=".forum.TopicActivity" android:exported="true">
-            <intent-filter>
+            <intent-filter
+                android:autoVerify="false">
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="proxer.me"
-                    android:pathPattern="/forum/.*/.*"
+                    android:host="proxer.me" />
+                <data
+                    android:pathPattern="/forum/.*/.*" />
+                <data
                     android:scheme="http" />
 
                 <data
-                    android:host="proxer.me"
-                    android:pathPattern="/forum/.*/.*"
+                    android:host="proxer.me" />
+                <data
+                    android:pathPattern="/forum/.*/.*" />
+                <data
                     android:scheme="https" />
 
                 <data
-                    android:host="proxer.me"
-                    android:pathPattern="/touzai"
+                    android:host="proxer.me" />
+                <data
+                    android:pathPattern="/touzai" />
+                <data
                     android:scheme="http" />
 
                 <data
-                    android:host="proxer.me"
-                    android:pathPattern="/touzai"
+                    android:host="proxer.me" />
+                <data
+                    android:pathPattern="/touzai" />
+                <data
                     android:scheme="https" />
+
             </intent-filter>
         </activity>
 
         <activity android:name=".settings.status.ServerStatusActivity" android:exported="true">
-            <intent-filter>
+            <intent-filter
+                android:autoVerify="false">
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="proxer.de"
+                    android:host="proxer.de" />
+                <data
                     android:scheme="http" />
 
                 <data
-                    android:host="proxer.de"
+                    android:host="proxer.de" />
+                <data
                     android:scheme="https" />
+
             </intent-filter>
         </activity>
 

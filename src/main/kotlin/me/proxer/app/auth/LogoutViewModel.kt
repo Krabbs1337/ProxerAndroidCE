@@ -26,8 +26,6 @@ class LogoutViewModel : ViewModel() {
     override fun onCleared() {
         dataDisposable?.dispose()
         dataDisposable = null
-
-        super.onCleared()
     }
 
     fun logout() {

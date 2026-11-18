@@ -5,9 +5,9 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import androidx.core.content.getSystemService
+import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import com.danielstone.materialaboutlibrary.ConvenienceBuilder
 import com.danielstone.materialaboutlibrary.MaterialAboutFragment
@@ -231,7 +231,7 @@ class AboutFragment :
                 ).setOnClickAction {
                     val intent =
                         Intent(Intent.ACTION_SENDTO).apply {
-                            data = Uri.parse("mailto:")
+                            data = "mailto:".toUri()
 
                             putExtra(Intent.EXTRA_EMAIL, arrayOf(SUPPORT_PROXER_MAIL))
                             putExtra(Intent.EXTRA_SUBJECT, getString(R.string.about_support_mail_subject))

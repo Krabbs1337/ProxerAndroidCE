@@ -38,8 +38,6 @@ class LoginViewModel : ViewModel() {
     override fun onCleared() {
         dataDisposable?.dispose()
         dataDisposable = null
-
-        super.onCleared()
     }
 
     fun login(

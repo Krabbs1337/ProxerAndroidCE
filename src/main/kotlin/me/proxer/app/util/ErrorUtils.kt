@@ -1,3 +1,5 @@
+@file:OptIn(androidx.media3.common.util.UnstableApi::class)
+
 package me.proxer.app.util
 
 import android.content.Intent

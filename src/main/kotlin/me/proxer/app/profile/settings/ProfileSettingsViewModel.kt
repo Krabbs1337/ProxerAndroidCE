@@ -19,8 +19,8 @@ import me.proxer.library.ProxerApi
  */
 class ProfileSettingsViewModel : ViewModel() {
     val data = MutableLiveData<LocalProfileSettings>()
-    val error = ResettingMutableLiveData<ErrorUtils.ErrorAction>()
-    val updateError = ResettingMutableLiveData<ErrorUtils.ErrorAction>()
+    val error = ResettingMutableLiveData<ErrorUtils.ErrorAction?>()
+    val updateError = ResettingMutableLiveData<ErrorUtils.ErrorAction?>()
 
     private val api by safeInject<ProxerApi>()
     private val storageHelper by safeInject<StorageHelper>()
@@ -36,8 +36,6 @@ class ProfileSettingsViewModel : ViewModel() {
     override fun onCleared() {
         disposable?.dispose()
         disposable = null
-
-        super.onCleared()
     }
 
     fun refresh() {

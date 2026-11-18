@@ -113,11 +113,26 @@ android {
     }
 
     lint {
-        // TODO(ROADMAP Phase 9): re-enable strict lint and re-wire config/lint/lint.xml.
-        // The lint shipped with AGP 9 reports many new issues on this codebase.
-        abortOnError = false
-        warningsAsErrors = false
+        // ROADMAP Phase 11.2: lint-clean since 17.11.2026 (0 issues), strict mode re-enabled.
+        abortOnError = true
+        warningsAsErrors = true
         checkReleaseBuilds = false
+
+        // ROADMAP Phase 11.2: disabled with justification
+        disable += [
+                // AutoDispose's lint detector calls Context.getMainProject() during module
+                // analysis, which is forbidden under AGP 9 (LintError). The library is pinned
+                // at 1.4.1 (last RxJava2 release) and cannot be fixed upstream for RxJava2.
+                "AutoDispose",
+                // Emoticon GIFs in drawable-nodpi are user content (BBCode smileys), not UI
+                // icons; converting them to WebP is optional polish, not a correctness issue.
+                "GifUsage",
+                // media3's @UnstableApi usage in the stream feature is deliberate and opted in
+                // per file via @file:OptIn(UnstableApi::class) (enforced by the compiler).
+                // Lint's detector under AGP 9 does not recognize @OptIn and reports every
+                // usage site as an error.
+                "UnsafeOptInUsageError"
+        ]
     }
 
     packaging {

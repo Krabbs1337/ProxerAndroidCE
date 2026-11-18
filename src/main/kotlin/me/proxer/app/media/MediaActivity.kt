@@ -1,6 +1,7 @@
 package me.proxer.app.media
 
 import android.app.Activity
+import androidx.core.content.IntentCompat
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -91,7 +92,7 @@ class MediaActivity : ImageTabsActivity() {
         }
 
     var category: Category?
-        get() = intent.getSerializableExtra(CATEGORY_EXTRA) as Category?
+        get() = IntentCompat.getSerializableExtra(intent, CATEGORY_EXTRA, Category::class.java)
 
         @Suppress("NotifyDataSetChanged")
         set(value) {

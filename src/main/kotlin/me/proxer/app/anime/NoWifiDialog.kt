@@ -4,7 +4,7 @@ import android.app.Dialog
 import android.os.Bundle
 import android.widget.CheckBox
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.os.bundleOf
+
 import androidx.fragment.app.setFragmentResult
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
@@ -26,7 +26,7 @@ class NoWifiDialog : BaseDialog() {
             activity: AppCompatActivity,
             streamId: String,
         ) = NoWifiDialog()
-            .apply { arguments = bundleOf(STREAM_ID_ARGUMENT to streamId) }
+            .apply { arguments = Bundle().apply { putString(STREAM_ID_ARGUMENT, streamId) } }
             .show(activity.supportFragmentManager, "no_wifi_dialog")
     }
 
@@ -43,6 +43,6 @@ class NoWifiDialog : BaseDialog() {
                     preferenceHelper.shouldCheckCellular = false
                 }
 
-                setFragmentResult(STREAM_ID_RESULT, bundleOf(STREAM_ID_RESULT to streamId))
+                setFragmentResult(STREAM_ID_RESULT, Bundle().apply { putString(STREAM_ID_RESULT, streamId) })
             }.negativeButton(R.string.cancel)
 }

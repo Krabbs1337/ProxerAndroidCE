@@ -48,6 +48,7 @@ class TwoColorSelectableDrawable(
 
     override fun setAlpha(alpha: Int) = Unit
 
+    @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
     override fun getOpacity() = PixelFormat.OPAQUE
 
     override fun setColorFilter(colorFilter: ColorFilter?) = Unit

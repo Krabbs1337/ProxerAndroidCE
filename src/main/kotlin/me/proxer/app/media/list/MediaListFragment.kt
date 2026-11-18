@@ -1,6 +1,7 @@
 package me.proxer.app.media.list
 
 import android.content.Intent
+import androidx.core.os.BundleCompat
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -11,7 +12,7 @@ import android.widget.Button
 import android.widget.CheckBox
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
-import androidx.core.os.bundleOf
+
 import androidx.core.view.updatePadding
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -72,7 +73,7 @@ class MediaListFragment :
 
         fun newInstance(category: Category) =
             MediaListFragment().apply {
-                arguments = bundleOf(CATEGORY_ARGUMENT to category)
+                arguments = Bundle().apply { putSerializable(CATEGORY_ARGUMENT, category) }
             }
     }
 
@@ -103,11 +104,15 @@ class MediaListFragment :
     override var innerAdapter by Delegates.notNull<MediaAdapter>()
 
     private val category
-        get() = requireArguments().getSerializable(CATEGORY_ARGUMENT) as Category
+        get() = BundleCompat.getSerializable(requireArguments(), CATEGORY_ARGUMENT, Category::class.java) as Category
 
     private var sortCriteria: MediaSearchSortCriteria
         get() =
-            requireArguments().getSerializable(SORT_CRITERIA_ARGUMENT) as? MediaSearchSortCriteria
+            BundleCompat.getSerializable(
+                requireArguments(),
+                SORT_CRITERIA_ARGUMENT,
+                MediaSearchSortCriteria::class.java,
+            )
                 ?: MediaSearchSortCriteria.RATING
         set(value) {
             requireArguments().putSerializable(SORT_CRITERIA_ARGUMENT, value)
@@ -117,7 +122,7 @@ class MediaListFragment :
 
     private var type: MediaType
         get() =
-            requireArguments().getSerializable(TYPE_ARGUMENT) as? MediaType ?: when (category) {
+            BundleCompat.getSerializable(requireArguments(), TYPE_ARGUMENT, MediaType::class.java) ?: when (category) {
                 Category.ANIME -> MediaType.ALL_ANIME
                 Category.MANGA -> MediaType.ALL_MANGA
                 else -> error("Unknown value for category")
@@ -137,7 +142,7 @@ class MediaListFragment :
         }
 
     internal var language: Language?
-        get() = requireArguments().getSerializable(LANGUAGE_ARGUMENT) as? Language?
+        get() = BundleCompat.getSerializable(requireArguments(), LANGUAGE_ARGUMENT, Language::class.java)
         set(value) {
             requireArguments().putSerializable(LANGUAGE_ARGUMENT, language)
 
@@ -145,7 +150,9 @@ class MediaListFragment :
         }
 
     internal var genres: List<LocalTag>
-        get() = requireArguments().getParcelableArrayList(GENRES_ARGUMENT) ?: emptyList()
+        get() =
+            BundleCompat.getParcelableArrayList(requireArguments(), GENRES_ARGUMENT, LocalTag::class.java)
+                ?: emptyList()
         set(value) {
             requireArguments().putParcelableArrayList(GENRES_ARGUMENT, ArrayList(value))
 
@@ -153,7 +160,9 @@ class MediaListFragment :
         }
 
     internal var excludedGenres: List<LocalTag>
-        get() = requireArguments().getParcelableArrayList(EXCLUDED_GENRES_ARGUMENT) ?: emptyList()
+        get() =
+            BundleCompat.getParcelableArrayList(requireArguments(), EXCLUDED_GENRES_ARGUMENT, LocalTag::class.java)
+                ?: emptyList()
         set(value) {
             requireArguments().putParcelableArrayList(EXCLUDED_GENRES_ARGUMENT, ArrayList(value))
 
@@ -169,7 +178,9 @@ class MediaListFragment :
         }
 
     internal var tags: List<LocalTag>
-        get() = requireArguments().getParcelableArrayList(TAGS_ARGUMENT) ?: emptyList()
+        get() =
+            BundleCompat.getParcelableArrayList(requireArguments(), TAGS_ARGUMENT, LocalTag::class.java)
+                ?: emptyList()
         set(value) {
             requireArguments().putParcelableArrayList(TAGS_ARGUMENT, ArrayList(value))
 
@@ -177,7 +188,9 @@ class MediaListFragment :
         }
 
     internal var excludedTags: List<LocalTag>
-        get() = requireArguments().getParcelableArrayList(EXCLUDED_TAGS_ARGUMENT) ?: emptyList()
+        get() =
+            BundleCompat.getParcelableArrayList(requireArguments(), EXCLUDED_TAGS_ARGUMENT, LocalTag::class.java)
+                ?: emptyList()
         set(value) {
             requireArguments().putParcelableArrayList(EXCLUDED_TAGS_ARGUMENT, ArrayList(value))
 
@@ -186,7 +199,7 @@ class MediaListFragment :
 
     internal var tagRateFilter: TagRateFilter
         get() =
-            requireArguments().getSerializable(TAG_RATE_FILTER_ARGUMENT) as? TagRateFilter
+            BundleCompat.getSerializable(requireArguments(), TAG_RATE_FILTER_ARGUMENT, TagRateFilter::class.java)
                 ?: TagRateFilter.RATED_ONLY
         set(value) {
             requireArguments().putSerializable(TAG_RATE_FILTER_ARGUMENT, value)
@@ -196,7 +209,7 @@ class MediaListFragment :
 
     internal var tagSpoilerFilter: TagSpoilerFilter
         get() =
-            requireArguments().getSerializable(TAG_SPOILER_FILTER_ARGUMENT) as? TagSpoilerFilter
+            BundleCompat.getSerializable(requireArguments(), TAG_SPOILER_FILTER_ARGUMENT, TagSpoilerFilter::class.java)
                 ?: TagSpoilerFilter.NO_SPOILERS
         set(value) {
             requireArguments().putSerializable(TAG_SPOILER_FILTER_ARGUMENT, value)
@@ -231,6 +244,7 @@ class MediaListFragment :
 
     internal var searchView by Delegates.notNull<SearchView>()
 
+    @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -261,6 +275,7 @@ class MediaListFragment :
         searchBottomSheetManager = MediaListSearchBottomSheet.bindTo(this, viewModel)
     }
 
+    @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
     override fun onCreateOptionsMenu(
         menu: Menu,
         inflater: MenuInflater,
@@ -335,6 +350,7 @@ class MediaListFragment :
         }
     }
 
+    @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.rating -> sortCriteria = MediaSearchSortCriteria.RATING

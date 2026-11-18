@@ -8,7 +8,8 @@ import com.bumptech.glide.Registry
 import com.bumptech.glide.annotation.GlideModule
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader
 import com.bumptech.glide.load.engine.cache.DiskCache
-import com.bumptech.glide.load.engine.cache.ExternalCacheDiskCacheFactory
+import com.bumptech.glide.load.engine.cache.DiskLruCacheFactory
+import java.io.File
 import com.bumptech.glide.load.engine.cache.InternalCacheDiskCacheFactory
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.module.AppGlideModule
@@ -42,8 +43,16 @@ class ProxerGlideModule : AppGlideModule() {
 
         val diskCacheFactory: DiskCache.Factory =
             when (useExternalCache) {
-                true -> ExternalCacheDiskCacheFactory(context, CACHE_DIR, CACHE_SIZE.toInt())
-                false -> InternalCacheDiskCacheFactory(context, CACHE_DIR, CACHE_SIZE)
+                true -> {
+                    DiskLruCacheFactory(
+                        { File(context.externalCacheDir ?: context.cacheDir, CACHE_DIR) },
+                        CACHE_SIZE,
+                    )
+                }
+
+                false -> {
+                    InternalCacheDiskCacheFactory(context, CACHE_DIR, CACHE_SIZE)
+                }
             }
 
         builder.setDiskCache(diskCacheFactory)

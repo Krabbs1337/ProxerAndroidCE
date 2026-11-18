@@ -24,7 +24,7 @@ Ziel: Das Projekt auf einen aktuellen, build- und Play-Store-fähigen Stand brin
 | 8 | Performance + Polish — **erledigt 17.11.2026** | Glide, Baseline Profiles, AAB-Splits, Desugaring |
 | 9 | Qualitätssicherung + optionale Coroutines-Migration — **erledigt 17.11.2026** | detekt/ktlint/CI aktuell, schrittweise RxJava-Ablösung |
 | 10 | 16 KB Page Size + Abhängigkeits-Aufräumung — **erledigt 17.11.2026** | APK nativ-frei, jitpack-/unmaintained-Deps durch Shims ersetzt |
-| 11 | Runtime-Bugs, Lint-Cleanup + strukturelle Follow-ups — **11.1 + 11.2 erledigt 17.11.2026**, 11.3–11.4 offen | Aus `lintDebug` + Code-Scan abgeleitet, siehe unten |
+| 11 | Runtime-Bugs, Lint-Cleanup + strukturelle Follow-ups — **11.1 + 11.2 + 11.3 erledigt 17.11.2026**, 11.4 offen | Aus `lintDebug` + Code-Scan abgeleitet, siehe unten |
 
 ---
 
@@ -257,7 +257,7 @@ Checkliste (alle bekannten Berührungspunkte):
 
 ---
 
-## Phase 11 – Runtime-Bugs, Lint-Cleanup + strukturelle Follow-ups (11.1 + 11.2 erledigt 17.11.2026, 11.3–11.4 offen)
+## Phase 11 – Runtime-Bugs, Lint-Cleanup + strukturelle Follow-ups (11.1 + 11.2 + 11.3 erledigt 17.11.2026, 11.4 offen)
 
 **Quelle:** `./gradlew lintDebug` (247 Issues nach 11.1: 72 Error, 6 Fatal, 169 Warning) + Compiler-Warnungen (162 in 42 Dateien) + Code-Scan, Stand 17.11.2026.
 
@@ -313,11 +313,27 @@ Ursprüngliche Liste:
 - **Emulator-Verifikation (API 37):** frische Debug-APK installiert, App startet (News/ANMELDEN), 0 `FATAL EXCEPTION`.
 - Verifiziert grün: `ktlintFormat`, `ktlintCheck`, `detekt`, `lintDebug` + `lintRelease` (0 Issues, strict), `assembleDebug`, `assembleRelease`, `bundleRelease`, `assembleLogRelease`, `:baselineprofile:assembleAndroidTest`.
 
-### 11.3 Compiler-Deprecations (Voraussetzung für `allWarningsAsErrors`)
+### 11.3 Compiler-Deprecations — **erledigt 17.11.2026** (159 → 0 Warnungen, `allWarningsAsErrors` wieder aktiv)
+
+Ursprüngliche Liste:
 
 - 13× `getParcelable`/`getSerializable` → typisierte Varianten: `BookmarkFragment:81`, `MangaFragment:153,156`, `CommentsFragment:78`, `MediaListFragment:106,110,120,140,189,199`, `ProfileCommentFragment:64`, `ProfileMediaListFragment:68,71`
 - 2× `setRemoteAdapter(int, Intent)` in den Widget-Workern; 20× `onOptionsItemSelected`
 - Library-Deprecations: security-crypto 1.1.0 (`MasterKey`/`EncryptedSharedPreferences` → neue API), media3 (`prepare(source, bool, bool)`, `C.TYPE_*`, `CastPlayer(CastContext)`), Koin-`viewModel`-DSL-Import, Room `fallbackToDestructiveMigrationOnDowngrade`, Glide `ExternalCacheDiskCacheFactory`
+
+**Umgesetzt am 17.11.2026:**
+
+- **Bundle/Intent:** alle `getSerializable`/`getParcelable`/`getSerializableExtra`/`getParcelableExtra`/`getParcelableArrayList`-Aufrufe auf `BundleCompat`/`IntentCompat` mit `::class.java` umgestellt (11 Dateien); `NullabilityExtensions.getSafeParcelable(Extra)` reified + Compat; `MangaFragment` nutzt statt if/else eine `BundleCompat`-Abfrage. `bundleOf` durch `Bundle().apply { putX(...) }` ersetzt (7 Dateien) bzw. in `AndroidExtensions.intentFor` lokal suppressed (generisches `putExtra` bräuchte Typ-Dispatch).
+- **Fragment-Menüs:** `@Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")` an `onCreateOptionsMenu`/`onOptionsItemSelected`/`setHasOptionsMenu`-Umgebung in 9 Fragmenten (MenuProvider-Migration bleibt 11.4); ebenso `MangaLinearLayoutManger.getExtraLayoutSpace` und `TwoColorSelectableDrawable.getOpacity`.
+- **media3:** `prepare(source, false, false)` → `setMediaSource(source, false); prepare()`; `CastPlayer(CastContext)` → `CastPlayer(ctx, DefaultMediaItemConverter())`; `C.TYPE_*` → `C.CONTENT_TYPE_*`; `isCurrentWindowSeekable` → `isCurrentMediaItemSeekable`; `setSessionAvailabilityListener`/`getStreamTypeForAudioUsage` (ohne nicht-deprecated Ersatz in 1.11.1) lokal suppressed. `@file:OptIn(UnstableApi)` aus 11.2 entfernt (media3 1.11 `UnstableApi` ist kein `@RequiresOptIn` — das OptIn war wirkungslos).
+- **Koin/Room/security-crypto:** `MainModules.kt` mit `@file:Suppress("DEPRECATION")` + Kommentar (Koin 4.2.2 hält die viewModel-DSL in der deprecated androidx-Package; security-crypto 1.1.0 deprecated MasterKey/EncryptedSharedPreferences ohne In-Library-Ersatz — Tink-Migration würde bestehende verschlüsselte Prefs riskieren). Room: `fallbackToDestructiveMigrationOnDowngrade(false)` (explicitle overload; no-arg delegiert auf `false`).
+- **Glide:** `ExternalCacheDiskCacheFactory(context, dir, size)` (deprecated) → `DiskLruCacheFactory({ File(externalCacheDir ?: cacheDir, dir) }, size)` — gleicher Cache-Pfad, nicht-deprecated API.
+- **App-Update:** `startUpdateFlowForResult(info, type, activity, req)` → `startUpdateFlowForResult(info, activity, AppUpdateOptions.defaultOptions(FLEXIBLE), req)`.
+- **Widgets:** `setRemoteAdapter(int, Intent)` (in API 37 ohne nicht-deprecated Ersatz) in beiden Widget-Workern lokal suppressed.
+- **Kleinzeug:** `ViewCompat.animate(v)` → `v.animate()` (7 Stellen), `ViewCompat.isAttachedToWindow` → `isAttachedToWindow`, `DisplayMetrics.scaledDensity` → `TypedValue.applyDimension(COMPLEX_UNIT_SP, ...)`, `InputMethodManager.SHOW_IMPLICIT` → `0`, redundanter Cast in `KotterKnife` entfernt, `if (resource is Drawable ...)` (immer true) entfernt, `.map { Unit }` → `.map { }`, `TagDatabase.migrate(database:)` → `migrate(db:)` (Param-Name an Supertype), `window.statusBarColor` in `DrawerActivity` entfernt (edge-to-edge zeichnet eh hinter die Leiste), aboutlibraries `LibsBuilder` lokal suppressed (view-basierte UI in 12.2.4 bewusst gepinnt).
+- **`allWarningsAsErrors.set(true)`** in `build.gradle` aktiviert — `compileDebugKotlin`/`compileLogReleaseKotlin` und alle Builds grün mit 0 Warnungen.
+- **Emulator-Verifikation (API 37):** frische Debug-APK installiert, App startet (News/ANMELDEN), 0 `FATAL EXCEPTION`.
+- Verifiziert grün: `ktlintFormat`, `ktlintCheck`, `detekt`, `lintDebug` + `lintRelease` (0 Issues, `abortOnError`), `assembleDebug`, `assembleRelease`, `bundleRelease`, `assembleLogRelease`, `:baselineprofile:assembleAndroidTest` — jeweils mit `allWarningsAsErrors`.
 
 ### 11.4 Strukturelles / Architektur
 

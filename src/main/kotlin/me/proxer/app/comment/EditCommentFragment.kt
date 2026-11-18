@@ -23,7 +23,6 @@ import androidx.core.content.getSystemService
 import androidx.core.os.bundleOf
 import androidx.core.text.parseAsHtml
 import androidx.core.text.set
-import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import androidx.transition.TransitionManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -104,6 +103,7 @@ class EditCommentFragment : BaseContentFragment<LocalComment>(R.layout.fragment_
     private val entryId: String?
         get() = hostingActivity.entryId
 
+    @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
     override fun onViewCreated(
         view: View,
         savedInstanceState: Bundle?,
@@ -116,6 +116,7 @@ class EditCommentFragment : BaseContentFragment<LocalComment>(R.layout.fragment_
         setHasOptionsMenu(true)
     }
 
+    @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
     override fun onCreateOptionsMenu(
         menu: Menu,
         inflater: MenuInflater,
@@ -125,6 +126,7 @@ class EditCommentFragment : BaseContentFragment<LocalComment>(R.layout.fragment_
         super.onCreateOptionsMenu(menu, inflater)
     }
 
+    @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.preview -> {
@@ -226,7 +228,7 @@ class EditCommentFragment : BaseContentFragment<LocalComment>(R.layout.fragment_
 
                 TransitionManager.beginDelayedTransition(scrollContainer)
 
-                ViewCompat.animate(expandRules).rotation(if (rules.isVisible) 180f else 0f)
+                expandRules.animate().rotation(if (rules.isVisible) 180f else 0f)
             }
 
         rating
@@ -364,7 +366,8 @@ class EditCommentFragment : BaseContentFragment<LocalComment>(R.layout.fragment_
 
                 requireContext()
                     .getSystemService<InputMethodManager>()
-                    ?.showSoftInput(editor, InputMethodManager.SHOW_IMPLICIT)
+                    // SHOW_IMPLICIT is deprecated; an explicit show (flags = 0) is the replacement.
+                    ?.showSoftInput(editor, 0)
             }
         }
     }

@@ -1,5 +1,3 @@
-@file:OptIn(androidx.media3.common.util.UnstableApi::class)
-
 package me.proxer.app.anime.stream
 
 import android.annotation.SuppressLint

@@ -1,6 +1,7 @@
 package me.proxer.app.anime
 
 import android.app.Activity
+import androidx.core.content.IntentCompat
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -82,7 +83,8 @@ class AnimeActivity : DrawerActivity() {
         get() =
             when (intent.hasExtra(LANGUAGE_EXTRA)) {
                 true -> {
-                    intent.getSerializableExtra(LANGUAGE_EXTRA) as AnimeLanguage
+                    IntentCompat.getSerializableExtra(intent, LANGUAGE_EXTRA, AnimeLanguage::class.java)
+                        ?: error("No language extra found")
                 }
 
                 false -> {

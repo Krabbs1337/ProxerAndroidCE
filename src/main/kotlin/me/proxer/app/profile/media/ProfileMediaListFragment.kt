@@ -1,11 +1,12 @@
 package me.proxer.app.profile.media
 
 import android.os.Bundle
+import androidx.core.os.BundleCompat
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import androidx.core.os.bundleOf
+
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.snackbar.Snackbar
@@ -37,7 +38,7 @@ class ProfileMediaListFragment : PagedContentFragment<LocalUserMediaListEntry>()
 
         fun newInstance(category: Category) =
             ProfileMediaListFragment().apply {
-                arguments = bundleOf(CATEGORY_ARGUMENT to category)
+                arguments = Bundle().apply { putSerializable(CATEGORY_ARGUMENT, category) }
             }
     }
 
@@ -65,10 +66,10 @@ class ProfileMediaListFragment : PagedContentFragment<LocalUserMediaListEntry>()
         get() = hostingActivity.username
 
     private val category: Category
-        get() = requireArguments().getSerializable(CATEGORY_ARGUMENT) as Category
+        get() = BundleCompat.getSerializable(requireArguments(), CATEGORY_ARGUMENT, Category::class.java) as Category
 
     private var filter: UserMediaListFilterType?
-        get() = requireArguments().getSerializable(FILTER_ARGUMENT) as? UserMediaListFilterType
+        get() = BundleCompat.getSerializable(requireArguments(), FILTER_ARGUMENT, UserMediaListFilterType::class.java)
         set(value) {
             requireArguments().putSerializable(FILTER_ARGUMENT, value)
 
@@ -77,6 +78,7 @@ class ProfileMediaListFragment : PagedContentFragment<LocalUserMediaListEntry>()
 
     override var innerAdapter by Delegates.notNull<ProfileMediaAdapter>()
 
+    @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -120,6 +122,7 @@ class ProfileMediaListFragment : PagedContentFragment<LocalUserMediaListEntry>()
         )
     }
 
+    @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
     override fun onCreateOptionsMenu(
         menu: Menu,
         inflater: MenuInflater,
@@ -143,6 +146,7 @@ class ProfileMediaListFragment : PagedContentFragment<LocalUserMediaListEntry>()
         super.onCreateOptionsMenu(menu, inflater)
     }
 
+    @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.watching -> filter = UserMediaListFilterType.WATCHING

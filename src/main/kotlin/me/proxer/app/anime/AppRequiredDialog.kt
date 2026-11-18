@@ -25,7 +25,11 @@ class AppRequiredDialog : BaseDialog() {
             packageName: String,
         ) = AppRequiredDialog()
             .apply {
-                arguments = bundleOf(NAME_ARGUMENT to name, PACKAGE_NAME_ARGUMENT to packageName)
+                arguments =
+                    Bundle().apply {
+                        putString(NAME_ARGUMENT, name)
+                        putString(PACKAGE_NAME_ARGUMENT, packageName)
+                    }
             }.show(activity.supportFragmentManager, "app_required_dialog")
     }
 

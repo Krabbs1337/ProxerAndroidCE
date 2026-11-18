@@ -1,5 +1,3 @@
-@file:OptIn(androidx.media3.common.util.UnstableApi::class)
-
 package me.proxer.app.anime.stream
 
 import android.annotation.SuppressLint
@@ -42,6 +40,7 @@ class TouchablePlayerView
         private val audioManager = requireNotNull(context.getSystemService<AudioManager>())
         private val notificationManager = requireNotNull(context.getSystemService<NotificationManager>())
 
+        @Suppress("DEPRECATION")
         private val audioStreamType
             get() = Util.getStreamTypeForAudioUsage(player?.audioAttributes?.usage ?: C.USAGE_MEDIA)
 
@@ -83,7 +82,7 @@ class TouchablePlayerView
                     ): Boolean {
                         if (
                             initialEvent == null ||
-                            movingEvent == null ||
+
                             // Ignore swipes inside of margin.
                             !shouldHandle(initialEvent) ||
                             // Ignore small swipes.
@@ -148,7 +147,7 @@ class TouchablePlayerView
         fun rewind(triggerSubject: Boolean = false) {
             val safePlayer = player
 
-            if (safePlayer != null && safePlayer.isCurrentWindowSeekable) {
+            if (safePlayer != null && safePlayer.isCurrentMediaItemSeekable) {
                 safePlayer.seekTo(max(safePlayer.currentPosition - 10_000, 0))
 
                 if (triggerSubject) {
@@ -160,7 +159,7 @@ class TouchablePlayerView
         fun fastForward(triggerSubject: Boolean = false) {
             val safePlayer = player
 
-            if (safePlayer != null && safePlayer.isCurrentWindowSeekable) {
+            if (safePlayer != null && safePlayer.isCurrentMediaItemSeekable) {
                 val durationMs = safePlayer.duration
 
                 val seekPositionMs =

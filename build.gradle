@@ -186,8 +186,8 @@ androidComponents {
 
 kotlin {
     compilerOptions {
-        // TODO(ROADMAP Phase 9): re-enable allWarningsAsErrors.
-        allWarningsAsErrors.set(false)
+        // ROADMAP Phase 11.3: warning-free since 17.11.2026 (0 warnings), strict mode re-enabled.
+        allWarningsAsErrors.set(true)
         // jvmTarget defaults to android.compileOptions.targetCompatibility (17).
         freeCompilerArgs.addAll(["-Xjsr305=strict", "-progressive"])
     }

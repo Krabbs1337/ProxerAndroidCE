@@ -42,6 +42,7 @@ class NotificationFragment : PagedContentFragment<ProxerNotification>() {
 
     override var innerAdapter by Delegates.notNull<NotificationAdapter>()
 
+    @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -83,6 +84,7 @@ class NotificationFragment : PagedContentFragment<ProxerNotification>() {
         )
     }
 
+    @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
     override fun onCreateOptionsMenu(
         menu: Menu,
         inflater: MenuInflater,
@@ -92,6 +94,7 @@ class NotificationFragment : PagedContentFragment<ProxerNotification>() {
         super.onCreateOptionsMenu(menu, inflater)
     }
 
+    @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.delete_all -> {

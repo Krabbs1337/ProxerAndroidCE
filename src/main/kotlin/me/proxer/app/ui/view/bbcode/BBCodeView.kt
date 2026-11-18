@@ -16,7 +16,6 @@ import androidx.annotation.ColorInt
 import androidx.annotation.Px
 import androidx.annotation.StyleRes
 import androidx.core.content.withStyledAttributes
-import androidx.core.view.ViewCompat
 import androidx.core.view.children
 import com.vanniktech.emoji.EmojiManager
 import com.vanniktech.emoji.ios.IosEmojiProvider
@@ -73,7 +72,7 @@ class BBCodeView
             if (new == null) {
                 destroyWithRetainingViews()
                 removeAllViews()
-            } else if (ViewCompat.isAttachedToWindow(this)) {
+            } else if (this.isAttachedToWindow) {
                 refreshViews(new)
             }
         }

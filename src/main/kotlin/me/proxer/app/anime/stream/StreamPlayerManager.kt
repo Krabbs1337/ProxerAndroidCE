@@ -1,11 +1,10 @@
-@file:OptIn(androidx.media3.common.util.UnstableApi::class)
-
 package me.proxer.app.anime.stream
 
 import android.app.Activity
 import android.net.Uri
 import android.os.Bundle
 import androidx.media3.cast.CastPlayer
+import androidx.media3.cast.DefaultMediaItemConverter
 import androidx.media3.cast.SessionAvailabilityListener
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
@@ -134,6 +133,7 @@ class StreamPlayerManager(
                 }
             }
 
+            @Suppress("DEPRECATION")
             override fun onActivityDestroyed(activity: Activity) {
                 if (activity == weakContext.get()) {
                     activity.application.unregisterActivityLifecycleCallbacks(this)
@@ -248,7 +248,8 @@ class StreamPlayerManager(
 
     fun retry() {
         if (currentPlayer == localPlayer) {
-            localPlayer.prepare(localMediaSource, false, false)
+            localPlayer.setMediaSource(localMediaSource, false)
+            localPlayer.prepare()
         } else if (currentPlayer == castPlayer) {
             castPlayer.setMediaItem(castMediaItem, lastPosition)
             castPlayer.prepare()
@@ -393,10 +394,11 @@ class StreamPlayerManager(
             setAudioAttributes(audioAttributes, true)
         }
 
+    @Suppress("DEPRECATION")
     private fun buildCastPlayer(context: StreamActivity): CastPlayer? =
         context
             .getSafeCastContext()
-            ?.let { CastPlayer(it) }
+            ?.let { CastPlayer(it, DefaultMediaItemConverter()) }
             ?.apply { setSessionAvailabilityListener(castSessionAvailabilityListener) }
 
     enum class PlayerState {
@@ -409,7 +411,7 @@ class StreamPlayerManager(
         private val okHttpDataSourceFactory: OkHttpDataSource.Factory,
         private val mediaSourceFunction: (DataSource.Factory, Uri) -> MediaSource,
     ) : MediaSource.Factory {
-        override fun getSupportedTypes() = intArrayOf(C.TYPE_DASH, C.TYPE_HLS, C.TYPE_OTHER)
+        override fun getSupportedTypes() = intArrayOf(C.CONTENT_TYPE_DASH, C.CONTENT_TYPE_HLS, C.CONTENT_TYPE_OTHER)
 
         override fun createMediaSource(mediaItem: MediaItem): MediaSource {
             val uri = mediaItem.localConfiguration?.uri ?: throw IllegalArgumentException("MediaItem without uri")

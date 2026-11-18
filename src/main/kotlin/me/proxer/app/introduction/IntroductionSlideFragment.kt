@@ -8,7 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.SwitchCompat
-import androidx.core.os.bundleOf
+
 import androidx.fragment.app.Fragment
 import com.mikepenz.iconics.IconicsDrawable
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
@@ -112,12 +112,12 @@ class IntroductionSlideFragment : Fragment() {
             switchMode: SwitchMode,
         ) = IntroductionSlideFragment().apply {
             arguments =
-                bundleOf(
-                    ARG_TITLE to titleRes,
-                    ARG_DESCRIPTION to descriptionRes,
-                    ARG_ICON to icon.name,
-                    ARG_SWITCH_MODE to switchMode.name,
-                )
+                Bundle().apply {
+                    putInt(ARG_TITLE, titleRes)
+                    putInt(ARG_DESCRIPTION, descriptionRes)
+                    putString(ARG_ICON, icon.name)
+                    putString(ARG_SWITCH_MODE, switchMode.name)
+                }
         }
     }
 }

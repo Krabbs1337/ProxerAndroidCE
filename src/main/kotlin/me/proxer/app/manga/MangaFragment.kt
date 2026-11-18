@@ -1,6 +1,6 @@
 package me.proxer.app.manga
 
-import android.os.Build
+import androidx.core.os.BundleCompat
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.Gravity
@@ -145,16 +145,12 @@ class MangaFragment : BaseContentFragment<MangaChapterInfo>(R.layout.fragment_ma
     private val toolbar by unsafeLazy { requireActivity().findViewById<Toolbar>(R.id.toolbar) }
     private val recyclerView: RecyclerView by bindView(R.id.recyclerView)
 
+    @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         lastPosition =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                savedInstanceState?.getParcelable(LAST_POSITION_STATE, Parcelable::class.java)
-            } else {
-                @Suppress("DEPRECATION")
-                savedInstanceState?.getParcelable(LAST_POSITION_STATE)
-            }
+            savedInstanceState?.let { BundleCompat.getParcelable(it, LAST_POSITION_STATE, Parcelable::class.java) }
         hasLowMemory = savedInstanceState?.getByte(LOW_MEMORY_STATE) == 1.toByte()
 
         preloader = MangaPreloader()
@@ -321,6 +317,7 @@ class MangaFragment : BaseContentFragment<MangaChapterInfo>(R.layout.fragment_ma
         super.onDestroyView()
     }
 
+    @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
     override fun onCreateOptionsMenu(
         menu: Menu,
         inflater: MenuInflater,
@@ -339,6 +336,7 @@ class MangaFragment : BaseContentFragment<MangaChapterInfo>(R.layout.fragment_ma
         return super.onCreateOptionsMenu(menu, inflater)
     }
 
+    @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
     override fun onOptionsItemSelected(item: MenuItem): Boolean =
         when (item.itemId) {
             R.id.toggle_orientation -> {

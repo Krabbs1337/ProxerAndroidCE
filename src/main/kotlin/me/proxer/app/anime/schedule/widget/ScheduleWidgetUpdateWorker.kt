@@ -153,6 +153,7 @@ class ScheduleWidgetUpdateWorker(
         currentCall = null
     }
 
+    @Suppress("DEPRECATION")
     private fun bindListLayout(
         appWidgetManager: AppWidgetManager,
         id: Int,

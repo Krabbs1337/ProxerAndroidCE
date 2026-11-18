@@ -1,6 +1,7 @@
 package me.proxer.app
 
 import android.Manifest.permission.POST_NOTIFICATIONS
+import androidx.core.content.IntentCompat
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_GRANTED
@@ -239,7 +240,7 @@ class MainActivity : DrawerActivity() {
 
         return when (actionDrawerItem) {
             null -> {
-                val sectionExtra = intent.getSerializableExtra(SECTION_EXTRA) as? DrawerItem
+                val sectionExtra = IntentCompat.getSerializableExtra(intent, SECTION_EXTRA, DrawerItem::class.java)
 
                 sectionExtra ?: preferenceHelper.startPage
             }

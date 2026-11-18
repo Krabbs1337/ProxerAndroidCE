@@ -1,5 +1,3 @@
-@file:OptIn(androidx.media3.common.util.UnstableApi::class)
-
 package com.github.rubensousa.previewseekbar.media3
 
 import android.content.Context

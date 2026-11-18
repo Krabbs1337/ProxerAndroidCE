@@ -1,6 +1,7 @@
 package me.proxer.app.profile.comment
 
 import android.os.Bundle
+import androidx.core.os.BundleCompat
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -61,7 +62,7 @@ class ProfileCommentFragment : PagedContentFragment<ParsedUserComment>() {
         get() = hostingActivity.username
 
     private var category: Category?
-        get() = requireArguments().getSerializable(CATEGORY_ARGUMENT) as? Category
+        get() = BundleCompat.getSerializable(requireArguments(), CATEGORY_ARGUMENT, Category::class.java)
         set(value) {
             requireArguments().putSerializable(CATEGORY_ARGUMENT, value)
 
@@ -83,6 +84,7 @@ class ProfileCommentFragment : PagedContentFragment<ParsedUserComment>() {
             }
         }
 
+    @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -135,6 +137,7 @@ class ProfileCommentFragment : PagedContentFragment<ParsedUserComment>() {
         )
     }
 
+    @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
     override fun onCreateOptionsMenu(
         menu: Menu,
         inflater: MenuInflater,
@@ -150,6 +153,7 @@ class ProfileCommentFragment : PagedContentFragment<ParsedUserComment>() {
         super.onCreateOptionsMenu(menu, inflater)
     }
 
+    @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.anime -> category = Category.ANIME

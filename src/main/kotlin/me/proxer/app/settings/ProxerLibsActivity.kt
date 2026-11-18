@@ -8,6 +8,7 @@ import me.proxer.app.R
 import me.proxer.app.base.DrawerActivity
 
 class ProxerLibsActivity : DrawerActivity() {
+    @Suppress("DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

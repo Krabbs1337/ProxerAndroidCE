@@ -55,6 +55,7 @@ class TopicFragment : PagedContentFragment<ParsedPost>() {
             hostingActivity.topic = value
         }
 
+    @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -91,6 +92,7 @@ class TopicFragment : PagedContentFragment<ParsedPost>() {
         )
     }
 
+    @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
     override fun onCreateOptionsMenu(
         menu: Menu,
         inflater: MenuInflater,
@@ -100,6 +102,7 @@ class TopicFragment : PagedContentFragment<ParsedPost>() {
         super.onCreateOptionsMenu(menu, inflater)
     }
 
+    @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.show_in_browser -> {

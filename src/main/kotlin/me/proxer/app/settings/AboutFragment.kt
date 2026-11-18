@@ -109,6 +109,7 @@ class AboutFragment :
 
     override fun shouldAnimate() = false
 
+    @Suppress("DEPRECATION")
     private fun buildInfoItems(context: Context) =
         listOf(
             ConvenienceBuilder.createAppTitleItem(context),

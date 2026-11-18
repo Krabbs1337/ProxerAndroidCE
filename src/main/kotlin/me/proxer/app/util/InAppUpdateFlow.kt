@@ -7,6 +7,7 @@ import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.appupdate.AppUpdateManager
+import com.google.android.play.core.appupdate.AppUpdateOptions
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.InstallStateUpdatedListener
 import com.google.android.play.core.install.model.AppUpdateType
@@ -67,8 +68,8 @@ class InAppUpdateFlow {
                         setAction(R.string.activity_update_action_download) {
                             appUpdateManager.startUpdateFlowForResult(
                                 appUpdateInfo,
-                                AppUpdateType.FLEXIBLE,
                                 context,
+                                AppUpdateOptions.defaultOptions(AppUpdateType.FLEXIBLE),
                                 REQUEST_CODE,
                             )
                         }

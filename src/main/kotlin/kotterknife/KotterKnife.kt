@@ -40,9 +40,7 @@ fun <T : View> Fragment.bindView(id: Int): ReadWriteProperty<Any, T> =
 // decor view is used before the fragment view, matching upstream kotterknife.
 fun <T : View> DialogFragment.bindView(id: Int): ReadWriteProperty<Any, T> =
     BindViewDelegate {
-        (it as DialogFragment).dialog?.findViewById(
-            id,
-        ) ?: (it as DialogFragment).view?.findViewById(id)
+        (it as DialogFragment).dialog?.findViewById(id) ?: it.view?.findViewById(id)
     }
 
 fun <T : View> Dialog.bindView(id: Int): ReadWriteProperty<Any, T> =

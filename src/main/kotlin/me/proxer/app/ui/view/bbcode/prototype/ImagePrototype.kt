@@ -117,7 +117,7 @@ object ImagePrototype : AutoClosingPrototype {
                     dataSource: DataSource,
                     isFirstResource: Boolean,
                 ): Boolean {
-                    if (resource is Drawable && model is String) {
+                    if (model is String) {
                         heightMap?.put(model, resource.intrinsicHeight)
                     }
 

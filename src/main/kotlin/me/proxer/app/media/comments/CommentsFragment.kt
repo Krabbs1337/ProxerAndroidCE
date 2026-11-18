@@ -1,6 +1,7 @@
 package me.proxer.app.media.comments
 
 import android.os.Bundle
+import androidx.core.os.BundleCompat
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -75,7 +76,7 @@ class CommentsFragment : PagedContentFragment<ParsedComment>(R.layout.fragment_c
 
     private var sortCriteria: CommentSortCriteria
         get() =
-            requireArguments().getSerializable(SORT_CRITERIA_ARGUMENT) as? CommentSortCriteria
+            BundleCompat.getSerializable(requireArguments(), SORT_CRITERIA_ARGUMENT, CommentSortCriteria::class.java)
                 ?: CommentSortCriteria.RATING
         set(value) {
             requireArguments().putSerializable(SORT_CRITERIA_ARGUMENT, value)
@@ -101,6 +102,7 @@ class CommentsFragment : PagedContentFragment<ParsedComment>(R.layout.fragment_c
             }
         }
 
+    @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -188,6 +190,7 @@ class CommentsFragment : PagedContentFragment<ParsedComment>(R.layout.fragment_c
         super.onDestroy()
     }
 
+    @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
     override fun onCreateOptionsMenu(
         menu: Menu,
         inflater: MenuInflater,
@@ -202,6 +205,7 @@ class CommentsFragment : PagedContentFragment<ParsedComment>(R.layout.fragment_c
         super.onCreateOptionsMenu(menu, inflater)
     }
 
+    @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.rating -> sortCriteria = CommentSortCriteria.RATING

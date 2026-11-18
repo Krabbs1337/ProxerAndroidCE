@@ -1,6 +1,7 @@
 package me.proxer.app.bookmark
 
 import android.os.Bundle
+import androidx.core.os.BundleCompat
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -78,7 +79,7 @@ class BookmarkFragment : PagedContentFragment<Bookmark>() {
         }
 
     private var category: Category?
-        get() = requireArguments().getSerializable(CATEGORY_ARGUMENT) as? Category
+        get() = BundleCompat.getSerializable(requireArguments(), CATEGORY_ARGUMENT, Category::class.java)
         set(value) {
             requireArguments().putSerializable(CATEGORY_ARGUMENT, value)
 
@@ -97,6 +98,7 @@ class BookmarkFragment : PagedContentFragment<Bookmark>() {
 
     private var searchView by Delegates.notNull<SearchView>()
 
+    @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -195,6 +197,7 @@ class BookmarkFragment : PagedContentFragment<Bookmark>() {
         )
     }
 
+    @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
     override fun onCreateOptionsMenu(
         menu: Menu,
         inflater: MenuInflater,
@@ -246,6 +249,7 @@ class BookmarkFragment : PagedContentFragment<Bookmark>() {
         }
     }
 
+    @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.anime -> {

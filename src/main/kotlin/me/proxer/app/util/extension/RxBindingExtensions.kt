@@ -80,4 +80,4 @@ inline fun RecyclerView.endScrolls(threshold: Int = 5): Observable<Unit> =
                 safeLayoutManager.itemCount > 0 &&
                     safeLayoutManager.childCount + pastVisibleItems >= safeLayoutManager.itemCount - threshold
             }
-        }.map { Unit }
+        }.map { }

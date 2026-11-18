@@ -1,3 +1,8 @@
+// Koin 4.2.2 keeps the viewModel DSL in the deprecated androidx package; security-crypto 1.1.0
+// deprecates MasterKey/EncryptedSharedPreferences without in-library replacement (Tink migration
+// would risk existing encrypted prefs) — both kept deliberately.
+@file:Suppress("DEPRECATION")
+
 package me.proxer.app
 
 import android.content.res.Resources
@@ -204,7 +209,7 @@ private val applicationModules =
             Room
                 .databaseBuilder(androidContext(), TagDatabase::class.java, TAG_DATABASE_NAME)
                 .addMigrations(TagDatabase.MIGRATION_1_2)
-                .fallbackToDestructiveMigrationOnDowngrade()
+                .fallbackToDestructiveMigrationOnDowngrade(false)
                 .build()
         }
 

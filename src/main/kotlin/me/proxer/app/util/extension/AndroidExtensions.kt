@@ -36,6 +36,8 @@ inline fun Context.resolveColor(
     }
 
 @CheckResult
+// androidx bundleOf is deprecated; a generic putExtra needs per-type dispatch, so keep bundleOf here.
+@Suppress("DEPRECATION")
 inline fun <reified T : Any> Context.intentFor(vararg params: Pair<String, Any?>): Intent {
     val intent = Intent(this, T::class.java)
     params.forEach { intent.putExtras(bundleOf(it)) }
@@ -79,9 +81,11 @@ inline fun Context.dip(value: Int): Int = (value * resources.displayMetrics.dens
 
 inline fun Context.dip(value: Float): Int = (value * resources.displayMetrics.density).toInt()
 
-inline fun Context.sp(value: Int): Int = (value * resources.displayMetrics.scaledDensity).toInt()
+inline fun Context.sp(value: Int): Int =
+    TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, value.toFloat(), resources.displayMetrics).toInt()
 
-inline fun Context.sp(value: Float): Int = (value * resources.displayMetrics.scaledDensity).toInt()
+inline fun Context.sp(value: Float): Int =
+    TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, value, resources.displayMetrics).toInt()
 
 inline fun View.dip(value: Int): Int = context.dip(value)
 

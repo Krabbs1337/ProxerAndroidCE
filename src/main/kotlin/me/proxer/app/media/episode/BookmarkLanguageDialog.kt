@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.os.bundleOf
+
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.setFragmentResult
 import androidx.recyclerview.widget.RecyclerView
@@ -41,8 +41,10 @@ class BookmarkLanguageDialog : BaseDialog() {
             val stringLanguages = languages.map { ProxerUtils.getSafeApiEnumName(it) }
 
             BookmarkLanguageDialog()
-                .apply { arguments = bundleOf(LANGUAGES_ARGUMENT to ArrayList(stringLanguages)) }
-                .show(activity.supportFragmentManager, "no_wifi_dialog")
+                .apply {
+                    arguments =
+                        Bundle().apply { putStringArrayList(LANGUAGES_ARGUMENT, ArrayList(stringLanguages)) }
+                }.show(activity.supportFragmentManager, "no_wifi_dialog")
         }
     }
 
@@ -58,7 +60,10 @@ class BookmarkLanguageDialog : BaseDialog() {
         adapter.clickSubject
             .autoDispose(dialogLifecycleOwner.scope())
             .subscribe {
-                setFragmentResult(LANGUAGE_RESULT, bundleOf(LANGUAGE_RESULT to ProxerUtils.getSafeApiEnumName(it)))
+                setFragmentResult(
+                    LANGUAGE_RESULT,
+                    Bundle().apply { putString(LANGUAGE_RESULT, ProxerUtils.getSafeApiEnumName(it)) },
+                )
 
                 dismiss()
             }

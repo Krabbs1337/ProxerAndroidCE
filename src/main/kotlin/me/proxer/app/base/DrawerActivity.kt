@@ -1,7 +1,6 @@
 package me.proxer.app.base
 
 import android.content.res.Configuration
-import android.graphics.Color
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.WindowManager
@@ -51,7 +50,6 @@ abstract class DrawerActivity : BaseActivity() {
         setSupportActionBar(toolbar)
 
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        window.statusBarColor = Color.TRANSPARENT
 
         actionBarDrawerToggle =
             ActionBarDrawerToggle(

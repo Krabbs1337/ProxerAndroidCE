@@ -6,7 +6,7 @@ import android.content.ClipboardManager
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.getSystemService
-import androidx.core.os.bundleOf
+
 import com.afollestad.materialdialogs.MaterialDialog
 import me.proxer.app.R
 import me.proxer.app.base.BaseDialog
@@ -25,7 +25,7 @@ class CrashDialog : BaseDialog() {
             errorDetails: String,
         ) = CrashDialog()
             .apply {
-                arguments = bundleOf(ERROR_DETAILS_ARGUMENT to errorDetails)
+                arguments = Bundle().apply { putString(ERROR_DETAILS_ARGUMENT, errorDetails) }
             }.show(activity.supportFragmentManager, "crash_dialog")
     }
 

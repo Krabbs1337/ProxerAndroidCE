@@ -21,7 +21,7 @@ import com.mikepenz.iconics.utils.IconicsMenuInflaterUtil
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
 import io.reactivex.android.schedulers.AndroidSchedulers
-import me.proxer.app.GlideApp
+import com.bumptech.glide.Glide
 import me.proxer.app.R
 import me.proxer.app.anime.AnimeActivity
 import me.proxer.app.base.PagedContentFragment
@@ -236,7 +236,7 @@ class BookmarkFragment : PagedContentFragment<Bookmark>() {
             viewLifecycleOwner,
         )
 
-        innerAdapter.glide = GlideApp.with(this)
+        innerAdapter.glide = Glide.with(this)
 
         viewModel.itemDeletionError.observe(
             viewLifecycleOwner,

@@ -29,7 +29,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Consumer
 import io.reactivex.subjects.PublishSubject
-import me.proxer.app.GlideRequests
+import com.bumptech.glide.RequestManager
 import me.proxer.app.R
 import me.proxer.app.anime.schedule.ScheduleEntryAdapter.ViewHolder
 import me.proxer.app.base.AutoDisposeViewHolder
@@ -58,7 +58,7 @@ class ScheduleEntryAdapter : BaseAdapter<CalendarEntry, ViewHolder>() {
         private val dayTextDateTimeFormatter = DateTimeFormatter.ofPattern("EEEE", Locale.GERMAN)
     }
 
-    var glide: GlideRequests? = null
+    var glide: RequestManager? = null
     val clickSubject: PublishSubject<Pair<ImageView, CalendarEntry>> = PublishSubject.create()
 
     private var layoutManager: RecyclerView.LayoutManager? = null

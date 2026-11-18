@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
-import me.proxer.app.GlideApp
+import com.bumptech.glide.Glide
 import me.proxer.app.R
 import me.proxer.app.base.BaseContentFragment
 import me.proxer.app.media.MediaActivity
@@ -76,7 +76,7 @@ class RelationFragment : BaseContentFragment<List<Relation>>(R.layout.fragment_r
     ) {
         super.onViewCreated(view, savedInstanceState)
 
-        adapter.glide = GlideApp.with(this)
+        adapter.glide = Glide.with(this)
 
         recyclerView.setHasFixedSize(true)
         recyclerView.enableFastScroll()

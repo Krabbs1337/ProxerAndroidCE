@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.view.clicks
 import com.uber.autodispose.autoDispose
 import io.reactivex.subjects.PublishSubject
-import me.proxer.app.GlideRequests
+import com.bumptech.glide.RequestManager
 import me.proxer.app.R
 import me.proxer.app.base.AutoDisposeViewHolder
 import me.proxer.app.base.BaseAdapter
@@ -36,7 +36,7 @@ import me.proxer.app.databinding.ItemMediaEntryBinding
  * @author Ruben Gees
  */
 class RelationAdapter : BaseAdapter<Relation, ViewHolder>() {
-    var glide: GlideRequests? = null
+    var glide: RequestManager? = null
     val clickSubject: PublishSubject<Pair<ImageView, Relation>> = PublishSubject.create()
 
     init {

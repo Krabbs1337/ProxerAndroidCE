@@ -17,7 +17,7 @@ import com.mikepenz.iconics.typeface.library.community.material.CommunityMateria
 import com.uber.autodispose.autoDispose
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
-import me.proxer.app.GlideRequests
+import com.bumptech.glide.RequestManager
 import me.proxer.app.R
 import me.proxer.app.base.AutoDisposeViewHolder
 import me.proxer.app.base.BaseAdapter
@@ -35,7 +35,7 @@ import me.proxer.app.databinding.ItemPostBinding
  * @author Ruben Gees
  */
 class PostAdapter : BaseAdapter<ParsedPost, ViewHolder>() {
-    var glide: GlideRequests? = null
+    var glide: RequestManager? = null
     val profileClickSubject: PublishSubject<Pair<ImageView, ParsedPost>> = PublishSubject.create()
 
     private val heightMap = ConcurrentHashMap<String, Int>()

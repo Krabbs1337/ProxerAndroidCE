@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.LinearSnapHelper
 import io.reactivex.subjects.PublishSubject
-import me.proxer.app.GlideRequests
+import com.bumptech.glide.RequestManager
 import me.proxer.app.R
 import me.proxer.app.databinding.ItemScheduleDayBinding
 import me.proxer.app.anime.schedule.ScheduleAdapter.ViewHolder
@@ -28,7 +28,7 @@ import kotlin.math.max
  * @author Ruben Gees
  */
 class ScheduleAdapter : BaseAdapter<Pair<CalendarDay, List<CalendarEntry>>, ViewHolder>() {
-    var glide: GlideRequests? = null
+    var glide: RequestManager? = null
     val clickSubject: PublishSubject<Pair<ImageView, CalendarEntry>> = PublishSubject.create()
 
     private val layoutManagerStates = mutableMapOf<CalendarDay, Parcelable?>()

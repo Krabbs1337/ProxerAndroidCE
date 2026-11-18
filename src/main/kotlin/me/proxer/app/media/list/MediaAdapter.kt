@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.view.clicks
 import com.uber.autodispose.autoDispose
 import io.reactivex.subjects.PublishSubject
-import me.proxer.app.GlideRequests
+import com.bumptech.glide.RequestManager
 import me.proxer.app.R
 import me.proxer.app.base.AutoDisposeViewHolder
 import me.proxer.app.base.BaseAdapter
@@ -37,7 +37,7 @@ import me.proxer.app.databinding.ItemMediaEntryBinding
 class MediaAdapter(
     private val category: Category,
 ) : BaseAdapter<MediaListEntry, MediaAdapter.ViewHolder>() {
-    var glide: GlideRequests? = null
+    var glide: RequestManager? = null
     val clickSubject: PublishSubject<Pair<ImageView, MediaListEntry>> = PublishSubject.create()
 
     init {

@@ -17,7 +17,7 @@ import com.jakewharton.rxbinding3.view.clicks
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
 import io.reactivex.Observable
-import me.proxer.app.GlideApp
+import com.bumptech.glide.Glide
 import me.proxer.app.R
 import me.proxer.app.ui.ImageDetailActivity
 import me.proxer.app.util.ActivityUtils
@@ -148,7 +148,7 @@ abstract class ImageTabsActivity : DrawerActivity() {
 
             supportStartPostponedEnterTransition()
         } else {
-            GlideApp
+            Glide
                 .with(this)
                 .load(headerImageUrl.toString())
                 .logErrors()

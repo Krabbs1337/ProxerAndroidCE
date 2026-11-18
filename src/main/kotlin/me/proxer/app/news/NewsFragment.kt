@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager.VERTICAL
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
-import me.proxer.app.GlideApp
+import com.bumptech.glide.Glide
 import me.proxer.app.R
 import me.proxer.app.base.PagedContentFragment
 import me.proxer.app.forum.TopicActivity
@@ -66,7 +66,7 @@ class NewsFragment : PagedContentFragment<NewsArticle>() {
     ) {
         super.onViewCreated(view, savedInstanceState)
 
-        innerAdapter.glide = GlideApp.with(this)
+        innerAdapter.glide = Glide.with(this)
     }
 
     override fun onResume() {

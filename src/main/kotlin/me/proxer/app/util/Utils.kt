@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ResolveInfo
 import com.bumptech.glide.request.target.Target
-import me.proxer.app.GlideApp
+import com.bumptech.glide.Glide
 import me.proxer.app.util.extension.androidUri
 import okhttp3.HttpUrl
 import java.time.format.DateTimeFormatter
@@ -23,7 +23,7 @@ object Utils {
         context: Context,
         url: HttpUrl,
     ) = try {
-        GlideApp
+        Glide
             .with(context)
             .asBitmap()
             .load(url.toString())

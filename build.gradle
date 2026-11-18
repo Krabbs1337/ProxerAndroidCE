@@ -14,10 +14,6 @@ buildscript { scriptHandler ->
 plugins {
     id "com.android.application"
     id "com.google.devtools.ksp"
-    // Only used for Glide's Java annotation processor (it has no KSP support for the generated
-    // GlideApp API). Room and Moshi use KSP above.
-    id "com.android.legacy-kapt"
-
     id "io.github.ben-manes.versions"
     id "io.gitlab.arturbosch.detekt"
     id "org.jlleitschuh.gradle.ktlint"

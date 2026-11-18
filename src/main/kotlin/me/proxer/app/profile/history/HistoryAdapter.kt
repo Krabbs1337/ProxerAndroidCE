@@ -11,7 +11,7 @@ import com.jakewharton.rxbinding3.view.clicks
 import com.jakewharton.rxbinding3.view.longClicks
 import com.uber.autodispose.autoDispose
 import io.reactivex.subjects.PublishSubject
-import me.proxer.app.GlideRequests
+import com.bumptech.glide.RequestManager
 import me.proxer.app.R
 import me.proxer.app.base.AutoDisposeViewHolder
 import me.proxer.app.base.BaseAdapter
@@ -28,7 +28,7 @@ import me.proxer.app.databinding.ItemHistoryEntryBinding
  * @author Ruben Gees
  */
 class HistoryAdapter : BaseAdapter<LocalUserHistoryEntry, ViewHolder>() {
-    var glide: GlideRequests? = null
+    var glide: RequestManager? = null
     val clickSubject: PublishSubject<Pair<ImageView, LocalUserHistoryEntry>> = PublishSubject.create()
     val longClickSubject: PublishSubject<Pair<ImageView, LocalUserHistoryEntry>> = PublishSubject.create()
 

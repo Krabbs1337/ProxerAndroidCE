@@ -25,8 +25,8 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.target.Target
 import me.proxer.app.BuildConfig.APPLICATION_ID
-import me.proxer.app.GlideRequest
-import me.proxer.app.GlideRequests
+import com.bumptech.glide.RequestBuilder
+import com.bumptech.glide.RequestManager
 import me.proxer.app.R
 import me.proxer.app.settings.theme.ThemeVariant
 import me.proxer.app.ui.WebViewActivity
@@ -97,16 +97,17 @@ fun PackageManager.isPackageInstalled(packageName: String) =
         false
     }
 
-inline fun GlideRequests.defaultLoad(
+inline fun RequestManager.defaultLoad(
     view: ImageView,
     url: HttpUrl,
 ): Target<Drawable> =
-    load(url.toString())
+    asDrawable()
+        .load(url.toString())
         .transition(DrawableTransitionOptions.withCrossFade())
         .logErrors()
         .into(view)
 
-inline fun <T> GlideRequest<T>.logErrors(): GlideRequest<T> =
+inline fun <T> RequestBuilder<T>.logErrors(): RequestBuilder<T> =
     this.addListener(
         object : SimpleGlideRequestListener<T> {
             override fun onLoadFailed(error: GlideException?): Boolean {

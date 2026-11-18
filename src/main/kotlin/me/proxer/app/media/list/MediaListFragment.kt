@@ -23,7 +23,7 @@ import com.jakewharton.rxbinding3.view.actionViewEvents
 import com.mikepenz.iconics.utils.IconicsMenuInflaterUtil
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
-import me.proxer.app.GlideApp
+import com.bumptech.glide.Glide
 import me.proxer.app.R
 import me.proxer.app.base.BackPressAware
 import me.proxer.app.base.PagedContentFragment
@@ -379,7 +379,7 @@ class MediaListFragment :
             viewLifecycleOwner,
         )
 
-        innerAdapter.glide = GlideApp.with(this)
+        innerAdapter.glide = Glide.with(this)
 
         searchBottomSheetManager = MediaListSearchBottomSheet.bindTo(this, viewModel)
     }

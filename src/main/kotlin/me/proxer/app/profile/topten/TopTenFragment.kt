@@ -13,7 +13,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
 import io.reactivex.Observable
-import me.proxer.app.GlideApp
+import com.bumptech.glide.Glide
 import me.proxer.app.R
 import me.proxer.app.base.BaseContentFragment
 import me.proxer.app.media.MediaActivity
@@ -95,8 +95,8 @@ class TopTenFragment : BaseContentFragment<ZippedTopTenResult>(R.layout.fragment
 
         val spanCount = DeviceUtils.calculateSpanAmount(requireActivity()) + 1
 
-        animeAdapter.glide = GlideApp.with(this)
-        mangaAdapter.glide = GlideApp.with(this)
+        animeAdapter.glide = Glide.with(this)
+        mangaAdapter.glide = Glide.with(this)
 
         animeRecyclerView.isNestedScrollingEnabled = false
         animeRecyclerView.layoutManager = GridLayoutManager(context, spanCount)

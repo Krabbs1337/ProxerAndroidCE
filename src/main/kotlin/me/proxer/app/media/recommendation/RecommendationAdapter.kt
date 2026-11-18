@@ -22,7 +22,7 @@ import com.mikepenz.iconics.utils.paddingDp
 import com.mikepenz.iconics.utils.sizeDp
 import com.uber.autodispose.autoDispose
 import io.reactivex.subjects.PublishSubject
-import me.proxer.app.GlideRequests
+import com.bumptech.glide.RequestManager
 import me.proxer.app.R
 import me.proxer.app.base.AutoDisposeViewHolder
 import me.proxer.app.base.BaseAdapter
@@ -42,7 +42,7 @@ import me.proxer.app.databinding.ItemRecommendationBinding
  * @author Ruben Gees
  */
 class RecommendationAdapter : BaseAdapter<Recommendation, ViewHolder>() {
-    var glide: GlideRequests? = null
+    var glide: RequestManager? = null
     val clickSubject: PublishSubject<Pair<ImageView, Recommendation>> = PublishSubject.create()
 
     init {

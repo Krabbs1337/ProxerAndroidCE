@@ -11,7 +11,7 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.bumptech.glide.load.engine.GlideException
 import io.reactivex.subjects.PublishSubject
-import me.proxer.app.GlideApp
+import com.bumptech.glide.Glide
 import me.proxer.app.MainApplication.Companion.USER_AGENT
 import me.proxer.app.R
 import me.proxer.app.util.extension.proxyIfRequired
@@ -191,7 +191,7 @@ class ProxerWebView
             ): WebResourceResponse? {
                 return try {
                     val imageFile =
-                        GlideApp
+                        Glide
                             .with(view)
                             .download(url.proxyIfRequired().toString())
                             .listener(

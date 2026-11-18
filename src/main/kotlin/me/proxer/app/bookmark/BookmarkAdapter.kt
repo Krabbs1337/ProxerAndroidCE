@@ -14,7 +14,7 @@ import com.jakewharton.rxbinding3.view.longClicks
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 import com.uber.autodispose.autoDispose
 import io.reactivex.subjects.PublishSubject
-import me.proxer.app.GlideRequests
+import com.bumptech.glide.RequestManager
 import me.proxer.app.R
 import me.proxer.app.base.AutoDisposeViewHolder
 import me.proxer.app.base.BaseAdapter
@@ -33,7 +33,7 @@ import me.proxer.app.databinding.ItemBookmarkBinding
  * @author Ruben Gees
  */
 class BookmarkAdapter : BaseAdapter<Bookmark, BookmarkAdapter.ViewHolder>() {
-    var glide: GlideRequests? = null
+    var glide: RequestManager? = null
     val clickSubject: PublishSubject<Bookmark> = PublishSubject.create()
     val longClickSubject: PublishSubject<Pair<ImageView, Bookmark>> = PublishSubject.create()
     val deleteClickSubject: PublishSubject<Bookmark> = PublishSubject.create()

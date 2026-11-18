@@ -26,7 +26,7 @@ import com.uber.autodispose.autoDispose
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import me.proxer.app.GlideApp
+import com.bumptech.glide.Glide
 import me.proxer.app.R
 import me.proxer.app.base.PagedContentFragment
 import me.proxer.app.comment.EditCommentActivity
@@ -175,7 +175,7 @@ class CommentsFragment : PagedContentFragment<ParsedComment>(R.layout.fragment_c
             viewLifecycleOwner,
         )
 
-        innerAdapter.glide = GlideApp.with(this)
+        innerAdapter.glide = Glide.with(this)
         innerAdapter.categoryCallback = { category }
 
         hostingActivity

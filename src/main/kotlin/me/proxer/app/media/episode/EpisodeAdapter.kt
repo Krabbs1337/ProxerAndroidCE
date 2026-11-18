@@ -15,7 +15,7 @@ import com.jakewharton.rxbinding3.view.clicks
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 import com.uber.autodispose.autoDispose
 import io.reactivex.subjects.PublishSubject
-import me.proxer.app.GlideRequests
+import com.bumptech.glide.RequestManager
 import me.proxer.app.R
 import me.proxer.app.base.AutoDisposeViewHolder
 import me.proxer.app.base.BaseAdapter
@@ -45,7 +45,7 @@ class EpisodeAdapter(
         private const val EXPANDED_STATE = "episode_expanded"
     }
 
-    var glide: GlideRequests? = null
+    var glide: RequestManager? = null
     val languageClickSubject: PublishSubject<Pair<MediaLanguage, EpisodeRow>> = PublishSubject.create()
 
     private val expansionMap: ParcelableStringBooleanMap

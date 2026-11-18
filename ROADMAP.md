@@ -24,7 +24,7 @@ Ziel: Das Projekt auf einen aktuellen, build- und Play-Store-fähigen Stand brin
 | 8 | Performance + Polish — **erledigt 17.11.2026** | Glide, Baseline Profiles, AAB-Splits, Desugaring |
 | 9 | Qualitätssicherung + optionale Coroutines-Migration — **erledigt 17.11.2026** | detekt/ktlint/CI aktuell, schrittweise RxJava-Ablösung |
 | 10 | 16 KB Page Size + Abhängigkeits-Aufräumung — **erledigt 17.11.2026** | APK nativ-frei, jitpack-/unmaintained-Deps durch Shims ersetzt |
-| 11 | Runtime-Bugs, Lint-Cleanup + strukturelle Follow-ups — **11.1–11.3 erledigt 17.11.2026, 11.4a–f erledigt 18.11.2026**, Rest offen | Aus `lintDebug` + Code-Scan abgeleitet, siehe unten |
+| 11 | Runtime-Bugs, Lint-Cleanup + strukturelle Follow-ups — **11.1–11.3 erledigt 17.11.2026, 11.4a–g erledigt 18.11.2026**, Rest offen | Aus `lintDebug` + Code-Scan abgeleitet, siehe unten |
 
 ---
 
@@ -257,7 +257,7 @@ Checkliste (alle bekannten Berührungspunkte):
 
 ---
 
-## Phase 11 – Runtime-Bugs, Lint-Cleanup + strukturelle Follow-ups (11.1–11.3 erledigt 17.11.2026, 11.4a–f erledigt 18.11.2026, Rest offen)
+## Phase 11 – Runtime-Bugs, Lint-Cleanup + strukturelle Follow-ups (11.1–11.3 erledigt 17.11.2026, 11.4a–g erledigt 18.11.2026, Rest offen)
 
 **Quelle:** `./gradlew lintDebug` (247 Issues nach 11.1: 72 Error, 6 Fatal, 169 Warning) + Compiler-Warnungen (162 in 42 Dateien) + Code-Scan, Stand 17.11.2026.
 
@@ -345,7 +345,7 @@ Ursprüngliche Liste:
 - **Verbleibende jitpack-Pins ablösen** (siehe Phase 10): `subsampling-scale-image-view`, `subsampling-pdf-decoder`, `material-about-library` rc (→ aboutlibraries/PreferenceScreen)
   - **Erledigt 18.11.2026:** `gravitysnaphelper` → eingebaute `LinearSnapHelper`/`PagerSnapHelper` (11.4a); `emoji-ios` jitpack-Commit → Maven Central `com.vanniktech:emoji(-ios):0.13.0` (11.4b, API-identisch, ungenutzte Theme-Attrs entfernt); `previewseekbar` Core-Inlining (11.4c): 6 Java-Klassen von Upstream-Commit `09eec85551` nach `src/main/java/com/github/rubensousa/previewseekbar/` übernommen (minSdk 24: `@TargetApi`-Guards entfernt, `PreviewAnimatorImpl` gelöscht, Lollipop-Animator immer genutzt), Ressourcen (`previewseekbar_morph.xml`, `previewseekbar_indicator_width`, `PreviewSeekBar`-Styleable) in App-Res verschoben, `PreviewTimeBar.kt` nutzt `me.proxer.app.R`. jitpack-`previewseekbar`-Dependency komplett entfernt.
 - **materialdrawer 8.3.1** → langfristig `NavigationView`/Compose
-- **Glide 4.16 → 5.x** (KSP → `com.android.legacy-kapt` fällt komplett weg)
+- **Glide 4.16 → 5.x (erledigt 18.11.2026, 11.4g):** Glide **5.0.10** (letztes Stable; `com.github.bumptech.glide`-Gruppe liegt auf Maven Central). KSP-Artefakt `ksp:5.0.10` statt `kapt compiler` → **`com.android.legacy-kapt` komplett entfernt**. Glide 5 generiert kein `GlideApp`/`GlideRequests` mehr: `GlideApp.with()` → `Glide.with()` (22 Dateien), `GlideRequests` → `RequestManager`, `GlideRequest<T>` → `RequestBuilder<T>`, `defaultLoad` nutzt `asDrawable().load(...)`. Emulator-Test (API 37): Start + LoginDialog ohne Crash, 0 FATAL EXCEPTION.
 - **RxJava → Coroutines/Flow** schrittweise pro Feature (Start z. B. `BaseViewModel.load()`), gemäß Festlegung
 - **CI (erledigt 18.11.2026, 11.4d):** Build-Step um `lintDebug lintRelease` (strict, abortOnError) erweitert; neuer Job `baselineprofile` mit `reactivecircus/android-emulator-runner` (API 36) führt `:baselineprofile:connectedReleaseAndroidTest` aus und lädt die Profile als Artifact
 

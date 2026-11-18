@@ -16,7 +16,7 @@ import com.mikepenz.iconics.typeface.library.community.material.CommunityMateria
 import com.mikepenz.iconics.utils.sizeDp
 import com.uber.autodispose.autoDispose
 import io.reactivex.subjects.PublishSubject
-import me.proxer.app.GlideRequests
+import com.bumptech.glide.RequestManager
 import me.proxer.app.R
 import me.proxer.app.base.AutoDisposeViewHolder
 import me.proxer.app.base.BaseAdapter
@@ -35,7 +35,7 @@ import me.proxer.app.databinding.ItemProfileMediaEntryBinding
  * @author Ruben Gees
  */
 class ProfileMediaAdapter : BaseAdapter<LocalUserMediaListEntry, ViewHolder>() {
-    var glide: GlideRequests? = null
+    var glide: RequestManager? = null
     val clickSubject: PublishSubject<Pair<ImageView, LocalUserMediaListEntry>> = PublishSubject.create()
     val deleteClickSubject: PublishSubject<LocalUserMediaListEntry> = PublishSubject.create()
 

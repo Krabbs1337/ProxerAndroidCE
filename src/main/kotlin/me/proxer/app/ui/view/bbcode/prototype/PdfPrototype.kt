@@ -20,8 +20,8 @@ import com.mikepenz.iconics.utils.colorInt
 import com.mikepenz.iconics.utils.sizeDp
 import com.uber.autodispose.android.ViewScopeProvider
 import com.uber.autodispose.autoDispose
-import de.number42.subsampling_pdf_decoder.PDFDecoder
-import de.number42.subsampling_pdf_decoder.PDFRegionDecoder
+import de.number42.subsamplingpdfdecoder.PDFDecoder
+import de.number42.subsamplingpdfdecoder.PDFRegionDecoder
 import com.bumptech.glide.RequestManager
 import me.proxer.app.R
 import me.proxer.app.ui.view.bbcode.BBArgs

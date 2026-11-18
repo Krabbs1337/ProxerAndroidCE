@@ -24,7 +24,7 @@ Ziel: Das Projekt auf einen aktuellen, build- und Play-Store-fähigen Stand brin
 | 8 | Performance + Polish — **erledigt 17.11.2026** | Glide, Baseline Profiles, AAB-Splits, Desugaring |
 | 9 | Qualitätssicherung + optionale Coroutines-Migration — **erledigt 17.11.2026** | detekt/ktlint/CI aktuell, schrittweise RxJava-Ablösung |
 | 10 | 16 KB Page Size + Abhängigkeits-Aufräumung — **erledigt 17.11.2026** | APK nativ-frei, jitpack-/unmaintained-Deps durch Shims ersetzt |
-| 11 | Runtime-Bugs, Lint-Cleanup + strukturelle Follow-ups — **11.1–11.3 erledigt 17.11.2026, 11.4a–c erledigt 18.11.2026**, Rest offen | Aus `lintDebug` + Code-Scan abgeleitet, siehe unten |
+| 11 | Runtime-Bugs, Lint-Cleanup + strukturelle Follow-ups — **11.1–11.3 erledigt 17.11.2026, 11.4a–d erledigt 18.11.2026**, Rest offen | Aus `lintDebug` + Code-Scan abgeleitet, siehe unten |
 
 ---
 
@@ -257,7 +257,7 @@ Checkliste (alle bekannten Berührungspunkte):
 
 ---
 
-## Phase 11 – Runtime-Bugs, Lint-Cleanup + strukturelle Follow-ups (11.1–11.3 erledigt 17.11.2026, 11.4a–c erledigt 18.11.2026, Rest offen)
+## Phase 11 – Runtime-Bugs, Lint-Cleanup + strukturelle Follow-ups (11.1–11.3 erledigt 17.11.2026, 11.4a–d erledigt 18.11.2026, Rest offen)
 
 **Quelle:** `./gradlew lintDebug` (247 Issues nach 11.1: 72 Error, 6 Fatal, 169 Warning) + Compiler-Warnungen (162 in 42 Dateien) + Code-Scan, Stand 17.11.2026.
 
@@ -335,7 +335,7 @@ Ursprüngliche Liste:
 - **Emulator-Verifikation (API 37):** frische Debug-APK installiert, App startet (News/ANMELDEN), 0 `FATAL EXCEPTION`.
 - Verifiziert grün: `ktlintFormat`, `ktlintCheck`, `detekt`, `lintDebug` + `lintRelease` (0 Issues, `abortOnError`), `assembleDebug`, `assembleRelease`, `bundleRelease`, `assembleLogRelease`, `:baselineprofile:assembleAndroidTest` — jeweils mit `allWarningsAsErrors`.
 
-### 11.4 Strukturelles / Architektur — **11.4a–11.4c erledigt 18.11.2026**, Rest offen
+### 11.4 Strukturelles / Architektur — **11.4a–11.4d erledigt 18.11.2026**, Rest offen
 
 - **Kotterknife-Shim → ViewBinding**: 75 Dateien, mechanisch, größter Einzelposten
 - **God-Objects aufteilen:** `StreamActivity` 698, `ProxerLibExtensions` 615, `MangaFragment` 611, `ErrorUtils` 590, `MediaInfoFragment` 523, `MediaListFragment` 443, `StreamPlayerManager` 422 Zeilen
@@ -344,7 +344,7 @@ Ursprüngliche Liste:
 - **materialdrawer 8.3.1** → langfristig `NavigationView`/Compose
 - **Glide 4.16 → 5.x** (KSP → `com.android.legacy-kapt` fällt komplett weg)
 - **RxJava → Coroutines/Flow** schrittweise pro Feature (Start z. B. `BaseViewModel.load()`), gemäß Festlegung
-- **CI:** Baseline-Profile tatsächlich generieren (`connectedReleaseAndroidTest` auf Emulator in CI), `lint` mit `abortOnError` in CI aktivieren
+- **CI (erledigt 18.11.2026, 11.4d):** Build-Step um `lintDebug lintRelease` (strict, abortOnError) erweitert; neuer Job `baselineprofile` mit `reactivecircus/android-emulator-runner` (API 36) führt `:baselineprofile:connectedReleaseAndroidTest` aus und lädt die Profile als Artifact
 
 ---
 

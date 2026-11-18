@@ -23,6 +23,8 @@ Ziel: Das Projekt auf einen aktuellen, build- und Play-Store-fähigen Stand brin
 | 7 | Media — **erledigt 17.11.2026** | ExoPlayer 2.13.3 → Media3 1.11.1 |
 | 8 | Performance + Polish — **erledigt 17.11.2026** | Glide, Baseline Profiles, AAB-Splits, Desugaring |
 | 9 | Qualitätssicherung + optionale Coroutines-Migration — **erledigt 17.11.2026** | detekt/ktlint/CI aktuell, schrittweise RxJava-Ablösung |
+| 10 | 16 KB Page Size + Abhängigkeits-Aufräumung — **erledigt 17.11.2026** | APK nativ-frei, jitpack-/unmaintained-Deps durch Shims ersetzt |
+| 11 | Runtime-Bugs, Lint-Cleanup + strukturelle Follow-ups — **offen** | Aus `lintDebug` (262 Issues) + Code-Scan abgeleitet, siehe unten |
 
 ---
 
@@ -252,6 +254,47 @@ Checkliste (alle bekannten Berührungspunkte):
 - `com.afollestad.material-dialogs:core:3.3.0` (deprecated, 12 Dateien) → In-Repo-`com.afollestad.materialdialogs.MaterialDialog`-Shim auf `AlertDialog` (gleiche Pakete; `noAutoDismiss` via Button-Listener-Rewire in `show()`, `findViewById` auf die Custom-View erweitert weil `onDialogCreated` vor `show()` läuft; `customView`/`customListAdapter`/`onCancel`-Extensions). `md_color_button_text`-Theme-Item entfernt (Attr existiert nicht mehr).
 - Verifiziert: Emulator (API 37) — LoginDialog rendert mit Custom-View + Buttons, Dismiss funktioniert, 0 FATAL.
 - **Verbleibende jitpack-Commit-Pins (bewusst, Folgephase):** `subsampling-scale-image-view` (Manga-Reader-Kern, pure Java), `subsampling-pdf-decoder` (Plattform-PdfRenderer-Wrapper), `emoji-ios` (BBCode-Emoji), `gravitysnaphelper`, `previewseekbar` (Core-Artefakt; media3-Teil bereits in-repo), `material-about-library:3.2.0-rc01` (About-Screen), `ProxerLibJava` (offizielle API-Lib, Release).
+
+---
+
+## Phase 11 – Runtime-Bugs, Lint-Cleanup + strukturelle Follow-ups (offen)
+
+**Quelle:** `./gradlew lintDebug` (262 Issues: 89 Error, 6 Fatal, 166 Warning) + Compiler-Warnungen (162 in 42 Dateien) + Code-Scan, Stand 17.11.2026.
+
+### 11.1 Echte Bugs / Runtime-Risiken (höchste Priorität)
+
+- **StrictMode-NewApi (eigener Fehler aus Phase 10):** `MainApplication.kt` – `VmPolicy.Builder.detectImplicitDirectBoot()` braucht **API 29** (Guard `>= 26` ist falsch → NoSuchMethodError auf API 24–28 in Debug); `detectCredentialProtectedWhileLocked()` braucht API 28 (Guard ok). Lint: `NewApi` ×2.
+- **GestureBackNavigation ×4 (Error):** `onBackPressed` in `BaseActivity:87`, `DrawerActivity:96`, `ImageTabsActivity:73`, `MainActivity:135` wird bei Gesten-Back (Android 13+, targetSdk 36) nicht aufgerufen. Fix: Migration auf `OnBackPressedDispatcher` (bevorzugt) oder `android:enableOnBackInvokedCallback="true"` im Manifest.
+- **MissingClass:** `AndroidManifest.xml` – Provider `androidx.work.impl.WorkManagerInitializer` existiert in WorkManager 2.12 nicht mehr (nur `tools:node="remove"`-Hack) → Provider-Block ganz löschen (Auto-Init via androidx.startup).
+- **MissingPermission ×2 (Error):** `NewsNotifications.kt:34`, `AccountNotifications.kt:34` – `NotificationManagerCompat.notify()` ohne `areNotificationsEnabled()`-Guard.
+- **Edge-to-Edge:** bei targetSdk 36 erzwingt Android 15+ Edge-to-Edge; nur `StreamActivity`/`ImageTabsActivity` behandeln Insets. Fix: `enableEdgeToEdge()` + zentrales Insets-Handling in `BaseActivity`.
+- **CustomX509TrustManager ×2:** `util/Mp4UploadTrustManagerWorkaround.kt` – Workaround-TrustManager security-relevant reviewen, idealerweise entfernen.
+- **DataExtractionRules:** Manifest nutzt nur deprecated `fullBackupContent` → `android:dataExtractionRules`-XML für API 31+ ergänzen.
+
+### 11.2 Lint-Cleanup (Voraussetzung für `lint { abortOnError = true }`)
+
+- 19× `UnusedResources` löschen (u. a. Chat-Überbleibsel `dialog_link_check`, `fragment_chat_container`, `error_invalid_*`-Strings)
+- 28× `IntentFilterUniqueDataAttributes` – Deep-Link-`data`-Tags splitten; 7× `AppLinkWarning` (assetlinks/Verifizierung)
+- 49× `GifUsage` – Emoticon-GIFs in `drawable-nodpi` (Content; optional WebP)
+- 16× `SetTextI18n`, 19× `UseKtx`, 9× `ObsoleteSdkInt` (tote `SDK_INT < 24`-Checks), 6× `NullSafeMutableLiveData`, 4× `NotifyDataSetChanged` (`EasyHeaderFooterAdapter`, `MediaActivity` ×2, `ProfileActivity` → DiffUtil/ListAdapter), 4× `SwitchIntDef`, 2× `WrongConstant`, 4× `EmptySuperCall`, 3× `PrivateResource`, 1× `Overdraw`
+- 77× `UnsafeOptInUsageError` – media3 `@UnstableApi`-Opt-ins annotieren/suppressen
+- 1× `LintError` – AutoDispose-Lint-Detector inkompatibel mit AGP 9 → Lint-ID `AutoDispose` in `lint {}` disablen
+
+### 11.3 Compiler-Deprecations (Voraussetzung für `allWarningsAsErrors`)
+
+- 13× `getParcelable`/`getSerializable` → typisierte Varianten: `BookmarkFragment:81`, `MangaFragment:153,156`, `CommentsFragment:78`, `MediaListFragment:106,110,120,140,189,199`, `ProfileCommentFragment:64`, `ProfileMediaListFragment:68,71`
+- 2× `setRemoteAdapter(int, Intent)` in den Widget-Workern; 20× `onOptionsItemSelected`
+- Library-Deprecations: security-crypto 1.1.0 (`MasterKey`/`EncryptedSharedPreferences` → neue API), media3 (`prepare(source, bool, bool)`, `C.TYPE_*`, `CastPlayer(CastContext)`), Koin-`viewModel`-DSL-Import, Room `fallbackToDestructiveMigrationOnDowngrade`, Glide `ExternalCacheDiskCacheFactory`
+
+### 11.4 Strukturelles / Architektur
+
+- **Kotterknife-Shim → ViewBinding**: 75 Dateien, mechanisch, größter Einzelposten
+- **God-Objects aufteilen:** `StreamActivity` 698, `ProxerLibExtensions` 615, `MangaFragment` 611, `ErrorUtils` 590, `MediaInfoFragment` 523, `MediaListFragment` 443, `StreamPlayerManager` 422 Zeilen
+- **Verbleibende jitpack-Pins ablösen** (siehe Phase 10): `subsampling-scale-image-view`, `subsampling-pdf-decoder`, `emoji-ios` (→ `androidx.emoji2`), `gravitysnaphelper` (→ eingebaute SnapHelper), `previewseekbar` (Core inlining), `material-about-library` rc (→ aboutlibraries/PreferenceScreen)
+- **materialdrawer 8.3.1** → langfristig `NavigationView`/Compose
+- **Glide 4.16 → 5.x** (KSP → `com.android.legacy-kapt` fällt komplett weg)
+- **RxJava → Coroutines/Flow** schrittweise pro Feature (Start z. B. `BaseViewModel.load()`), gemäß Festlegung
+- **CI:** Baseline-Profile tatsächlich generieren (`connectedReleaseAndroidTest` auf Emulator in CI), `lint` mit `abortOnError` in CI aktivieren
 
 ---
 

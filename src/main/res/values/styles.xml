@@ -27,7 +27,6 @@
         <item name="materialDrawerStyle">@style/Widget.App.MaterialDrawerStyle</item>
         <item name="materialDrawerHeaderStyle">@style/Widget.App.MaterialDrawerHeaderStyle</item>
 
-        <item name="md_color_button_text">?attr/colorSecondary</item>
 
         <item name="emojiIcons">?attr/colorIcon</item>
         <item name="emojiDivider">?attr/colorDivider</item>

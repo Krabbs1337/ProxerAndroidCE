@@ -16,11 +16,16 @@ class EasyHeaderFooterAdapter(
     var header: View? = null
         set(value) {
             val old = field
+
+            if (old == value) {
+                return
+            }
+
             field = value
 
             when {
-                old == null && value != null -> notifyItemInserted(0)
-                old != null && value == null -> notifyItemRemoved(0)
+                old == null -> notifyItemInserted(0)
+                value == null -> notifyItemRemoved(0)
                 else -> notifyItemChanged(0)
             }
         }
@@ -28,12 +33,31 @@ class EasyHeaderFooterAdapter(
     var footer: View? = null
         set(value) {
             val old = field
-            field = value
+
+            if (old == value) {
+                return
+            }
 
             when {
-                old == null && value != null -> notifyItemInserted(itemCount - 1)
-                old != null && value == null -> notifyItemRemoved(itemCount)
-                else -> notifyItemChanged(itemCount - 1)
+                old == null -> {
+                    field = value
+
+                    notifyItemInserted(itemCount - 1)
+                }
+
+                value == null -> {
+                    val position = itemCount - 1
+
+                    field = value
+
+                    notifyItemRemoved(position)
+                }
+
+                else -> {
+                    field = value
+
+                    notifyItemChanged(itemCount - 1)
+                }
             }
         }
 

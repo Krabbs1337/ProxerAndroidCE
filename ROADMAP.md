@@ -24,7 +24,7 @@ Ziel: Das Projekt auf einen aktuellen, build- und Play-Store-fähigen Stand brin
 | 8 | Performance + Polish — **erledigt 17.11.2026** | Glide, Baseline Profiles, AAB-Splits, Desugaring |
 | 9 | Qualitätssicherung + optionale Coroutines-Migration — **erledigt 17.11.2026** | detekt/ktlint/CI aktuell, schrittweise RxJava-Ablösung |
 | 10 | 16 KB Page Size + Abhängigkeits-Aufräumung — **erledigt 17.11.2026** | APK nativ-frei, jitpack-/unmaintained-Deps durch Shims ersetzt |
-| 11 | Runtime-Bugs, Lint-Cleanup + strukturelle Follow-ups — **11.1–11.3 erledigt 17.11.2026, 11.4a–k + 11.5 erledigt 18.11.2026** | Aus `lintDebug` + Code-Scan abgeleitet, siehe unten |
+| 11 | Runtime-Bugs, Lint-Cleanup + strukturelle Follow-ups — **11.1–11.3 erledigt 17.11.2026, 11.4a–k + 11.5–11.6 erledigt 18.11.2026** | Aus `lintDebug` + Code-Scan abgeleitet, siehe unten |
 
 ---
 
@@ -257,7 +257,7 @@ Checkliste (alle bekannten Berührungspunkte):
 
 ---
 
-## Phase 11 – Runtime-Bugs, Lint-Cleanup + strukturelle Follow-ups (11.1–11.3 erledigt 17.11.2026, 11.4a–k + 11.5 erledigt 18.11.2026)
+## Phase 11 – Runtime-Bugs, Lint-Cleanup + strukturelle Follow-ups (11.1–11.3 erledigt 17.11.2026, 11.4a–k + 11.5–11.6 erledigt 18.11.2026)
 
 **Quelle:** `./gradlew lintDebug` (247 Issues nach 11.1: 72 Error, 6 Fatal, 169 Warning) + Compiler-Warnungen (162 in 42 Dateien) + Code-Scan, Stand 17.11.2026.
 
@@ -351,6 +351,13 @@ Ursprüngliche Liste:
 - **Glide 4.16 → 5.x (erledigt 18.11.2026, 11.4g):** Glide **5.0.10** (letztes Stable; `com.github.bumptech.glide`-Gruppe liegt auf Maven Central). KSP-Artefakt `ksp:5.0.10` statt `kapt compiler` → **`com.android.legacy-kapt` komplett entfernt**. Glide 5 generiert kein `GlideApp`/`GlideRequests` mehr: `GlideApp.with()` → `Glide.with()` (22 Dateien), `GlideRequests` → `RequestManager`, `GlideRequest<T>` → `RequestBuilder<T>`, `defaultLoad` nutzt `asDrawable().load(...)`. Emulator-Test (API 37): Start + LoginDialog ohne Crash, 0 FATAL EXCEPTION.
 - **RxJava → Coroutines/Flow** schrittweise pro Feature (Start z. B. `BaseViewModel.load()`), gemäß Festlegung
 - **CI (erledigt 18.11.2026, 11.4d):** Build-Step um `lintDebug lintRelease` (strict, abortOnError) erweitert; neuer Job `baselineprofile` mit `reactivecircus/android-emulator-runner` (API 36) führt `:baselineprofile:connectedReleaseAndroidTest` aus und lädt die Profile als Artifact
+
+### 11.6 Crash beim Öffnen des 2FA-Login-Fensters (StaggeredGridLayoutManager AIOOBE -1) — **erledigt 18.11.2026**
+
+- **Symptom:** App stirbt mit `java.lang.ArrayIndexOutOfBoundsException: Array index out of range: -1` in `StaggeredGridLayoutManager$LazySpanLookup.invalidateAfter` (via `handleUpdate`/`onItemsUpdated` während `dispatchLayout`), wenn das 2FA-Login-Fenster geöffnet wird — dahinter toggelt das Fehler-/Leer-State des Listen-Fragments den Footer.
+- **Ursache:** In-Repo-Shim `EasyHeaderFooterAdapter`: `footer`-Setter rief bei `old == null && value == null` (z. B. wiederholtes `adapter.footer = null` in `PagedContentFragment.hideData`/`MediaListFragment.hideError`) `notifyItemChanged(itemCount - 1)` — bei leerer Liste `notifyItemChanged(-1)` → Crash im StaggeredGridLayoutManager. Auch `notifyItemRemoved(itemCount)` nach Feld-Update nutzte die neue statt der alten Item-Count.
+- **Fix:** Setter no-op bei unverändertem Wert; Positionen in Alt-Koordinaten berechnet (`footer`-Remove: Position vor dem Feld-Nullen; Insert/Replace danach). Header analog abgesichert.
+- **Verifiziert:** Emulator (API 37, eingeloggt): Drawer-Navigation über News/Anime/Manga/Lesezeichen/Wochenplan (alles StaggeredGrid) mehrfach, 0 FATAL EXCEPTION; Login/2FA-Dialog öffnet crashfrei. ktlintCheck, detekt, lintDebug/lintRelease (strict), alle Builds, baselineprofile grün.
 
 ### 11.5 Netzwerk-Timeout beim Login — **erledigt 18.11.2026**
 

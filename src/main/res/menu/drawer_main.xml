@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/drawer_news"
+            android:checkable="true"
+            android:title="@string/section_news" />
+        <item
+            android:id="@+id/drawer_bookmarks"
+            android:checkable="true"
+            android:title="@string/section_bookmarks" />
+        <item
+            android:id="@+id/drawer_anime"
+            android:checkable="true"
+            android:title="@string/section_anime" />
+        <item
+            android:id="@+id/drawer_schedule"
+            android:checkable="true"
+            android:title="@string/section_schedule" />
+        <item
+            android:id="@+id/drawer_manga"
+            android:checkable="true"
+            android:title="@string/section_manga" />
+    </group>
+</menu>

@@ -28,7 +28,7 @@ import me.proxer.app.settings.SettingsFragment
 import me.proxer.app.ui.view.RatingDialog
 import me.proxer.app.util.InAppUpdateFlow
 import me.proxer.app.util.extension.intentFor
-import me.proxer.app.util.wrapper.MaterialDrawerWrapper.DrawerItem
+import me.proxer.app.util.wrapper.DrawerWrapper.DrawerItem
 import me.proxer.library.enums.Category
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.time.Instant

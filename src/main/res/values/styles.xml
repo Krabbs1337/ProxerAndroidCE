@@ -24,8 +24,6 @@
         <item name="textInputStyle">@style/Widget.App.TextInputLayout</item>
 
 
-        <item name="materialDrawerStyle">@style/Widget.App.MaterialDrawerStyle</item>
-        <item name="materialDrawerHeaderStyle">@style/Widget.App.MaterialDrawerHeaderStyle</item>
     </style>
 
     <style name="Base.Theme.App.DayNight" parent="Base.Theme.App">
@@ -108,14 +106,25 @@
         <item name="background">?attr/colorPrimaryLight</item>
     </style>
 
-    <style name="Widget.App.MaterialDrawerStyle" parent="Widget.MaterialDrawerStyle">
-        <item name="materialDrawerDividerColor">?attr/colorSurface</item>
-        <item name="materialDrawerSelectedBackgroundColor">?colorSecondary</item>
+
+
+    <style name="DrawerFooterItem">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:paddingTop">14dp</item>
+        <item name="android:paddingBottom">14dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:drawablePadding">24dp</item>
+        <item name="android:textAppearance">?attr/textAppearanceSubtitle1</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
     </style>
 
-    <style name="Widget.App.MaterialDrawerHeaderStyle" parent="Widget.MaterialDrawerHeaderStyle">
-        <item name="materialDrawerCompactStyle">true</item>
-        <item name="materialDrawerHeaderSelectionText">?attr/colorOnPrimary</item>
-        <item name="materialDrawerHeaderSelectionSubtext">?attr/colorOnPrimary</item>
+    <style name="DrawerHeaderAction" parent="DrawerFooterItem">
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
     </style>
 </resources>

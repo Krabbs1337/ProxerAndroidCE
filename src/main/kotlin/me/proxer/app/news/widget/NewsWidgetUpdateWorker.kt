@@ -32,7 +32,7 @@ import me.proxer.app.util.extension.intentFor
 import me.proxer.app.util.extension.safeInject
 import me.proxer.app.util.extension.toInstantBP
 import me.proxer.app.util.extension.unsafeLazy
-import me.proxer.app.util.wrapper.MaterialDrawerWrapper
+import me.proxer.app.util.wrapper.DrawerWrapper
 import me.proxer.library.ProxerApi
 import me.proxer.library.ProxerCall
 import timber.log.Timber
@@ -253,7 +253,7 @@ class NewsWidgetUpdateWorker(
         id: Int,
         views: RemoteViews,
     ) {
-        val intent = MainActivity.getSectionIntent(applicationContext, MaterialDrawerWrapper.DrawerItem.NEWS)
+        val intent = MainActivity.getSectionIntent(applicationContext, DrawerWrapper.DrawerItem.NEWS)
         val pendingIntent =
             PendingIntent.getActivity(
                 applicationContext,

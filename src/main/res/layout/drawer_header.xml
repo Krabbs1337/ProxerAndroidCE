@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/colorPrimary"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:id="@+id/profile_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
+        <ImageView
+            android:id="@+id/profile_image"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            tools:ignore="ContentDescription" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/profile_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?attr/textAppearanceSubtitle1"
+                android:textColor="?attr/colorOnPrimary"
+                tools:text="Gast" />
+
+            <TextView
+                android:id="@+id/profile_subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?attr/textAppearanceCaption"
+                android:textColor="?attr/colorOnPrimary"
+                tools:text="Anmelden" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/profile_action_login"
+        style="@style/DrawerHeaderAction"
+        android:text="@string/section_login" />
+
+    <TextView
+        android:id="@+id/profile_action_notifications"
+        style="@style/DrawerHeaderAction"
+        android:text="@string/section_notifications" />
+
+    <TextView
+        android:id="@+id/profile_action_settings"
+        style="@style/DrawerHeaderAction"
+        android:text="@string/section_profile_settings" />
+
+    <TextView
+        android:id="@+id/profile_action_logout"
+        style="@style/DrawerHeaderAction"
+        android:text="@string/section_logout" />
+</LinearLayout>

@@ -9,6 +9,8 @@
     <string name="section_news">News</string>
     <string name="section_bookmarks">Lesezeichen</string>
     <string name="section_guest">Gast</string>
+    <string name="drawer_open">Navigation öffnen</string>
+    <string name="drawer_close">Navigation schließen</string>
     <string name="section_login">Anmelden</string>
     <string name="section_user_subtitle">Angemeldet</string>
     <string name="section_logout">Abmelden</string>

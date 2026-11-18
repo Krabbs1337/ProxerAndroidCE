@@ -36,7 +36,7 @@ import me.proxer.app.util.extension.safeInject
 import me.proxer.app.util.extension.toInstantBP
 import me.proxer.app.util.extension.toLocalDateTimeBP
 import me.proxer.app.util.extension.unsafeLazy
-import me.proxer.app.util.wrapper.MaterialDrawerWrapper
+import me.proxer.app.util.wrapper.DrawerWrapper
 import me.proxer.library.ProxerApi
 import me.proxer.library.ProxerCall
 import java.time.Instant
@@ -300,7 +300,7 @@ class ScheduleWidgetUpdateWorker(
         id: Int,
         views: RemoteViews,
     ) {
-        val intent = MainActivity.getSectionIntent(applicationContext, MaterialDrawerWrapper.DrawerItem.SCHEDULE)
+        val intent = MainActivity.getSectionIntent(applicationContext, DrawerWrapper.DrawerItem.SCHEDULE)
         val pendingIntent =
             PendingIntent.getActivity(
                 applicationContext,

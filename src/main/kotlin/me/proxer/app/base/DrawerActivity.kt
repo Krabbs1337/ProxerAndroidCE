@@ -18,8 +18,8 @@ import me.proxer.app.auth.LogoutDialog
 import me.proxer.app.notification.NotificationActivity
 import me.proxer.app.profile.ProfileActivity
 import me.proxer.app.profile.settings.ProfileSettingsActivity
-import me.proxer.app.util.wrapper.MaterialDrawerWrapper
-import me.proxer.app.util.wrapper.MaterialDrawerWrapper.ProfileItem
+import me.proxer.app.util.wrapper.DrawerWrapper
+import me.proxer.app.util.wrapper.DrawerWrapper.ProfileItem
 import kotlin.properties.Delegates
 
 /**
@@ -30,7 +30,7 @@ abstract class DrawerActivity : BaseActivity() {
     protected open val contentView
         get() = R.layout.activity_default
 
-    protected var drawer by Delegates.notNull<MaterialDrawerWrapper>()
+    protected var drawer by Delegates.notNull<DrawerWrapper>()
         private set
 
     protected open val isRootActivity = false
@@ -55,8 +55,8 @@ abstract class DrawerActivity : BaseActivity() {
                 this,
                 drawerLayout,
                 toolbar,
-                com.mikepenz.materialdrawer.R.string.material_drawer_open,
-                com.mikepenz.materialdrawer.R.string.material_drawer_close,
+                R.string.drawer_open,
+                R.string.drawer_close,
             ).apply {
                 setToolbarNavigationClickListener { onBackPressedDispatcher.onBackPressed() }
                 drawerLayout.addDrawerListener(this)
@@ -70,7 +70,7 @@ abstract class DrawerActivity : BaseActivity() {
         }
 
         drawer =
-            MaterialDrawerWrapper(this, toolbar, savedInstanceState, isMainActivity).also {
+            DrawerWrapper(this, savedInstanceState, isMainActivity).also {
                 it.itemClickSubject
                     .autoDispose(this.scope())
                     .subscribe { item -> handleDrawerItemClick(item) }
@@ -122,7 +122,7 @@ abstract class DrawerActivity : BaseActivity() {
             else -> super.onOptionsItemSelected(item)
         }
 
-    protected open fun handleDrawerItemClick(item: MaterialDrawerWrapper.DrawerItem) {
+    protected open fun handleDrawerItemClick(item: DrawerWrapper.DrawerItem) {
         MainActivity.navigateToSection(this, item)
     }
 

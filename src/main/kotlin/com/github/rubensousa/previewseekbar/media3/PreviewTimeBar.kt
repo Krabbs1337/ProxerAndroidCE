@@ -11,7 +11,7 @@ import androidx.media3.ui.TimeBar
 import com.github.rubensousa.previewseekbar.PreviewDelegate
 import com.github.rubensousa.previewseekbar.PreviewLoader
 import com.github.rubensousa.previewseekbar.PreviewView
-import com.github.rubensousa.previewseekbar.R as PreviewSeekBarR
+import me.proxer.app.R as PreviewSeekBarR
 
 /**
  * Media3 port of the `previewseekbar-exoplayer` module of rubengees' PreviewSeekBar

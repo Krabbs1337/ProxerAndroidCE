@@ -69,7 +69,6 @@ ext {
     flexboxVersion = "3.0.0"
     emojiVersion = "0.13.0"
     media3Version = "1.11.1"
-    previewSeekbarVersion = "09eec85551"
     materialProgressBarVersion = "1.6.1"
     materialRatingBarVersion = "1.4.0"
 

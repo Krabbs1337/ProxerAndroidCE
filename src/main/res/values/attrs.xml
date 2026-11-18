@@ -41,4 +41,9 @@
     <declare-styleable name="AspectRatioImageView">
         <attr name="ari_ratio" format="float" />
     </declare-styleable>
+
+    <!-- In-repo PreviewSeekBar core (replaces com.github.rubensousa:previewseekbar). -->
+    <declare-styleable name="PreviewSeekBar">
+        <attr name="previewFrameLayout" format="reference" />
+    </declare-styleable>
 </resources>

@@ -16,4 +16,7 @@
     <dimen name="image_tabs_text_protection_scrim_bottom_size">64dp</dimen>
 
     <dimen name="stream_indicator_margin">32dp</dimen>
+
+    <!-- In-repo PreviewSeekBar core (replaces com.github.rubensousa:previewseekbar). -->
+    <dimen name="previewseekbar_indicator_width">16dp</dimen>
 </resources>

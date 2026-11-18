@@ -23,6 +23,7 @@ import me.proxer.library.util.ProxerUtils
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.properties.Delegates
+import androidx.core.view.MenuProvider
 
 /**
  * @author Ruben Gees
@@ -72,8 +73,6 @@ class TopicFragment : PagedContentFragment<ParsedPost>() {
                     if (view.drawable != null && post.image.isNotBlank()) view else null,
                 )
             }
-
-        setHasOptionsMenu(true)
     }
 
     override fun onViewCreated(
@@ -81,6 +80,45 @@ class TopicFragment : PagedContentFragment<ParsedPost>() {
         savedInstanceState: Bundle?,
     ) {
         super.onViewCreated(view, savedInstanceState)
+        requireActivity().addMenuProvider(
+            object : MenuProvider {
+                override fun onCreateMenu(
+                    menu: Menu,
+                    inflater: MenuInflater,
+                ) {
+                    IconicsMenuInflaterUtil.inflate(inflater, requireContext(), R.menu.fragment_topic, menu, true)
+                }
+
+                override fun onMenuItemSelected(item: MenuItem): Boolean {
+                    when (item.itemId) {
+                        R.id.show_in_browser -> {
+                            val url = (activity?.intent?.dataString ?: "").toPrefixedUrlOrNull()
+
+                            if (url != null) {
+                                val mobileUrl =
+                                    url
+                                        .newBuilder()
+                                        .setQueryParameter("device", ProxerUtils.getSafeApiEnumName(Device.MOBILE))
+                                        .build()
+
+                                showPage(mobileUrl, forceBrowser = true, skipCheck = true)
+                            } else {
+                                viewModel.metaData.value?.categoryId?.also { categoryId ->
+                                    showPage(
+                                        ProxerUrls.forumWeb(categoryId, id, Device.MOBILE),
+                                        forceBrowser = true,
+                                        skipCheck = true,
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    return false
+                }
+            },
+            viewLifecycleOwner,
+        )
 
         innerAdapter.glide = GlideApp.with(this)
 
@@ -90,44 +128,5 @@ class TopicFragment : PagedContentFragment<ParsedPost>() {
                 it?.let { topic = it.subject }
             },
         )
-    }
-
-    @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
-    override fun onCreateOptionsMenu(
-        menu: Menu,
-        inflater: MenuInflater,
-    ) {
-        IconicsMenuInflaterUtil.inflate(inflater, requireContext(), R.menu.fragment_topic, menu, true)
-
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.show_in_browser -> {
-                val url = (activity?.intent?.dataString ?: "").toPrefixedUrlOrNull()
-
-                if (url != null) {
-                    val mobileUrl =
-                        url
-                            .newBuilder()
-                            .setQueryParameter("device", ProxerUtils.getSafeApiEnumName(Device.MOBILE))
-                            .build()
-
-                    showPage(mobileUrl, forceBrowser = true, skipCheck = true)
-                } else {
-                    viewModel.metaData.value?.categoryId?.also { categoryId ->
-                        showPage(
-                            ProxerUrls.forumWeb(categoryId, id, Device.MOBILE),
-                            forceBrowser = true,
-                            skipCheck = true,
-                        )
-                    }
-                }
-            }
-        }
-
-        return super.onOptionsItemSelected(item)
     }
 }

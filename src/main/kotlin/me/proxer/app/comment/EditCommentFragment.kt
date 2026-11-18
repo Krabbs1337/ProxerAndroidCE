@@ -47,6 +47,7 @@ import me.proxer.app.util.extension.setIconicsImage
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.core.parameter.parametersOf
 import me.proxer.app.databinding.FragmentEditCommentBinding
+import androidx.core.view.MenuProvider
 
 /**
  * @author Ruben Gees
@@ -112,40 +113,44 @@ class EditCommentFragment : BaseContentFragment<LocalComment>(R.layout.fragment_
         savedInstanceState: Bundle?,
     ) {
         super.onViewCreated(view, savedInstanceState)
+        requireActivity().addMenuProvider(
+            object : MenuProvider {
+                override fun onCreateMenu(
+                    menu: Menu,
+                    inflater: MenuInflater,
+                ) {
+                    IconicsMenuInflaterUtil.inflate(
+                        inflater,
+                        requireContext(),
+                        R.menu.fragment_edit_comment,
+                        menu,
+                        true,
+                    )
+                }
+
+                override fun onMenuItemSelected(item: MenuItem): Boolean {
+                    when (item.itemId) {
+                        R.id.preview -> {
+                            commentBottomSheetBehavior.state =
+                                when (commentBottomSheetBehavior.state) {
+                                    BottomSheetBehavior.STATE_HIDDEN -> BottomSheetBehavior.STATE_EXPANDED
+                                    else -> BottomSheetBehavior.STATE_HIDDEN
+                                }
+                        }
+
+                        R.id.publish -> {
+                            viewModel.publish()
+                        }
+                    }
+
+                    return false
+                }
+            },
+            viewLifecycleOwner,
+        )
 
         initUI()
         initListeners()
-
-        setHasOptionsMenu(true)
-    }
-
-    @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
-    override fun onCreateOptionsMenu(
-        menu: Menu,
-        inflater: MenuInflater,
-    ) {
-        IconicsMenuInflaterUtil.inflate(inflater, requireContext(), R.menu.fragment_edit_comment, menu, true)
-
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.preview -> {
-                commentBottomSheetBehavior.state =
-                    when (commentBottomSheetBehavior.state) {
-                        BottomSheetBehavior.STATE_HIDDEN -> BottomSheetBehavior.STATE_EXPANDED
-                        else -> BottomSheetBehavior.STATE_HIDDEN
-                    }
-            }
-
-            R.id.publish -> {
-                viewModel.publish()
-            }
-        }
-
-        return super.onOptionsItemSelected(item)
     }
 
     override fun showData(data: LocalComment) {

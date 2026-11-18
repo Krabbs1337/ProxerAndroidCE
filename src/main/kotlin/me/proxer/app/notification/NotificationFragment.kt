@@ -19,6 +19,7 @@ import me.proxer.app.util.extension.ProxerNotification
 import me.proxer.app.util.extension.multilineSnackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.properties.Delegates
+import androidx.core.view.MenuProvider
 
 /**
  * @author Ruben Gees
@@ -59,8 +60,6 @@ class NotificationFragment : PagedContentFragment<ProxerNotification>() {
         setFragmentResultListener(NotificationDeletionConfirmationDialog.DELETE_ALL_RESULT) { _, _ ->
             viewModel.deleteAll()
         }
-
-        setHasOptionsMenu(true)
     }
 
     override fun onViewCreated(
@@ -68,6 +67,35 @@ class NotificationFragment : PagedContentFragment<ProxerNotification>() {
         savedInstanceState: Bundle?,
     ) {
         super.onViewCreated(view, savedInstanceState)
+        requireActivity().addMenuProvider(
+            object : MenuProvider {
+                override fun onCreateMenu(
+                    menu: Menu,
+                    inflater: MenuInflater,
+                ) {
+                    IconicsMenuInflaterUtil.inflate(
+                        inflater,
+                        requireContext(),
+                        R.menu.fragment_notifications,
+                        menu,
+                        true,
+                    )
+                }
+
+                override fun onMenuItemSelected(item: MenuItem): Boolean {
+                    when (item.itemId) {
+                        R.id.delete_all -> {
+                            if (!innerAdapter.isEmpty()) {
+                                NotificationDeletionConfirmationDialog.show(hostingActivity)
+                            }
+                        }
+                    }
+
+                    return false
+                }
+            },
+            viewLifecycleOwner,
+        )
 
         viewModel.deletionError.observe(
             viewLifecycleOwner,
@@ -82,29 +110,6 @@ class NotificationFragment : PagedContentFragment<ProxerNotification>() {
                 }
             },
         )
-    }
-
-    @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
-    override fun onCreateOptionsMenu(
-        menu: Menu,
-        inflater: MenuInflater,
-    ) {
-        IconicsMenuInflaterUtil.inflate(inflater, requireContext(), R.menu.fragment_notifications, menu, true)
-
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.delete_all -> {
-                if (!innerAdapter.isEmpty()) {
-                    NotificationDeletionConfirmationDialog.show(hostingActivity)
-                }
-            }
-        }
-
-        return super.onOptionsItemSelected(item)
     }
 
     override fun onResume() {

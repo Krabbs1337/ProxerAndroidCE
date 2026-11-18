@@ -30,6 +30,7 @@ import me.proxer.library.enums.Category
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.properties.Delegates
+import androidx.core.view.MenuProvider
 
 /**
  * @author Ruben Gees
@@ -112,8 +113,6 @@ class ProfileCommentFragment : PagedContentFragment<ParsedUserComment>() {
                         viewModel.deleteComment(comment)
                     }.show()
             }
-
-        setHasOptionsMenu(true)
     }
 
     override fun onViewCreated(
@@ -121,6 +120,41 @@ class ProfileCommentFragment : PagedContentFragment<ParsedUserComment>() {
         savedInstanceState: Bundle?,
     ) {
         super.onViewCreated(view, savedInstanceState)
+        requireActivity().addMenuProvider(
+            object : MenuProvider {
+                override fun onCreateMenu(
+                    menu: Menu,
+                    inflater: MenuInflater,
+                ) {
+                    IconicsMenuInflaterUtil.inflate(
+                        inflater,
+                        requireContext(),
+                        R.menu.fragment_user_comments,
+                        menu,
+                        true,
+                    )
+
+                    when (category) {
+                        Category.ANIME -> menu.findItem(R.id.anime).isChecked = true
+                        Category.MANGA -> menu.findItem(R.id.manga).isChecked = true
+                        else -> menu.findItem(R.id.all).isChecked = true
+                    }
+                }
+
+                override fun onMenuItemSelected(item: MenuItem): Boolean {
+                    when (item.itemId) {
+                        R.id.anime -> category = Category.ANIME
+                        R.id.manga -> category = Category.MANGA
+                        R.id.all -> category = null
+                    }
+
+                    item.isChecked = true
+
+                    return false
+                }
+            },
+            viewLifecycleOwner,
+        )
 
         viewModel.itemDeletionError.observe(
             viewLifecycleOwner,
@@ -135,35 +169,6 @@ class ProfileCommentFragment : PagedContentFragment<ParsedUserComment>() {
                 }
             },
         )
-    }
-
-    @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
-    override fun onCreateOptionsMenu(
-        menu: Menu,
-        inflater: MenuInflater,
-    ) {
-        IconicsMenuInflaterUtil.inflate(inflater, requireContext(), R.menu.fragment_user_comments, menu, true)
-
-        when (category) {
-            Category.ANIME -> menu.findItem(R.id.anime).isChecked = true
-            Category.MANGA -> menu.findItem(R.id.manga).isChecked = true
-            else -> menu.findItem(R.id.all).isChecked = true
-        }
-
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.anime -> category = Category.ANIME
-            R.id.manga -> category = Category.MANGA
-            R.id.all -> category = null
-        }
-
-        item.isChecked = true
-
-        return super.onOptionsItemSelected(item)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

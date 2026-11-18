@@ -42,6 +42,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.properties.Delegates
 import me.proxer.app.databinding.FragmentCommentsBinding
+import androidx.core.view.MenuProvider
 
 /**
  * @author Ruben Gees
@@ -139,8 +140,6 @@ class CommentsFragment : PagedContentFragment<ParsedComment>(R.layout.fragment_c
                         viewModel.deleteComment(comment)
                     }.show()
             }
-
-        setHasOptionsMenu(true)
     }
 
     override fun onViewCreated(
@@ -148,6 +147,33 @@ class CommentsFragment : PagedContentFragment<ParsedComment>(R.layout.fragment_c
         savedInstanceState: Bundle?,
     ) {
         super.onViewCreated(view, savedInstanceState)
+        requireActivity().addMenuProvider(
+            object : MenuProvider {
+                override fun onCreateMenu(
+                    menu: Menu,
+                    inflater: MenuInflater,
+                ) {
+                    IconicsMenuInflaterUtil.inflate(inflater, requireContext(), R.menu.fragment_comments, menu, true)
+
+                    when (sortCriteria) {
+                        CommentSortCriteria.RATING -> menu.findItem(R.id.rating).isChecked = true
+                        CommentSortCriteria.TIME -> menu.findItem(R.id.time).isChecked = true
+                    }
+                }
+
+                override fun onMenuItemSelected(item: MenuItem): Boolean {
+                    when (item.itemId) {
+                        R.id.rating -> sortCriteria = CommentSortCriteria.RATING
+                        R.id.time -> sortCriteria = CommentSortCriteria.TIME
+                    }
+
+                    item.isChecked = true
+
+                    return false
+                }
+            },
+            viewLifecycleOwner,
+        )
 
         innerAdapter.glide = GlideApp.with(this)
         innerAdapter.categoryCallback = { category }
@@ -191,33 +217,6 @@ class CommentsFragment : PagedContentFragment<ParsedComment>(R.layout.fragment_c
         innerAdapter.categoryCallback = null
 
         super.onDestroy()
-    }
-
-    @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
-    override fun onCreateOptionsMenu(
-        menu: Menu,
-        inflater: MenuInflater,
-    ) {
-        IconicsMenuInflaterUtil.inflate(inflater, requireContext(), R.menu.fragment_comments, menu, true)
-
-        when (sortCriteria) {
-            CommentSortCriteria.RATING -> menu.findItem(R.id.rating).isChecked = true
-            CommentSortCriteria.TIME -> menu.findItem(R.id.time).isChecked = true
-        }
-
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.rating -> sortCriteria = CommentSortCriteria.RATING
-            R.id.time -> sortCriteria = CommentSortCriteria.TIME
-        }
-
-        item.isChecked = true
-
-        return super.onOptionsItemSelected(item)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

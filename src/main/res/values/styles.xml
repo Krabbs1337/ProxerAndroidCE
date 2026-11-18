@@ -26,11 +26,6 @@
 
         <item name="materialDrawerStyle">@style/Widget.App.MaterialDrawerStyle</item>
         <item name="materialDrawerHeaderStyle">@style/Widget.App.MaterialDrawerHeaderStyle</item>
-
-
-        <item name="emojiIcons">?attr/colorIcon</item>
-        <item name="emojiDivider">?attr/colorDivider</item>
-        <item name="emojiBackground">?attr/colorSurface</item>
     </style>
 
     <style name="Base.Theme.App.DayNight" parent="Base.Theme.App">

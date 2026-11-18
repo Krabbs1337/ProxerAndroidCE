@@ -67,7 +67,7 @@ ext {
     subsamplingScaleImageViewVersion = "90c6b27c13"
     subsamplingPdfDecoderVersion = "ad07ddf671"
     flexboxVersion = "3.0.0"
-    emojiIosVersion = "9058c30868"
+    emojiVersion = "0.13.0"
     media3Version = "1.11.1"
     previewSeekbarVersion = "09eec85551"
     materialProgressBarVersion = "1.6.1"

@@ -29,8 +29,11 @@ android {
         applicationId "me.proxer.app"
         minSdk rootProject.ext.minSdkVersion
         targetSdk rootProject.ext.targetSdkVersion
-        versionCode appVersionMajor * 1000000 + appVersionMinor * 10000 + appVersionPatch * 100
-        versionName "$appVersionMajor.$appVersionMinor.$appVersionPatch"
+        // Pre-Release-Suffix (z. B. "beta2") senkt den versionCode unter den des finalen
+        // Releases (2.0.0-beta2 -> 1999998 < 2000000), damit das finale Release upgradet.
+        versionCode appVersionMajor * 1000000 + appVersionMinor * 10000 + appVersionPatch * 100 -
+                (appVersionSuffix ? appVersionSuffix.replaceAll("[^0-9]", "").toInteger() : 0)
+        versionName "$appVersionMajor.$appVersionMinor.$appVersionPatch${appVersionSuffix ? "-$appVersionSuffix" : ""}"
 
         vectorDrawables.useSupportLibrary true
 

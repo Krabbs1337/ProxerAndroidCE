@@ -1,6 +1,6 @@
 # ROADMAP – Modernisierung von ProxerAndroidCE
 
-Stand: 18.11.2026 · App-Version 2.0.0 (versionCode 2000000) · 338 Kotlin-Dateien (main) + 12 Test-Dateien (`src/test`), Single-Module (`me.proxer.app`) + `:baselineprofile`
+Stand: 18.11.2026 · App-Version 2.0.0-beta2 (versionCode 1999998) · 338 Kotlin-Dateien (main) + 12 Test-Dateien (`src/test`), Single-Module (`me.proxer.app`) + `:baselineprofile`
 
 Ziel: Das Projekt auf einen aktuellen, build- und Play-Store-fähigen Stand bringen (AGP 9.x / Kotlin 2.4+ / JDK 17 / targetSdk 36) und den resultierenden Stand durch Stabilitäts- und Performance-Maßnahmen verbessern.
 
@@ -9,6 +9,7 @@ Ziel: Das Projekt auf einen aktuellen, build- und Play-Store-fähigen Stand brin
 - **Chat und Messenger werden entfernt** und in einer neuen Version der App **nicht** wieder implementiert. Die Entfernung erfolgt sauber (Code, Manifest, Ressourcen, Datenbank, Einstellungen), nicht über ein verstecktes Flag.
 - RxJava bleibt vorerst die Basis (102 Scheduler-Referenzen); eine Migration zu Coroutines/Flow erfolgt optional und schrittweise pro Feature, nicht als Big Bang.
 - ProxerLibJava 5.4.0 ist bereits das neueste Release (Apr 2024) und bleibt.
+- **Versionierung:** `appVersionSuffix` in `gradle/versions.gradle` (leer = stabil). Suffix `betaN` hängt `-betaN` an `versionName` und senkt `versionCode` um N (2.0.0-beta2 → 1999998), damit das finale Release (2000000) sauber über die Beta upgradet.
 
 ## Phasen-Übersicht
 

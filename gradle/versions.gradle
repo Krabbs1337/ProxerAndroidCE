@@ -3,6 +3,9 @@ ext {
     appVersionMajor = 2
     appVersionMinor = 0
     appVersionPatch = 0
+    // Pre-Release-Suffix, z. B. "beta2"; leer ("") für stabile Releases.
+    // versionCode = Basis - Suffix-Nummer, damit ein Beta lower als das finale Release ist.
+    appVersionSuffix = "beta2"
 
     minSdkVersion = 24
     targetSdkVersion = 36

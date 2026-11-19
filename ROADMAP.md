@@ -1,6 +1,6 @@
 # ROADMAP – Modernisierung von ProxerAndroidCE
 
-Stand: 17.11.2026 · App-Version 1.11.5 · letzter Commit 07.04.2024 · 386 Kotlin-Dateien / ~36.000 Zeilen, Single-Module (`me.proxer.app`)
+Stand: 18.11.2026 · App-Version 2.0.0 (versionCode 2000000) · 338 Kotlin-Dateien, Single-Module (`me.proxer.app`) + `:baselineprofile`
 
 Ziel: Das Projekt auf einen aktuellen, build- und Play-Store-fähigen Stand bringen (AGP 9.x / Kotlin 2.4+ / JDK 17 / targetSdk 36) und den resultierenden Stand durch Stabilitäts- und Performance-Maßnahmen verbessern.
 

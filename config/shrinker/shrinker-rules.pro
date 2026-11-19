@@ -1,6 +1,22 @@
 # Keep stacktraces readeable.
 -keepattributes SourceFile,LineNumberTable
 
+# ROADMAP 11.9: Moshi's AdapterMethodsFactory validates @FromJson/@ToJson methods via
+# Method.getGenericParameterTypes() and requires delegate parameters to be ParameterizedType
+# with raw type JsonAdapter (e.g. ProxerLibJava's FixRatingDetailsAdapter.fromJson(
+# JsonReader, JsonAdapter<RatingDetails>)). R8 obfuscation mangles the generic signature,
+# so release builds crashed on login with "Unexpected signature for ... fromJson(...)".
+# Keep Moshi and the lib's adapter classes un-obfuscated so their signatures survive intact.
+-keepattributes Signature,InnerClasses,EnclosingMethod
+-keep class com.squareup.moshi.** { *; }
+-keep class me.proxer.library.internal.adapter.** { *; }
+
+# ROADMAP 11.9 (part 2): R8 obfuscation of ProxerLibJava broke ProxerApi construction on
+# release builds (messageless ClassCastException inside UsersApi.<init> chain at login,
+# reproduced on emulator with -dontoptimize still crashing -> renaming, not merging, is the
+# culprit). Keep the whole lib un-obfuscated.
+-keep class me.proxer.library.** { *; }
+
 # Keep essential support library class.
 -keep,allowoptimization class androidx.core.app.CoreComponentFactory { *; }
 

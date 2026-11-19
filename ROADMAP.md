@@ -387,6 +387,14 @@ Scan (TODO-Grep, Transition-Names, Dependency-Nutzung, ungenutzte Top-Level/priv
 - **Regression-Tests (`LoginViewModelTest`, MockWebServer + echte ProxerApi mit Redirect-Interceptor):** 3038 → 2FA-Prompt-Flag gesetzt + Pref persistiert; 3001 → Flag bleibt false; Request-Body enthält `secretkey` nur bei echtem Code (`secretkey=123456`), nicht bei null.
 - **Verifiziert:** `testDebugUnitTest` 53/53 grün, ktlint/detekt/lint strikt grün, signierte `app-2.0.0-beta2-release.apk` + `app-2.0.0-beta2-logRelease-9ff4a237.apk` neu gebaut (apksigner verify OK). Repro gegen die echte API ohne 2FA-Testaccount nicht möglich — falls das Problem auf dem Gerät weiterhin besteht: logRelease-APK installieren und logcat des Login-Versuchs schicken (HTTP-Log zeigt den echten Server-Code).
 
+### 11.9 Release-Crashes durch R8 (nur minified Builds, nie Debug) — **erledigt 18.11.2026**
+
+- **Symptom (Real-Device, Android 14, logRelease 2.0.0-beta2):** Login-Button → `Could not create instance for [Singleton: ProxerApi]` → `IllegalArgumentException: Unexpected signature for ... FixRatingDetailsAdapter.fromJson(...)` (Moshi). Auf dem Emulator (API 37) nachstellbar; danach als zweiter Fehler `ClassCastException` (ohne Message) in der ProxerApi-Konstruktion.
+- **Ursache 1 (Moshi):** `AdapterMethodsFactory` prüft `@FromJson`-Methoden via `getGenericParameterTypes()` und verlangt `ParameterizedType`-Delegate mit raw type `JsonAdapter`. R8-Obfuskation verfälscht die generische Signatur → Validation schlägt fehl. Fix in `config/shrinker/shrinker-rules.pro`: `-keep class com.squareup.moshi.** { *; }` + `-keep class me.proxer.library.internal.adapter.** { *; }` (+ `-keepattributes Signature,InnerClasses,EnclosingMethod`, redundant zu AGP-Defaults aber explizit).
+- **Ursache 2 (CCE):** R8-Renaming der ProxerLibJava-Klassen bricht die ProxerApi-Konstruktion (UsersApi.<init>-Kette). Reproduzierbar mit `-dontoptimize` (also kein Merging/Inlining, sondern Renaming). Fix: `-keep class me.proxer.library.** { *; }`. Hinweis: `-keep`-Regeln auf `$$ExternalSyntheticLambda*` greifen nicht (R8-synthetisiert, landet nicht in seeds.txt); `-optimizations !class/merging/horizontal` änderte am map-id nichts und wurde wieder entfernt.
+- **Verifiziert (Emulator API 37, signierte Release-APK):** vorher Crash beim Login-Submit repro'd (`Unexpected signature`, dann CCE); nach Fix: frische Installation, ANMELDEN → Dialog öffnet, Dummy-Creds absenden → **0 FATAL EXCEPTION**, App bleibt in MainActivity. Voll grün: `testDebugUnitTest` 53/53, ktlintCheck, detekt, lintDebug/lintRelease, assembleRelease, assembleLogRelease, bundleRelease, baselineprofile (EXIT=0).
+- **Lesson:** Release-APK auf dem Emulator gegen den echten Flow testen — Debug fängt R8-Probleme nie. (CI baut nur, testet nicht auf Gerät — siehe 11.4 CI-Follow-up.)
+
 ---
 
 ## Phase 12 – Unit-Tests (Test-Infrastruktur + erste Suite) — **erledigt 18.11.2026**

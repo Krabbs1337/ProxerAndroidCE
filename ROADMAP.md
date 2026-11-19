@@ -1,6 +1,6 @@
 # ROADMAP – Modernisierung von ProxerAndroidCE
 
-Stand: 18.11.2026 · App-Version 2.0.0 (versionCode 2000000) · 338 Kotlin-Dateien (main) + 10 Test-Dateien (`src/test`), Single-Module (`me.proxer.app`) + `:baselineprofile`
+Stand: 18.11.2026 · App-Version 2.0.0 (versionCode 2000000) · 338 Kotlin-Dateien (main) + 12 Test-Dateien (`src/test`), Single-Module (`me.proxer.app`) + `:baselineprofile`
 
 Ziel: Das Projekt auf einen aktuellen, build- und Play-Store-fähigen Stand bringen (AGP 9.x / Kotlin 2.4+ / JDK 17 / targetSdk 36) und den resultierenden Stand durch Stabilitäts- und Performance-Maßnahmen verbessern.
 
@@ -397,7 +397,10 @@ Scan (TODO-Grep, Transition-Names, Dependency-Nutzung, ungenutzte Top-Level/priv
   - `UtilExtensionsTest`: `toPrefixedUrlOrNull`/`toPrefixedHttpUrl` (Präfix-Logik, PARSING-Exception).
   - `TagDatabaseTest` (Robolectric + Room in-memory): Insert/Query-Roundtrip, REPLACE on conflict, `replaceTags` räumt vorher auf, `clear`.
   - `BaseViewModelTest` (JVM + Koin-Testmodul + trampoline Schedulers + `InstantTaskExecutorRule`): `load()`-Erfolgspfad, `NotLoggedInException` → `error_login_required` + `ButtonAction.LOGIN`, `reload()` räumt Fehler auf, `loadIfPossible()` lädt nicht bei vorhandenem Fehler.
-- Verifiziert grün: `testDebugUnitTest` (45/45), `ktlintCheck`, `detekt`, `lintDebug`, `lintRelease`, `assembleDebug`, `assembleRelease`, `bundleRelease`, `assembleLogRelease`, `:baselineprofile:assembleAndroidTest`. ktlint/detekt/lint gelten strikt auch für `src/test`.
+  - **API-Mocking mit MockWebServer (konkrete ViewModels):**
+    - `ScheduleViewModelTest`: echte `ProxerApi` gegen MockWebServer — die lib erzwingt ihre eigene Retrofit-baseUrl (`ProxerUrls.apiBase`), daher Rewrite auf den Mock-Server per OkHttp-Interceptor im injizierten Client. Verifiziert Request-Pfad `/api/v1/media/calendar`, Envelope `{"error":0,"data":[...]}`, Grouping nach `CalendarDay` (Wire-Werte lowercase via `@Json`, z. B. `"sun"`) und Sortierung nach Datum; plus Fehlerpfad (HTTP 500 → ErrorAction).
+    - `ServerStatusViewModelTest`: injizierter `OkHttpClient` mit URL-Rewrite-Interceptor; MockWebServer liefert Status-Tabellen-HTML, jsoup-Scraping wird inkl. Nummer/Typ-Parsing (`Server 2 Stream:` → STREAM, Nr. 2), img-Zellen-Filter und Sortierung geprüft; plus Verbindungsfehler (`SocketPolicy.DISCONNECT_AT_START`) → ErrorAction.
+- Verifiziert grün: `testDebugUnitTest` (49/49), `ktlintCheck`, `detekt`, `lintDebug`, `lintRelease`, `assembleDebug`, `assembleRelease`, `bundleRelease`, `assembleLogRelease`, `:baselineprofile:assembleAndroidTest`. ktlint/detekt/lint gelten strikt auch für `src/test`.
 
 **Abnahme:** `testDebugUnitTest` grün lokal + CI — erfüllt.
 

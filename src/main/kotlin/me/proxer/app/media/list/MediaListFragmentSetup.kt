@@ -47,7 +47,6 @@ import me.proxer.library.enums.TagSpoilerFilter
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.EnumSet
 import kotlin.properties.Delegates
-import me.proxer.app.databinding.FragmentMediaListBinding
 import androidx.core.view.MenuProvider
 
 internal fun MediaListFragment.setupView() {

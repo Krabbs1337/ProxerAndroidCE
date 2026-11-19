@@ -24,7 +24,7 @@ Ziel: Das Projekt auf einen aktuellen, build- und Play-Store-fähigen Stand brin
 | 8 | Performance + Polish — **erledigt 17.11.2026** | Glide, Baseline Profiles, AAB-Splits, Desugaring |
 | 9 | Qualitätssicherung + optionale Coroutines-Migration — **erledigt 17.11.2026** | detekt/ktlint/CI aktuell, schrittweise RxJava-Ablösung |
 | 10 | 16 KB Page Size + Abhängigkeits-Aufräumung — **erledigt 17.11.2026** | APK nativ-frei, jitpack-/unmaintained-Deps durch Shims ersetzt |
-| 11 | Runtime-Bugs, Lint-Cleanup + strukturelle Follow-ups — **11.1–11.3 erledigt 17.11.2026, 11.4a–k + 11.5–11.6 erledigt 18.11.2026** | Aus `lintDebug` + Code-Scan abgeleitet, siehe unten |
+| 11 | Runtime-Bugs, Lint-Cleanup + strukturelle Follow-ups — **11.1–11.3 erledigt 17.11.2026, 11.4a–k + 11.5–11.7 erledigt 18.11.2026** | Aus `lintDebug` + Code-Scan abgeleitet, siehe unten |
 
 ---
 
@@ -257,7 +257,7 @@ Checkliste (alle bekannten Berührungspunkte):
 
 ---
 
-## Phase 11 – Runtime-Bugs, Lint-Cleanup + strukturelle Follow-ups (11.1–11.3 erledigt 17.11.2026, 11.4a–k + 11.5–11.6 erledigt 18.11.2026)
+## Phase 11 – Runtime-Bugs, Lint-Cleanup + strukturelle Follow-ups (11.1–11.3 erledigt 17.11.2026, 11.4a–k + 11.5–11.7 erledigt 18.11.2026)
 
 **Quelle:** `./gradlew lintDebug` (247 Issues nach 11.1: 72 Error, 6 Fatal, 169 Warning) + Compiler-Warnungen (162 in 42 Dateien) + Code-Scan, Stand 17.11.2026.
 
@@ -351,6 +351,17 @@ Ursprüngliche Liste:
 - **Glide 4.16 → 5.x (erledigt 18.11.2026, 11.4g):** Glide **5.0.10** (letztes Stable; `com.github.bumptech.glide`-Gruppe liegt auf Maven Central). KSP-Artefakt `ksp:5.0.10` statt `kapt compiler` → **`com.android.legacy-kapt` komplett entfernt**. Glide 5 generiert kein `GlideApp`/`GlideRequests` mehr: `GlideApp.with()` → `Glide.with()` (22 Dateien), `GlideRequests` → `RequestManager`, `GlideRequest<T>` → `RequestBuilder<T>`, `defaultLoad` nutzt `asDrawable().load(...)`. Emulator-Test (API 37): Start + LoginDialog ohne Crash, 0 FATAL EXCEPTION.
 - **RxJava → Coroutines/Flow** schrittweise pro Feature (Start z. B. `BaseViewModel.load()`), gemäß Festlegung
 - **CI (erledigt 18.11.2026, 11.4d):** Build-Step um `lintDebug lintRelease` (strict, abortOnError) erweitert; neuer Job `baselineprofile` mit `reactivecircus/android-emulator-runner` (API 36) führt `:baselineprofile:connectedReleaseAndroidTest` aus und lädt die Profile als Artifact
+
+### 11.7 Obsoleten Code entfernt — **erledigt 18.11.2026**
+
+Scan (TODO-Grep, Transition-Names, Dependency-Nutzung, ungenutzte Top-Level/private Deklarationen, Chat-Leichen) + Entfernen:
+- **Tote Klassen gelöscht (0 Referenzen):** `exception/InvalidInputException.kt`, `StorageException.kt`, `TopicEmptyException.kt`, `util/rx/RxRetryWithDelay.kt`.
+- **Ungenutzte Private Members entfernt:** `MediaListFragment.binding` (Property + ungenutzte `FragmentMediaListBinding`-Imports in `MediaListFragmentArgs/Setup`), `LoginHandler.api`-Konstruktorparam (+ `MainModules`-Registrierung auf 2 Args).
+- **Ungenutzte Dependencies entfernt:** `androidx.sharetarget:sharetarget` (Chat-Share-Target-Überbleibsel aus Phase 2, Manifest/Code ohne Referenz), `androidx.exifinterface:exifinterface`, `androidx.room:room-rxjava2` (DAO liefert keine Rx-Typen) + `shareTargetVersion`/`exifinterfaceVersion`.
+- **`res/raw/keep.xml` gelöscht** — die `mr_*`/`ic_vol_*`-Patterns matchen keine App-Resourcen mehr (aboutlibraries läuft über die `R$raw`-Proguard-Regel).
+- **Bewusst behalten (dokumentiert):** Chatango-Profilfeld (`ProfileAboutFragment` + String), `ads-identifier`-Pin (von media3-ima gefordert), `profileinstaller` (Baseline-Profile via AAR-Initializer), 28 `@Suppress("DEPRECATION")` (in 11.3 dokumentiert), TODO-Kommentare (ax androidx-fullscreen, Koin-Issue), `ViewCompat.setTransitionName` in 11 Adaptern (wird von `ActivityUtils.makeSceneTransitionAnimation` konsumiert).
+- `PostAdapter.kt` (Beispiel des Scans) selbst ist sauber — keine obsoleten Stellen.
+- Verifiziert grün: `ktlintCheck`, `detekt`, `lintDebug` + `lintRelease` (strict, 0 Issues), alle Builds, `:baselineprofile:assembleAndroidTest`.
 
 ### 11.6 Crash beim Öffnen des 2FA-Login-Fensters (StaggeredGridLayoutManager AIOOBE -1) — **erledigt 18.11.2026**
 

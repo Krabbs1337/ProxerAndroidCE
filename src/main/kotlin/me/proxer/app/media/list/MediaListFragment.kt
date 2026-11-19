@@ -48,7 +48,6 @@ import me.proxer.library.enums.TagSpoilerFilter
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.EnumSet
 import kotlin.properties.Delegates
-import me.proxer.app.databinding.FragmentMediaListBinding
 import androidx.core.view.MenuProvider
 
 /**
@@ -65,9 +64,6 @@ class MediaListFragment :
 
         setupView()
     }
-
-    private val binding: FragmentMediaListBinding
-        get() = FragmentMediaListBinding.bind(requireView())
 
     companion object {
         internal const val CATEGORY_ARGUMENT = "category"

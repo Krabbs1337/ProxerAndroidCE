@@ -223,7 +223,7 @@ private val applicationModules =
         }
 
         single<LoginTokenManager> { ProxerLoginTokenManager(get()) }
-        single { LoginHandler(get(), get(), get()) }
+        single { LoginHandler(get(), get()) }
     }
 
 private val viewModelModule =

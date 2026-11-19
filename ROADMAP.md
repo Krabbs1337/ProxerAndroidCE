@@ -395,6 +395,14 @@ Scan (TODO-Grep, Transition-Names, Dependency-Nutzung, ungenutzte Top-Level/priv
 - **Verifiziert (Emulator API 37, signierte Release-APK):** vorher Crash beim Login-Submit repro'd (`Unexpected signature`, dann CCE); nach Fix: frische Installation, ANMELDEN → Dialog öffnet, Dummy-Creds absenden → **0 FATAL EXCEPTION**, App bleibt in MainActivity. Voll grün: `testDebugUnitTest` 53/53, ktlintCheck, detekt, lintDebug/lintRelease, assembleRelease, assembleLogRelease, bundleRelease, baselineprofile (EXIT=0).
 - **Lesson:** Release-APK auf dem Emulator gegen den echten Flow testen — Debug fängt R8-Probleme nie. (CI baut nur, testet nicht auf Gerät — siehe 11.4 CI-Follow-up.)
 
+### 11.10 Lesezeichen: Cover vollständig sichtbar — **erledigt 19.11.2026**
+
+- **Problem (Real-Device):** Im Lesezeichen-Grid wurden die Mangacover oben/unten abgeschnitten — `item_bookmark.xml` nutzte `AspectRatioImageView` mit `ari_ratio="1.25"` (Querformat-Box, Höhe = 0,8×Breite) + `centerCrop`; Proxer-Cover sind Hochformat (~0,7) → die Ränder wurden gestutzt.
+- **Fix:** `app:ari_ratio="0.7"` (Hochformat-Box passend zu den Covern), `scaleType="fitCenter"` (Bild wird nie beschnitten, auch bei abweichendem Format) + `android:background="@android:color/black"` als Maske für eventuelle Letterbox-Balken. Overlays (Titel/Medium) liegen relativ zum Bild und rutschen automatisch mit.
+- **Regressionstest:** `BookmarkItemLayoutTest` (Robolectric, plain `Application` — sonst startet Koin/Keystore im Test) inflated `item_bookmark` und prüft `scaleType == FIT_CENTER` + `measuredHeight == width / 0.7` (> Breite, also Hochformat).
+- **Scope bewusst nur Lesezeichen** — `item_media_entry`, `item_history_entry`, `item_profile_media_entry`, `item_project`, `item_recommendation`, `item_schedule_entry`, `item_top_ten_entry` nutzen weiterhin `1.25`/`centerCrop` (dort sind die Cover-Ausschnitte gewollt kompakt); Umstellung auf Wunsch analog.
+- Verifiziert grün: 54/54 `testDebugUnitTest`, ktlint, `lintDebug`, `assembleDebug`, `assembleRelease` (signierte `app-2.0.0-beta2-release.apk` neu gebaut).
+
 ---
 
 ## Phase 12 – Unit-Tests (Test-Infrastruktur + erste Suite) — **erledigt 18.11.2026**

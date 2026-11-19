@@ -24,8 +24,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
-                android:scaleType="centerCrop"
-                app:ari_ratio="1.25" />
+                android:background="@android:color/black"
+                android:scaleType="fitCenter"
+                app:ari_ratio="0.7" />
 
             <TextView
                 android:id="@+id/title"

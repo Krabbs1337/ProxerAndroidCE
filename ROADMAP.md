@@ -10,6 +10,7 @@ Ziel: Das Projekt auf einen aktuellen, build- und Play-Store-fähigen Stand brin
 - RxJava bleibt vorerst die Basis (102 Scheduler-Referenzen); eine Migration zu Coroutines/Flow erfolgt optional und schrittweise pro Feature, nicht als Big Bang.
 - ProxerLibJava 5.4.0 ist bereits das neueste Release (Apr 2024) und bleibt.
 - **Versionierung:** `appVersionSuffix` in `gradle/versions.gradle` (leer = stabil). Suffix `betaN` hängt `-betaN` an `versionName` und senkt `versionCode` um N (2.0.0-beta2 → 1999998), damit das finale Release (2000000) sauber über die Beta upgradet.
+- **Release-Signierung:** Credentials in gitignored `secrets.properties` (`RELEASE_STORE_FILE`/`RELEASE_STORE_PASSWORD`/`RELEASE_KEY_ALIAS`/`RELEASE_KEY_PASSWORD`); `shouldSign()` in `gradle/utils.gradle` schaltet `signingConfig` für release/logRelease. Lokal: Test-Keystore außerhalb des Repos (`D:/VisualStudio/ProxerAndroidCE/release-test.jks`, greift `*.jks` in `.gitignore`). CI: GitHub-Secrets `KEYSTORE`/`SECRETS` via `create-secrets.sh`. Verifiziert 18.11.2026: signierte `app-2.0.0-beta2-release.apk` (apksigner verify OK, SHA-256 9214f40b…) auf Emulator (API 37) installiert (`adb install` Success, dumpsys: versionCode=1999998, versionName=2.0.0-beta2) und gestartet (0 FATAL EXCEPTION).
 
 ## Phasen-Übersicht
 

@@ -79,6 +79,14 @@ ext {
     betterLinkMovementMethodVersion = "2.2.0"
     jsoupVersion = "1.24.1"
 
+    // Tests
+    junitVersion = "5.11.4"
+    junitPlatformVersion = "1.11.4"
+    junit4Version = "4.13.2"
+    mockkVersion = "1.13.17"
+    robolectricVersion = "4.15.1"
+    coreTestingVersion = "2.2.0"
+
     // Debugging
     customActivityOnCrashVersion = "2.4.0"
     timberVersion = "5.0.1"

@@ -167,6 +167,15 @@ android {
             enableSplit = true
         }
     }
+
+    testOptions {
+        unitTests {
+            // Robolectric needs the merged manifest/resources; default values keep pure
+            // JVM tests from hitting "Stub!" errors on android.jar (ROADMAP Phase 12).
+            includeAndroidResources = true
+            returnDefaultValues = true
+        }
+    }
 }
 
 androidComponents {
@@ -188,6 +197,12 @@ kotlin {
         // jvmTarget defaults to android.compileOptions.targetCompatibility (17).
         freeCompilerArgs.addAll(["-Xjsr305=strict", "-progressive"])
     }
+}
+
+// ROADMAP Phase 12: JUnit 5 platform (jupiter for new tests, vintage engine runs the
+// JUnit4-based Robolectric tests).
+tasks.withType(Test) {
+    useJUnitPlatform()
 }
 
 apply from: "${projectDir}/gradle/repositories.gradle"

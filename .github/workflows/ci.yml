@@ -27,7 +27,7 @@ jobs:
 
       - id: build
         name: Build with Gradle
-        run: ./gradlew ktlintCheck detekt lintDebug lintRelease build bundle
+        run: ./gradlew ktlintCheck detekt lintDebug lintRelease testDebugUnitTest build bundle
 
       - name: Store reports
         uses: actions/upload-artifact@v6

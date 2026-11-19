@@ -87,6 +87,17 @@ dependencies {
     ksp "com.github.bumptech.glide:ksp:$glideVersion"
     ksp "com.squareup.moshi:moshi-kotlin-codegen:$moshiVersion"
 
+    // Tests (ROADMAP Phase 12): JUnit 5 via useJUnitPlatform(), JUnit 4 + vintage engine
+    // only for Robolectric tests (Robolectric's runner is JUnit4-based).
+    testImplementation "org.junit.jupiter:junit-jupiter:$junitVersion"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher:$junitPlatformVersion"
+    testImplementation "junit:junit:$junit4Version"
+    testRuntimeOnly "org.junit.vintage:junit-vintage-engine:$junitPlatformVersion"
+    testImplementation "io.mockk:mockk:$mockkVersion"
+    testImplementation "org.robolectric:robolectric:$robolectricVersion"
+    testImplementation "androidx.arch.core:core-testing:$coreTestingVersion"
+    testImplementation "androidx.room:room-testing:$roomVersion"
+    testImplementation "com.squareup.okhttp3:mockwebserver:$okHttpVersion"
 }
 
 configurations.all {

@@ -1,6 +1,6 @@
 # ROADMAP – Modernisierung von ProxerAndroidCE
 
-Stand: 18.11.2026 · App-Version 2.0.0 (versionCode 2000000) · 338 Kotlin-Dateien, Single-Module (`me.proxer.app`) + `:baselineprofile`
+Stand: 18.11.2026 · App-Version 2.0.0 (versionCode 2000000) · 338 Kotlin-Dateien (main) + 7 Test-Dateien (`src/test`), Single-Module (`me.proxer.app`) + `:baselineprofile`
 
 Ziel: Das Projekt auf einen aktuellen, build- und Play-Store-fähigen Stand bringen (AGP 9.x / Kotlin 2.4+ / JDK 17 / targetSdk 36) und den resultierenden Stand durch Stabilitäts- und Performance-Maßnahmen verbessern.
 
@@ -25,6 +25,7 @@ Ziel: Das Projekt auf einen aktuellen, build- und Play-Store-fähigen Stand brin
 | 9 | Qualitätssicherung + optionale Coroutines-Migration — **erledigt 17.11.2026** | detekt/ktlint/CI aktuell, schrittweise RxJava-Ablösung |
 | 10 | 16 KB Page Size + Abhängigkeits-Aufräumung — **erledigt 17.11.2026** | APK nativ-frei, jitpack-/unmaintained-Deps durch Shims ersetzt |
 | 11 | Runtime-Bugs, Lint-Cleanup + strukturelle Follow-ups — **11.1–11.3 erledigt 17.11.2026, 11.4a–k + 11.5–11.7 erledigt 18.11.2026** | Aus `lintDebug` + Code-Scan abgeleitet, siehe unten |
+| 12 | Unit-Tests — **erledigt 18.11.2026** | JUnit5/MockK/Robolectric-Infra + erste Suite (32 Tests) inkl. 11.6-Regression |
 
 ---
 
@@ -375,6 +376,27 @@ Scan (TODO-Grep, Transition-Names, Dependency-Nutzung, ungenutzte Top-Level/priv
 - **Symptom:** Login im Emulator (API 37) endete mit „TimeOut" (`error_timeout` ← `SocketTimeoutException` in `ErrorUtils`). Debug-Build loggt HTTP via `HttpTimberLogger`: `POST https://proxer.me/api/v1/user/login` brauchte vom Emulator 1,5–2 s warm, kalt mehr — `connectTimeout` war auf **5 s** gesetzt (`MainModules.kt`), daher intermittierend SocketTimeoutException auf der ersten Verbindung.
 - **Fix:** OkHttpClient in `MainModules.kt`: `connectTimeout` 5 → **15 s**, `readTimeout`/`writeTimeout` 10 → **30 s** (einziger Client im Projekt; Stream/Upload bauen auf demselben `rawClient` auf).
 - **Verifiziert:** Host-Check `https://proxer.me/api/v1/` antwortet in ~0,2 s, API-Key aus `secrets.properties` (gitignored) wird akzeptiert; nach Fix im Emulator: `--> POST .../user/login` / `<-- 200 OK (1458 ms)` — kein Timeout mehr, frische Debug-APK installiert, 0 FATAL EXCEPTION.
+
+---
+
+## Phase 12 – Unit-Tests (Test-Infrastruktur + erste Suite) — **erledigt 18.11.2026**
+
+**Ziel:** Lauffähige Unit-Test-Infrastruktur unter `src/test` mit erster Suite, inkl. Regression-Test für den 11.6-Crash.
+
+**Umgesetzt am 18.11.2026:**
+
+- **Infra:** JUnit 5 (jupiter **5.11.4** + `junit-platform-launcher` **1.11.4**) über `tasks.withType(Test) { useJUnitPlatform() }`; JUnit **4.13.2** + vintage-engine **1.11.4** nur für die Robolectric-Tests (Robolectric-Runner ist JUnit4-basiert). `testOptions.unitTests { includeAndroidResources = true; returnDefaultValues = true }` (AGP 9: Groovy-Property ohne `is`-Prefix). Deps in `gradle/dependencies.gradle`: mockk **1.13.17**, robolectric **4.15.1**, `core-testing` **2.2.0**, `room-testing` **2.8.5**, mockwebserver **4.12.1**. CI: `testDebugUnitTest` im Build-Step (`ci.yml`).
+- **Erste Suite (32 Tests, 0 Failures):**
+  - `BBParserTest` (Robolectric — `TextPrototype.construct` linkifiziert über androidx.core und braucht echtes android.text): Klartext, Bold, verschachtelte Tags, `[img]` im Default-Mode, unbekannter Tag in `parseSimple` bleibt literaler Text.
+  - `EasyHeaderFooterAdapterTest` (Robolectric, **Regression 11.6**): `footer = null` bei bereits null + leerem Adapter feuert **keine** AdapterDataObserver-Events (Alt-Code: `notifyItemChanged(-1)` → AIOOBE in `LazySpanLookup.invalidateAfter`); Insert/Remove/Replace-Positionen in Alt-Koordinaten; Layout mit `StaggeredGridLayoutManager` crashfrei.
+  - `ProxerErrorMessagesTest`: Exception→String-Mapping (TIMEOUT/IO/PARSING/UNKNOWN/CANCELLED, SERVER-RATE_LIMIT/IP_BLOCKED).
+  - `ValidatorsTest` (MockK): Login-/Age-Confirmation-Pfade.
+  - `UniqueQueueTest`: Duplikat-`offer`, FIFO-`poll`, `element()` auf leerer Queue.
+  - `InstantJsonAdapterTest`: Moshi epoch-millis + null.
+  - `HttpsUpgradeInterceptorTest` (MockK-Chain): http→https nur für upgradable Hosts, sonst unverändert.
+- Verifiziert grün: `testDebugUnitTest` (32/32), `ktlintCheck`, `detekt`, `lintDebug`, `lintRelease`, `assembleDebug`, `assembleRelease`, `bundleRelease`, `assembleLogRelease`, `:baselineprofile:assembleAndroidTest`. ktlint/detekt/lint gelten strikt auch für `src/test`.
+
+**Abnahme:** `testDebugUnitTest` grün lokal + CI — erfüllt.
 
 ---
 

@@ -22,7 +22,6 @@ class PreferenceHelper(
     companion object {
         const val CAST_INTRODUCTORY_OVERLAY_SHOWN = "cast_introductory_overlay_shown"
         const val LAUNCHES = "launches"
-        const val RATED = "rated"
 
         const val TWO_FACTOR_AUTHENTICATION = "two_factor_authentication"
         const val LAST_TAG_UPDATE_DATE = "last_tag_update_date"
@@ -57,12 +56,6 @@ class PreferenceHelper(
         get() = sharedPreferences.getInt(LAUNCHES, 0)
         private set(value) {
             sharedPreferences.edit { putInt(LAUNCHES, value) }
-        }
-
-    var hasRated: Boolean
-        get() = sharedPreferences.getBoolean(RATED, false)
-        set(value) {
-            sharedPreferences.edit { putBoolean(RATED, value) }
         }
 
     var isTwoFactorAuthenticationEnabled: Boolean

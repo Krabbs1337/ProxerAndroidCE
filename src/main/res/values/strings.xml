@@ -356,15 +356,6 @@
     <string name="dialog_no_wifi_remember">Nicht nochmal fragen</string>
     <string name="dialog_no_wifi_positive">Abspielen</string>
 
-    <string name="dialog_rating_title">Bewertung</string>
-    <string name="dialog_rating_content">
-        Gefällt dir die App? Hast du Probleme, Kritik oder Verbesserungsvorschläge?
-        Dann bewerte sie im Play Store!
-    </string>
-    <string name="dialog_rating_positive">Bewerten</string>
-    <string name="dialog_rating_neutral">Später erinnern</string>
-    <string name="dialog_rating_negative">Nicht mehr fragen</string>
-
 
     <!-- language=HTML -->
     <string name="dialog_comment_delete_message">

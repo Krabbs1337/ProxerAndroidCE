@@ -25,7 +25,6 @@ import me.proxer.app.news.NewsFragment
 import me.proxer.app.profile.settings.ProfileSettingsViewModel
 import me.proxer.app.settings.AboutFragment
 import me.proxer.app.settings.SettingsFragment
-import me.proxer.app.ui.view.RatingDialog
 import me.proxer.app.util.InAppUpdateFlow
 import me.proxer.app.util.extension.intentFor
 import me.proxer.app.util.wrapper.DrawerWrapper.DrawerItem
@@ -106,12 +105,6 @@ class MainActivity : DrawerActivity() {
 
         if (intent.action == Intent.ACTION_MAIN && savedInstanceState == null) {
             preferenceHelper.incrementLaunches()
-
-            preferenceHelper.launches.let { launches ->
-                if (launches >= 3 && launches % 3 == 0 && !preferenceHelper.hasRated) {
-                    RatingDialog.show(this)
-                }
-            }
         }
 
         // Gesture back (Android 13+) goes through the dispatcher, not onBackPressed().

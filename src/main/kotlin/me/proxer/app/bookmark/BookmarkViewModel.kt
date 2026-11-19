@@ -18,7 +18,7 @@ import kotlin.properties.Delegates
 /**
  * @author Ruben Gees
  */
-class BookmarkViewModel(
+open class BookmarkViewModel(
     searchQuery: String?,
     category: Category?,
     filterAvailable: Boolean,
@@ -48,6 +48,27 @@ class BookmarkViewModel(
 
     var filterAvailable by Delegates.observable(filterAvailable) { _, old, new ->
         if (old != new) reload()
+    }
+
+    // The server only sorts by the category parameter instead of filtering, so non-matching
+    // entries are hidden client-side. Filtering happens here (after the raw page was fetched)
+    // so that hasReachedEnd in PagedViewModel is still computed from the unfiltered page size.
+    // Existing data is filtered too, otherwise stale entries would survive a filter change on page 0.
+    override fun mergeNewDataWithExistingData(
+        existingData: List<Bookmark>,
+        newData: List<Bookmark>,
+        currentPage: Int,
+    ): List<Bookmark> {
+        val safeCategory = category
+
+        if (safeCategory == null) {
+            return super.mergeNewDataWithExistingData(existingData, newData, currentPage)
+        }
+
+        val filteredExistingData = existingData.filter { it.category == safeCategory }
+        val filteredNewData = newData.filter { it.category == safeCategory }
+
+        return super.mergeNewDataWithExistingData(filteredExistingData, filteredNewData, currentPage)
     }
 
     private val deletionQueue = UniqueQueue<Bookmark>()

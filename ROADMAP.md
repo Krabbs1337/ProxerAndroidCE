@@ -403,6 +403,14 @@ Scan (TODO-Grep, Transition-Names, Dependency-Nutzung, ungenutzte Top-Level/priv
 - **Scope bewusst nur Lesezeichen** — `item_media_entry`, `item_history_entry`, `item_profile_media_entry`, `item_project`, `item_recommendation`, `item_schedule_entry`, `item_top_ten_entry` nutzen weiterhin `1.25`/`centerCrop` (dort sind die Cover-Ausschnitte gewollt kompakt); Umstellung auf Wunsch analog.
 - Verifiziert grün: 54/54 `testDebugUnitTest`, ktlint, `lintDebug`, `assembleDebug`, `assembleRelease` (signierte `app-2.0.0-beta2-release.apk` neu gebaut).
 
+### 11.11 Lesezeichen-Filter blendet statt sortiert + Bewertungs-Erinnerung entfernt — **erledigt 19.11.2026**
+
+- **Filter (Real-Device-Meldung):** Der Kategorie-Filter im Lesezeichen-Menü änderte nur die Reihenfolge (Mangas wanderten nach unten), statt sie auszublenden. Ursache: `ucp/bookmarks?category=...` wird serverseitig als Sortierung behandelt (und das Lib serialisiert das Enum als `ANIME` statt `anime`), nie als Filter.
+  - **Fix:** Client-seitiger Filter in `BookmarkViewModel.mergeNewDataWithExistingData` — `existingData` und `newData` werden auf die gewählte Kategorie gefiltert, bevor das Paging-Merge läuft. Dadurch bleibt `hasReachedEnd` aus der ungefilterten Seitengröße korrekt (Paging stoppt nicht zu früh) und stale Einträge anderer Kategorien verschwinden beim Filterwechsel (Page-0-Merge). Server-Parameter bleibt bestehen (Sortierung within category).
+  - **Tests:** `BookmarkViewModelTest` (5 Fälle: `null` hält alles, ANIME blendet Manga/Novel aus, MANGA blendet Anime aus, Filterwechsel verwirft Stale-Einträge, spätere Seiten filtern konsistent). `BookmarkViewModel` dafür `open` gemacht.
+- **Bewertungs-Erinnerung entfernt:** `RatingDialog` (Play-Store-Dialog nach jedem 3. App-Start, „Später erinnern"/„Nicht mehr fragen") komplett gestrichen — `RatingDialog.kt` gelöscht, Aufruf + Import in `MainActivity` entfernt, `PreferenceHelper.RATED`/`hasRated` entfernt, 5 `dialog_rating_*`-Strings gelöscht. `launches`/`incrementLaunches` bleiben (werden für die Intro-Anzeige gebraucht).
+- Verifiziert grün: 59/59 `testDebugUnitTest`, ktlint, detekt, `lintDebug` + `lintRelease` (strict), `assembleDebug`, `assembleRelease` (signierte beta2-APK neu gebaut).
+
 ---
 
 ## Phase 12 – Unit-Tests (Test-Infrastruktur + erste Suite) — **erledigt 18.11.2026**

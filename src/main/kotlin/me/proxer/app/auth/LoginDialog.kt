@@ -162,7 +162,14 @@ class LoginDialog : BaseDialog() {
     private fun validateAndLogin() {
         val username = username.safeText.trim().toString()
         val password = password.safeText.trim().toString()
-        val secretKey = secret.safeText.trim().toString()
+        // Blank must become null: the lib marks the secretkey field @Nullable, so Retrofit
+        // omits it entirely. An empty string would be sent as "secretkey=", which the server
+        // may treat as an invalid code instead of "no code given" (no 2FA prompt shown).
+        val secretKey =
+            secret.safeText
+                .trim()
+                .toString()
+                .ifBlank { null }
 
         if (validateInput(username, password)) {
             viewModel.login(username, password, secretKey)

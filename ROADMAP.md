@@ -379,6 +379,14 @@ Scan (TODO-Grep, Transition-Names, Dependency-Nutzung, ungenutzte Top-Level/priv
 - **Fix:** OkHttpClient in `MainModules.kt`: `connectTimeout` 5 → **15 s**, `readTimeout`/`writeTimeout` 10 → **30 s** (einziger Client im Projekt; Stream/Upload bauen auf demselben `rawClient` auf).
 - **Verifiziert:** Host-Check `https://proxer.me/api/v1/` antwortet in ~0,2 s, API-Key aus `secrets.properties` (gitignored) wird akzeptiert; nach Fix im Emulator: `--> POST .../user/login` / `<-- 200 OK (1458 ms)` — kein Timeout mehr, frische Debug-APK installiert, 0 FATAL EXCEPTION.
 
+### 11.8 2FA-Code-Abfrage erscheint nicht beim Login (Real-Device) — **erledigt 18.11.2026**
+
+- **Symptom (echtes Handy, signierte Beta 2.0.0-beta2):** Login-Dialog zeigt das 2FA-Feld nicht; nach dem Anmelden bricht der Login mit Fehler ab (kein `USER_2FA_SECRET_REQUIRED`-Prompt).
+- **Analyse:** `LoginDialog.validateAndLogin()` schickte den Secret-Key immer als String — beim ersten Versuch also `""`. Das lib-Interface deklariert den Parameter als `@Field("secretkey") @Nullable`: Retrofit **omittet null, sendet aber `secretkey=` bei leerem String**. Der Server kann present-but-empty als „Code angegeben, aber ungültig“ werten (statt „kein Code ⇒ 3038 USER_2FA_SECRET_REQUIRED") — dann setzt das ViewModel das 2FA-Flag nicht und der Dialog bleibt ohne Prompt. ViewModel-Logik selbst per Unit-Test gegen MockWebServer verifiziert (Code 3038 → `isTwoFactorAuthenticationEnabled = true`, Pref gesetzt).
+- **Fix:** `LoginDialog`: `secret.safeText.trim().toString().ifBlank { null }` — das Feld wird bei leerer Eingabe gar nicht erst gesendet.
+- **Regression-Tests (`LoginViewModelTest`, MockWebServer + echte ProxerApi mit Redirect-Interceptor):** 3038 → 2FA-Prompt-Flag gesetzt + Pref persistiert; 3001 → Flag bleibt false; Request-Body enthält `secretkey` nur bei echtem Code (`secretkey=123456`), nicht bei null.
+- **Verifiziert:** `testDebugUnitTest` 53/53 grün, ktlint/detekt/lint strikt grün, signierte `app-2.0.0-beta2-release.apk` + `app-2.0.0-beta2-logRelease-9ff4a237.apk` neu gebaut (apksigner verify OK). Repro gegen die echte API ohne 2FA-Testaccount nicht möglich — falls das Problem auf dem Gerät weiterhin besteht: logRelease-APK installieren und logcat des Login-Versuchs schicken (HTTP-Log zeigt den echten Server-Code).
+
 ---
 
 ## Phase 12 – Unit-Tests (Test-Infrastruktur + erste Suite) — **erledigt 18.11.2026**

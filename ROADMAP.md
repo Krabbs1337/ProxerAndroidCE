@@ -1,6 +1,6 @@
 # ROADMAP – Modernisierung von ProxerAndroidCE
 
-Stand: 18.11.2026 · App-Version 2.0.0 (versionCode 2000000) · 338 Kotlin-Dateien (main) + 7 Test-Dateien (`src/test`), Single-Module (`me.proxer.app`) + `:baselineprofile`
+Stand: 18.11.2026 · App-Version 2.0.0 (versionCode 2000000) · 338 Kotlin-Dateien (main) + 10 Test-Dateien (`src/test`), Single-Module (`me.proxer.app`) + `:baselineprofile`
 
 Ziel: Das Projekt auf einen aktuellen, build- und Play-Store-fähigen Stand bringen (AGP 9.x / Kotlin 2.4+ / JDK 17 / targetSdk 36) und den resultierenden Stand durch Stabilitäts- und Performance-Maßnahmen verbessern.
 
@@ -394,7 +394,10 @@ Scan (TODO-Grep, Transition-Names, Dependency-Nutzung, ungenutzte Top-Level/priv
   - `UniqueQueueTest`: Duplikat-`offer`, FIFO-`poll`, `element()` auf leerer Queue.
   - `InstantJsonAdapterTest`: Moshi epoch-millis + null.
   - `HttpsUpgradeInterceptorTest` (MockK-Chain): http→https nur für upgradable Hosts, sonst unverändert.
-- Verifiziert grün: `testDebugUnitTest` (32/32), `ktlintCheck`, `detekt`, `lintDebug`, `lintRelease`, `assembleDebug`, `assembleRelease`, `bundleRelease`, `assembleLogRelease`, `:baselineprofile:assembleAndroidTest`. ktlint/detekt/lint gelten strikt auch für `src/test`.
+  - `UtilExtensionsTest`: `toPrefixedUrlOrNull`/`toPrefixedHttpUrl` (Präfix-Logik, PARSING-Exception).
+  - `TagDatabaseTest` (Robolectric + Room in-memory): Insert/Query-Roundtrip, REPLACE on conflict, `replaceTags` räumt vorher auf, `clear`.
+  - `BaseViewModelTest` (JVM + Koin-Testmodul + trampoline Schedulers + `InstantTaskExecutorRule`): `load()`-Erfolgspfad, `NotLoggedInException` → `error_login_required` + `ButtonAction.LOGIN`, `reload()` räumt Fehler auf, `loadIfPossible()` lädt nicht bei vorhandenem Fehler.
+- Verifiziert grün: `testDebugUnitTest` (45/45), `ktlintCheck`, `detekt`, `lintDebug`, `lintRelease`, `assembleDebug`, `assembleRelease`, `bundleRelease`, `assembleLogRelease`, `:baselineprofile:assembleAndroidTest`. ktlint/detekt/lint gelten strikt auch für `src/test`.
 
 **Abnahme:** `testDebugUnitTest` grün lokal + CI — erfüllt.
 
